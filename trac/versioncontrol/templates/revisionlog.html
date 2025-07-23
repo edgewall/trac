@@ -1,0 +1,304 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${path_links[1:]|map(attribute='name')|join('/') if path_links else '/'}
+      (log)
+      ${ super() }
+      # endblock title
+    </title>
+
+    # block head
+    ${ super() }
+    #   if graph:
+    <script>
+      jQuery(function($) {
+        $('th.trac-graph, td.trac-graph').show();
+        var canvas = $('<canvas>').css({width: '${graph.columns * 2}em',
+                                        height: '${len(items) * 2}em'})
+                                  .appendTo('td.trac-graph')[0];
+        canvas.width = $(canvas).width();
+        canvas.height = $(canvas).height();
+        if (typeof(G_vmlCanvasManager) != 'undefined')
+          canvas = G_vmlCanvasManager.initElement(canvas);
+        $.paintLogGraph(graph, canvas);
+      });
+    </script>
+    #   endif
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="log">
+      <h1>
+        # include 'path_links.html'
+      </h1>
+
+      <form id="prefs" action="${req.request_path}" method="get">
+        <div>
+          <input type="hidden" name="action" value="${mode}" />
+          # if revranges:
+          <input type="hidden" name="revs" value="${unicode(revranges)}"/>
+          # endif
+          <div class="choice">
+            <fieldset>
+              <legend>${_("Revision Log Mode:")}</legend>
+              <label>
+                <input type="radio" id="stop_on_copy" name="mode"
+                       value="stop_on_copy"
+                       ${{'checked': mode in (none, 'stop_on_copy')}
+                       |htmlattr}/>
+                ${_("Stop on copy")}
+              </label>
+              <label>
+                <input type="radio" id="follow_copy" name="mode"
+                       value="follow_copy"
+                       ${{'checked': mode == 'follow_copy'}
+                       |htmlattr}/>
+                ${_("Follow copies")}
+              </label>
+              <label>
+                <input type="radio" id="path_history" name="mode"
+                       value="path_history"
+                       ${{'checked': mode == 'path_history'}
+                       |htmlattr}/>
+                ${_("Show only adds and deletes")}
+              </label>
+            </fieldset>
+          </div>
+          # set input_start
+          <input type="text" id="rev" name="rev" value="${rev}" size="5" />
+          # endset
+          # set input_end
+          <input type="text" id="stop_rev" name="stop_rev"
+                 value="${stop_rev}" size="5" />
+          # endset
+          # trans start=input_start, end=input_end
+
+          <label>View log starting at ${start}</label>
+          <label>and back to ${end}</label>
+
+          # endtrans
+          <br />
+          # set input_max
+          <input type="text" id="limit" name="limit" value="${limit}"
+                 size="3" maxlength="3" />
+          # endset
+          <label>
+            # trans input_max
+
+            Show at most ${input_max} revisions per page.
+
+            # endtrans
+          </label>
+          <br />
+          <label>
+            <input type="checkbox" id="verbose" name="verbose"
+                   ${{'checked': verbose}|htmlattr}/>
+            ${_("Show full log messages")}
+          </label>
+        </div>
+        <div class="buttons">
+          <input type="submit" value="${_('Update')}" />
+        </div>
+      </form>
+
+      <div class="diff">
+        <div class="legend" id="file-legend">
+          <h3>${_("Legend:")}</h3>
+          <dl>
+            <dt class="add"></dt><dd>${_("Added")}</dd>
+            # if mode == 'path_history':
+            <dt class="rem" ></dt><dd>${_("Removed")}</dd>
+            # endif
+            <dt class="mod"></dt><dd>${_("Modified")}</dd>
+            <dt class="cp"></dt><dd>${_("Copied or renamed")}</dd>
+          </dl>
+        </div>
+      </div>
+
+      # macro diff_input(first_use=false)
+      <div class="buttons">
+        # if first_use:
+        <input type="hidden" name="reponame" value="${reponame}"/>
+        # endif
+        <input type="submit" value="${_('View changes')}"
+               title="${
+ _("Diff from Old Revision to New Revision (as selected in the Diff column)")
+                                                                            }"/>
+      </div>
+      # endmacro
+
+      # for items in item_ranges:
+      <form class="printableform" action="${href.changeset()}" method="get">
+        ${diff_input(true)}
+        <table class="${classes('listing', 'chglist', 'trac-graph' if graph)}">
+          <thead>
+            <tr>
+              # if graph:
+              <th class="trac-graph">${_("Graph")}</th>
+              # endif
+              <th class="diff" title="${_('Old / New')}">${_("Diff")}</th>
+              <th class="change"></th>
+              <th class="rev">${_("Rev")}</th>
+              <th class="age">${_("Age") if dateinfo_format == 'relative' else _("Date")}</th>
+              <th class="author">${_("Author")}</th>
+              <th class="summary">
+                # if not verbose:
+                ${_("Log Message")}
+                # endif
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            # if not items:
+            <tr class="even">
+              # if graph:
+              <td class="trac-graph"></td>
+              # endif
+              <td></td>
+              <td></td>
+              <td class="copyfrom_path" colspan="6">${_("No revisions found")}</td>
+            </tr>
+            # endif
+
+            # for item in items:
+            #   set change = changes[item.rev]
+            #   set is_separator = item.change is none
+            #   set chgset_context = context.child('changeset', change.rev, parent=repos.resource)
+            #   set odd_even = loop.cycle('odd', 'even')
+
+            ##  # highlight copy or rename operations
+            #   if not is_separator and item.get('copyfrom_path'):
+            <tr class="${odd_even}">
+              <td></td>
+              <td class="copyfrom_path" colspan="6"
+                  style="padding-left: ${item.depth - 1}em">
+                ${tag_("copied from %(path)s",
+                       path=tag.a(item.copyfrom_path,
+                                  href=href.browser(reponame, item.path,
+                                                    rev=item.rev)))}
+              </td>
+            </tr>
+            #   endif
+
+            <tr class="${classes(odd_even, verbose=verbose)}">
+              # if graph and loop.first:
+              <td class="trac-graph" rowspan="${len(items)}"></td>
+              # endif
+              <td class="diff">
+                <input type="radio" name="old" value="${item.rev}@${item.path}"
+                       ${{'checked': loop.last}|htmlattr}
+                       title="${_('From [%(rev)s]', rev=display_rev(item.rev))}" />
+                <input type="radio" name="new" value="${item.rev}@${item.path}"
+                       ${{'checked': loop.first}|htmlattr}
+                       title="${_('To [%(rev)s]', rev=display_rev(item.rev))}" />
+              </td>
+              # if not is_separator:
+              <td class="change" style="padding-left: ${item.depth}em">
+                <a href="${href.log(reponame, item.path, rev=item.rev)}"
+                   title="${_('View log starting at this revision')}">
+                  <span class="${item.change}"></span>
+                  <span class="comment">(${item.change})</span>
+                </a>
+              </td>
+              <td class="rev">
+                <a href="${href.browser(reponame, item.path,
+                                        rev=item.existing_rev)}"
+                   title="${_('Browse at revision %(rev)s',
+                              rev=display_rev(item.existing_rev))}">
+                  @${display_rev(item.existing_rev)}</a>
+                # if item.change == 'delete':
+                <a class="chgset" href="${href.changeset(item.rev)}"
+                   title="${_('View removal changeset [%(rev)s]',
+                              rev=display_rev(item.rev))}">&nbsp;</a>
+                # else:
+                <a class="chgset"
+                   href="${href.changeset(item.rev, reponame, item.path)}"
+                   title="${_('View changeset [%(rev)s] restricted to %(path)s',
+                              rev=display_rev(item.rev), path=item.path or '/')}"
+                   >&nbsp;</a>
+                # endif
+              </td>
+              <td class="age">${pretty_dateinfo(change.date, dateonly=true)}</td>
+              <td class="author">${authorinfo_short(change.author)}</td>
+              <td class="summary"
+                  style="${styles({
+                           'border-left': ('2px solid ' +
+                               graph.colors[graph.vertices[loop.index0][1] %
+                                            len(graph.colors)]) if graph})}">
+                # if verbose:
+                ## really?
+                # elif wiki_format_messages:
+                ${wiki_to_oneliner(chgset_context, change.message, shorten=true)}
+                # else:
+                ${shorten_line(change.message)}
+                # endif
+                # for branch, head in change.get_branches() if branch not in ('default', 'master'):
+                <span class="${classes('branch', 'head' if head)}"
+                      title="${_('Branch head') if head else _('Branch')}">${
+                  branch}</span>
+                # endfor
+                # for tag in change.get_tags():
+                <span class="tag" title="${_('Tag')}">${tag}</span>
+                # endfor
+                # for bookmark in change.get_bookmarks():
+                <span class="trac-bookmark" title="${_('Bookmark')}">${
+                  bookmark}</span>
+                # endfor
+              </td>
+              # else:
+              <td colspan="5"></td>
+              # endif
+            </tr>
+
+            # if verbose and not is_separator:
+            <tr class="${classes('summary', 'verbose', odd_even)}">
+              <td class="filler" colspan="2"></td>
+              <td class="log" colspan="4">
+                # if wiki_format_messages:
+                ${wiki_to_html(chgset_context, change.message,
+                               escape_newlines=true)}
+                # else:
+                <pre>${change.message}</pre>
+                # endif
+              </td>
+            </tr>
+            #   endif
+            # endfor
+          </tbody>
+        </table>
+
+        # if len(items) is greaterthan(10) and len(item_ranges) == 1:
+        ${diff_input()}
+        # endif
+      </form>
+      # endfor
+
+      # call(note, page) jmacros.wikihelp('TracRevisionLog'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using the revision log.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

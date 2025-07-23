@@ -1,0 +1,88 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${_("Preferences:")}
+      # block preftitle
+      # endblock preftitle
+      ${ super() }
+      # endblock title
+    </title>
+
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="prefs">
+      <h1>${_("Preferences")}</h1>
+      <p>
+        # trans
+
+        This page lets you customize your personal settings for this
+        site.  These settings are stored on the server and are
+        identified by a session key stored in a browser cookie. That
+        cookie allows your settings to be restored on subsequent
+        visits.
+
+        # endtrans
+      </p>
+
+      <ul id="tabs">
+        # for name, label in panels:
+        <li${{'id': ('tab_%s' % name) if name,
+              'class': 'active' if name == active_panel,
+             }|htmlattr}>
+          # if name == active_panel:
+          ${label}
+          # else:
+          <a href="${href.prefs(name)}">${label}</a>
+          # endif
+        </li>
+        # endfor
+      </ul>
+
+      <div id="tabcontent">
+        <form id="userprefs" action="${req.request_path}" method="post">
+          ${jmacros.form_token_input()}
+
+          # block prefpanel
+          # endblock prefpanel
+
+          # for name, title, child in children:
+          <div class="prefs_child">
+            <h2 id="${name}-section">${title}</h2>
+            ${child}
+          </div>
+          # endfor
+
+          # if not prefpanel_has_own_submit:
+          <div class="buttons">
+            <input type="hidden" name="action" value="save" />
+            <input type="submit" value="${_('Save changes')}" />
+          </div>
+
+          # block prefpanelhelp
+          # endblock prefpanelhelp
+
+          # endif
+        </form>
+      </div>
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

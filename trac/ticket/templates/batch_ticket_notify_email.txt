@@ -1,0 +1,17 @@
+${_("Batch modification to %(tickets)s by %(author)s:",
+    tickets=tickets_descr, author=author)}
+${changes_descr}
+# if action:
+
+${_("Action: %(action)s", action=action)}
+# endif
+# if comment:
+
+${_("Comment:")}
+${comment}
+# endif
+
+${'-- '}
+${_("Tickets URL: <%(link)s>", link=ticket_query_link)}
+${project.name} <${project.url or abs_href()}>
+${project.descr}

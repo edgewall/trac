@@ -1,0 +1,101 @@
+# -*- Makefile -*- configuration file sample
+#
+# Copy to Makefile.cfg and adapt to your local environment.
+#
+# ----------------------------------------------------------------------------
+# Switching between different Python installations 
+#
+# (one of them can be selected with `make python=<key>`)
+
+# python.<key> = <path to Python installation>
+python.23 =
+python.24 =
+python.25 = C:/Dev/Python254
+python.ap25 = C:/Dev/ActivePython254
+python.26 = C:/Dev/Python261
+python.27 = C:/Dev/Python278
+
+python.x86 = C:/Dev/Python2712x86
+python.x64 = C:/Dev/Python2710x64
+# (mandatory for release-exe)
+
+# And also:
+
+# pythonpath.<key> = <extension to the PYTHONPATH for that installation>
+# path.<key> = <extension to the PATH for that installation>
+pythonpath.26 = C:/Dev/svn-win32-1.6.21/python
+path.26 = C:/Dev/svn-win32-1.6.21/bin
+pythonpath.27 = C:/Dev/svn-win32-1.8.10/python
+path.27 = C:/Dev/svn-win32-1.8.10/bin
+
+# (both very convenient for specifying non-default Subversion bindings,
+# for example)
+
+
+# ----------------------------------------------------------------------------
+# Switching between different database backends
+#
+#  (one of them can be selected with `make db=<backend>`)
+
+# db URIs
+# <backend>.uri = <db:params>
+sqlite.uri = sqlite:test.db
+mysql.uri = mysql://tracuser:tracpassword@localhost/trac
+postgres.uri = postgres://tracuser:tracpassword@localhost:5432/trac?schema=tractest
+
+# db backend to use when `db=<backend>` parameter was not given to `make`
+.uri =
+# (if left undefined, use in-memory sqlite)
+
+# Python installation to use when `db=<backend>` is specified but `python=<key>`
+# is not.
+#
+# <backend>.python = <key>  where <key> corresponds to the python.<key> vars
+mysql.python = 25
+postgres.python = 26
+.python =
+# (if db is left empty, .python will get used to select the Python
+# installation; if left undefined, the 'python' command will be used
+# instead of a fully qualified pathname)
+
+# For example, if you only have the PyMySQL Python bindings available
+# for your Python 2.7.4 installation, specify something like:
+# mysql.python = 27
+#
+# given that you also have:
+# python.27 = <path to my 2.7.4 install containing the PyMySQL bindings...>
+
+
+# ----------------------------------------------------------------------------
+# Settings for the test server
+
+env = ~/tracenvs
+auth = *,~/tracenvs/htdigest.realm,realm
+
+# ----------------------------------------------------------------------------
+# Settings for the documentation
+
+dotpath = /usr/local/bin/dot
+
+# ----------------------------------------------------------------------------
+# Settings for the release
+
+# e.g. PuTTY's scp in Program Files (x86)
+# SCP = C:/PROGRA~2/PuTTY/pscp.exe
+
+
+# ----------------------------------------------------------------------------
+# Custom rules - let your imagination go wild ;-)
+
+.PHONY: bigtest
+
+bigtest:
+	make python=24 test
+	make db=postgres test
+	make db=mysql test
+
+.PHONY: frup frcomp
+
+frup: stats-pot extraction update-fr stats-fr
+
+frcomp: check-fr compile-fr stats-fr stats-pot

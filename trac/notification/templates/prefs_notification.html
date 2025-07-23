@@ -1,0 +1,315 @@
+{# Copyright (C) 2014-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/log/.
+#}
+# extends 'prefs.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block preftitle
+      ${_("Notifications")}
+      # endblock preftitle
+    </title>
+
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        var find_label = function(options, value) {
+          var label;
+          $.each(options, function(idx, option) {
+            if (option.value === value) {
+              label = option.text;
+              return false;
+            }
+          });
+          return label;
+        };
+        var highlight = function(nodes) {
+          nodes.effect('highlight');
+        };
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content .subscription-format").change(function() {
+          $.setWarningUnsavedChanges(true);
+        });
+        var rows = $("#content .subscription-rules .rules");
+        rows.on("click", ".delete-rule", function() {
+          $(this).closest("tr").remove();
+          $.setWarningUnsavedChanges(true);
+          return false;
+        });
+        rows.on("click", ".move-up-rule", function() {
+          var row = $(this).closest("tr");
+          row.prev("tr").before(row);
+          highlight(row);
+          $.setWarningUnsavedChanges(true);
+          return false;
+        });
+        rows.on("click", ".move-down-rule", function() {
+          var row = $(this).closest("tr");
+          row.next("tr").after(row);
+          highlight(row);
+          $.setWarningUnsavedChanges(true);
+          return false;
+        });
+        $("#content .add-rule").click(function() {
+          var form = $(this.form);
+          var distributor = $(this).val().replace(/^add-rule_/, "");
+          var row = form.find(".new-rule-" + distributor).children("tr")
+                        .clone();
+          var adverb = form.find('[name="new-adverb-' + distributor + '"]');
+          var adverb_val = adverb.val();
+          var adverb_label = find_label(adverb[0].options, adverb_val);
+          var class_ = form.find('[name="new-rule-' + distributor + '"]');
+          var class_val = class_.val();
+          var class_label = find_label(class_[0].options, class_val);
+          if (!adverb_val || !class_val)
+            return false;
+          row.find("[name='adverb-" + distributor + "']").val(adverb_val);
+          row.find("[name='class-" + distributor + "']").val(class_val);
+          row.find(".new-rule-label").text(adverb_label + " " + class_label);
+          row.find("[disabled]").removeAttr("disabled");
+          row.find('.rule-label').attr('title', _("Drag rule to reorder"));
+          form.find(".rules-" + distributor).append(row);
+          highlight(row);
+          $.setWarningUnsavedChanges(true);
+          return false;
+        });
+        var sortable_options = {axis: 'y', tolerance: 'pointer',
+                                placeholder: 'trac-placeholder',
+                                handle: '.rule-label'};
+        sortable_options.start = function(event, ui) {
+          var placeholder = $(ui.placeholder);
+          if (placeholder.children().length === 0) {
+            var orig = $(ui.item).children();
+            var clone = orig.clone();
+            clone.find('input, select, button').removeAttr('name');
+            placeholder.append(clone);
+          }
+          $.setWarningUnsavedChanges(true);
+        };
+        rows.sortable(sortable_options);
+        rows.find(".rule-label").attr("title", _("Drag rule to reorder"));
+        $("#content form").submit(function() {
+          $.setWarningUnsavedChanges(false);
+        });
+      });
+    </script>
+    # endblock head
+  </head>
+  <body>
+    # block prefpanel
+    <h2 id="subscriptions-section">${_("Subscriptions")}</h2>
+    #   for distributor, rules in data['rules'].items():
+    <div class="ruleset">
+      <h3>${distributor}</h3>
+      <div class="field">
+        <p>
+          <label for="format-${distributor}">${_("Format:")}</label>
+          <select id="format-${distributor}" name="format-${distributor}"
+                  class="subscription-format">
+            # set default_format = data['default_format'][distributor]
+            <option value="">${_("Default: %(default)s",
+                                 default=default_format)}</option>
+            # for f in data['formatters'][distributor]:
+            <option${{'selected': f == data['selected_format'][distributor]
+                     }|htmlattr} value="${f}">${f}</option>
+            # endfor
+          </select>
+        </p>
+        <p class="hint">
+          # trans distributor
+
+          Configure the format of your ${distributor} notifications.
+
+          # endtrans
+        </p>
+      </div>
+      #   if data['subscribers']:
+      <div class="field">
+        <label>${_("Subscription rules:")}</label>
+        <table class="subscription-rules">
+          <tbody class="rules rules-${distributor}">
+            # for rule in rules:
+            <tr class="rule">
+              <td>
+                <div class="inlinebuttons">
+                  <button class="trac-button move-up-rule"
+                          type="submit" name="action"
+                          title="${_('Move rule up')}"
+                          value="move-rule_${rule.id}-${rule.priority - 1}"
+                          >↑</button>
+                </div>
+              </td>
+              <td>
+                <div class="inlinebuttons">
+                  <button class="trac-button move-down-rule"
+                          type="submit" name="action"
+                          title="${_('Move rule down')}"
+                          value="move-rule_${rule.id}-${rule.priority + 1}"
+                          >↓</button>
+                </div>
+              </td>
+              <td>
+                <div class="inlinebuttons">
+                  <button class="trac-button delete-rule"
+                          type="submit" name="action"
+                          title="${_('Delete rule')}"
+                          value="delete-rule_${rule.id}"
+                          >–</button>
+                </div>
+              </td>
+              <td class="rule-label">
+                # trans key = data.adverb_labels[rule.adverb], value = rule.description
+                ${key}: ${value}
+
+                # endtrans
+                <div style="display:none">
+                  <input type="hidden" name="class-${distributor}"
+                         value="${rule['class']}" />
+                  <input type="hidden" name="adverb-${distributor}"
+                         value="${rule.adverb}" />
+                </div>
+              </td>
+            </tr>
+            # endfor
+          </tbody>
+          <tbody class="new-rule-${distributor}" style="display:none">
+            <tr class="rule">
+              <td>
+                <div class="inlinebuttons">
+                  <button class="trac-button move-up-rule"
+                          type="submit" name="action"
+                          title="${_('Move rule up')}"
+                          value="">↑</button>
+                </div>
+              </td>
+              <td>
+                <div class="inlinebuttons">
+                  <button class="trac-button move-down-rule"
+                          type="submit" name="action"
+                          title="${_('Move rule down')}"
+                          value="">↓</button>
+                </div>
+              </td>
+              <td>
+                <div class="inlinebuttons">
+                  <button class="trac-button delete-rule"
+                          type="submit" name="action"
+                          title="${_('Delete rule')}"
+                          value="">–</button>
+                </div>
+              </td>
+              <td class="rule-label">
+                <span class="new-rule-label"></span>
+                <div style="display:none">
+                  <input type="hidden" name="adverb-${distributor}" value=""
+                         disabled="disabled" />
+                  <input type="hidden" name="class-${distributor}" value=""
+                         disabled="disabled" />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <select name="new-adverb-${distributor}">
+            # for a in data['adverbs']:
+            <option value="${a}">${data.adverb_labels[a]}:</option>
+            # endfor
+          </select>
+          <select name="new-rule-${distributor}">
+            # for s in data['subscribers']:
+            <option value="${s['class']}">${s.description}</option>
+            # endfor
+          </select>
+          <button class="trac-button add-rule"
+                  type="submit" name="action"
+                  title="${_('Add rule')}"
+                  value="add-rule_${distributor}">${_("Add")}</button>
+        </p>
+        <p class="hint">
+          # trans distributor
+
+          Add, remove or reorder subscription rules to
+          ${distributor} notifications. Only the first matching rule
+          is applied.
+
+          # endtrans
+        </p>
+        <p class="hint">
+          # set never_notify
+          <strong>"${_('Never notify: I update a ticket')}"</strong>
+          # endset
+          # set any_changes
+          <strong>"${_('Notify: Any ticket changes')}"</strong>
+          # endset
+          # trans never_notify, any_changes
+
+          Example: The rule ${never_notify} should be above
+          ${any_changes} to get notifications of any ticket changes
+          except when you update a ticket.
+
+          # endtrans
+        </p>
+      </div>
+      #   endif
+      #   if data.default_rules[distributor]:
+      <div class="field">
+        <label>${_("Default rules:")}</label>
+        <ul>
+          # for rule in  data['default_rules'][distributor]:
+          <li class="default_rule">
+            # trans key = data.adverb_labels[rule.adverb], value = rule.description
+            ${key}: ${value}
+
+            # endtrans
+          </li>
+          # endfor
+        </ul>
+        <p class="hint">
+          # trans
+
+          These default rules have been configured by the site
+          administrator. Configure subscription rules to override
+          them.
+
+          # endtrans
+        </p>
+        <p class="hint">
+          # trans any_changes, never_notify
+
+          Example: The subscription rule ${any_changes} overrides the
+          default rule ${never_notify}.
+
+          # endtrans
+        </p>
+      </div>
+      #   endif
+    </div>
+    #   endfor
+    <p class="trac-noscript">
+      <input type="hidden" name="action" value="replace_all" />
+    </p>
+    # endblock prefpanel
+
+    # block prefpanelhelp
+    #   call(note, page) jmacros.wikihelp('TracNotification'):
+    #     trans note, page
+
+    ${note} See ${page} for help on using notifications.
+
+    #     endtrans
+    #   endcall
+    # endblock
+    ## jinjacheck: "(h2 div p CDATA)" OK
+
+  </body>
+</html>

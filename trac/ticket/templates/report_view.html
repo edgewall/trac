@@ -1,0 +1,328 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+This software is licensed as described in the file COPYING, which
+you should have received as part of this distribution. The terms
+are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+This software consists of voluntary contributions made by many
+individuals. For the exact contribution history, see the revision
+history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${title} ${ super() }
+      # endblock title
+    </title>
+
+    # block head
+
+    ${ super() }
+
+    #   if show_args_form:
+    <script>
+      jQuery(function($) {
+        var reportfilters = $("#reportfilters");
+        reportfilters.find("legend").enableFolding(false);
+        reportfilters.find("input").each(function() {
+          var arg = this.name.toLowerCase();
+          if (arg in arg_values) {
+            $(this).autocomplete({
+              source: arg_values[arg],
+              minLength: 0
+            })
+          }
+        });
+      });
+    </script>
+    #   endif
+
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="report">
+      <h1>${title}
+        # if numrows:
+        <span class="numrows">(${ngettext('%(num)s match', '%(num)s matches',
+          numrows)})</span>
+        # endif
+      </h1>
+
+      <form method="get" id="trac-report-prefs" action="${req.request_path}">
+        <div id="prefs">
+          <div>
+            <label>
+              ${_("Max items per page")}
+              <input type="text" name="max" size="10" value="${max}" />
+            </label>
+            # if show_args_form:
+            <fieldset id="reportfilters">
+              <legend class="foldable">${_("Arguments")}</legend>
+              <table>
+                <tbody>
+                  <tr style="height: 1px"><td colspan="2"></td></tr>
+                </tbody>
+                # if name != 'USER':
+                #   for (name, value) in sorted(args.items()):
+                <tbody>
+                  <tr>
+                    <th scope="row"><label>${name}</label></th>
+                    <td class="filter">
+                      <input type="text" size="42"${
+                           {'name': name, 'value': value}|htmlattr}/>
+                    </td>
+                  </tr>
+                </tbody>
+                #   endfor
+                # endif
+              </table>
+            </fieldset>
+            # endif
+          </div>
+          <div class="buttons">
+            <input type="hidden" name="sort" value="${sort}" />
+            # if asc:
+            <input type="hidden" name="asc" value="1" />
+            # endif
+            <input type="submit" value="${_('Update')}" />
+          </div>
+        </div>
+      </form>
+
+      # if description:
+      <div id="description">
+        ${wiki_to_html(context, description)}
+      </div>
+      # endif
+
+      <div class="buttons">
+        # if 'REPORT_MODIFY' in perm(report.resource):
+        <form action="${req.request_path}" method="get">
+          <div>
+            <input type="hidden" name="action" value="edit" />
+            <input type="submit" value="${_('Edit report')}" ${accesskey("e")}/>
+          </div>
+        </form>
+        # endif
+        # if 'REPORT_CREATE' in perm(report.resource):
+        <form action="${req.request_path}" method="get">
+          <div>
+            <input type="hidden" name="action" value="copy" />
+            <input type="submit" value="${_('Copy report')}" />
+          </div>
+        </form>
+        # endif
+        # if 'REPORT_DELETE' in perm(report.resource):
+        <form action="${req.request_path}" method="get">
+          <div>
+            <input type="hidden" name="action" value="delete" />
+            <input type="submit" value="${_('Delete report')}" />
+          </div>
+        </form>
+        # endif
+      </div>
+
+      # if paginator.has_more_pages:
+      <h2 class="report-result">
+        ${_("Results")}
+        <span class="numresults">(${paginator.displayed_items()})</span>
+      </h2>
+      #   include 'page_index.html'
+      # endif
+
+      # macro group_heading(value_for_group, row_group)
+      #   if value_for_group is not none:
+      <h2 class="report-result">
+        #   if row_group and '__grouplink__' in row_group[0]:
+        <a href="${row_group[0]['__grouplink__']}">${value_for_group or _("(empty)")}</a>
+        #   else:
+        ${value_for_group or _("(empty)")}
+        #   endif
+        #   set cnt = row_group|length
+        <span class="numrows">
+          (${ngettext('%(num)s match', '%(num)s matches', cnt) if cnt
+          else _("No matches found.")})
+        </span>
+      </h2>
+      #   endif
+      # endmacro
+
+      ${group_heading(*row_groups[0]) if row_groups}
+
+      # if row_groups:
+      <table class="listing tickets">
+
+        # for value_for_group, row_group in row_groups:
+        #   if loop.first:
+        <thead>
+          #   set header_group, header = None, None
+          #   set column_headers
+          #     for header_group in header_groups:
+          <tr class="trac-columns">
+            #     for header in header_group if not header.hidden:
+            <th${{'colspan': '100' if loop.last,
+                  'class': 'asc' if header.asc else
+                           'desc' if header.asc is not none
+                 }|htmlattr}>
+              <a href="${report_href(sort=header.col, asc=not header.asc)}">
+                ${header.title}
+              </a>
+            </th>
+            #     endfor
+          </tr>
+          #     endfor
+          #   endset
+
+          ${column_headers}
+        </thead>
+        #   else:
+        <tbody>
+          <tr class="trac-group">
+            <th colspan="100">
+              ${group_heading(value_for_group, row_group)}
+            </th>
+          </tr>
+          ${column_headers}
+        </tbody>
+        #   endif
+        <tbody>
+          # for row in row_group:
+          #   for cell_group in row.cell_groups:
+          #     set fullrow = len(cell_group) == 1
+          <tr${{'class': [
+                ('color' + row.__color__ + '-' if '__color__' in row else '') +
+                 ('odd' if row.__idx__ % 2 else 'even'),
+                row.__class__ if '__class__' in row
+                ],
+                'style':
+                   styles(row.__style__ if '__style__' in row,
+                          'border: none; padding: 0' if fullrow,
+                          background=row.__bgcolor__ if '__bgcolor__' in row,
+                          color=row.__fgcolor__ if '__fgcolor__' in row)
+               }|htmlattr}>
+
+            #   for cell in cell_group:
+            #     if not cell.header.hidden:
+            #       set td_attrs = {'class': []}
+            #       if fullrow:
+            #         do td_attrs['class'].append('fullrow')
+            #         do td_attrs.update({'colspan': 100})
+            #       endif
+            #       set col = cell.header.col.strip('_')
+            #       if col == 'report':
+            #         do td_attrs['class'].append(col)
+            <td${td_attrs|htmlattr}>
+              <a title="${_('View report')}"
+                 href="${href.report(cell.value)}">{${cell.value}}</a>
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+            #       elif col in ('ticket', 'id'):
+            #         do td_attrs['class'].append('ticket')
+            <td${td_attrs|htmlattr}>
+              <a title="${_('View %(realm)s', realm=row.resource.realm)}"
+                 href="${url_of(row.resource)}">${
+                shortname_of(row.resource)}</a>
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+            #       elif col == 'summary' and row.id:
+            #         do td_attrs['class'].append(col)
+            <td${td_attrs|htmlattr}>
+              <a title="${_('View %(realm)s', realm=row.resource.realm)}"
+                 href="${url_of(row.resource)}">${cell.value}</a>
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
+            #       elif col in ('created', 'modified'):
+            #         do td_attrs['class'].append('date')
+            <td${td_attrs|htmlattr}>${
+              pretty_dateinfo(from_utimestamp(cell.value|int))
+              if cell.value != '' else '--'}
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
+            <!--! generic fields -->
+            #       elif col == 'time':
+            #         do td_attrs['class'].append('date')
+            <td${td_attrs|htmlattr}>${
+              format_time(from_utimestamp(cell.value|int)) if cell.value != ''
+              else '--'}
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
+            #       elif col == 'date':
+            #         do td_attrs['class'].append('date')
+            <td${td_attrs|htmlattr}>${
+              format_date(from_utimestamp(cell.value|int)) if cell.value != ''
+              else '--'}
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
+            #       elif col == 'datetime':
+            #         do td_attrs['class'].append('date')
+            <td${td_attrs|htmlattr}>${
+              format_datetime(from_utimestamp(cell.value|int))
+                if cell.value != ''
+                else '--'}
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
+            #       elif col == 'description':
+            #         do td_attrs['class'].append(col)
+            <td${td_attrs|htmlattr}>${
+              wiki_to_html(context.child(row.resource), cell.value)}
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
+            #       elif col == 'milestone':
+            #         do td_attrs['class'].append(col)
+            <td${td_attrs|htmlattr}>
+              #       if cell.value:
+              <a title="${_('View milestone')}"
+                 href="${href.milestone(cell.value)}">${cell.value}</a>
+              #       endif
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+
+            #       else:
+            #         do td_attrs['class'].append(col)
+            <td${td_attrs|htmlattr}>${cell.value}
+              {% if fullrow %}<hr />{% endif %}
+            </td>
+            #       endif
+            #     endif
+            #   endfor
+          </tr>
+            # endfor
+          # endfor
+        </tbody>
+        # endfor
+      </table>
+      #   include 'page_index.html'
+      # endif
+
+      # if message:
+      <div class="system-message">${message}</div>
+      # endif
+      # if numrows == 0:
+      <div id="report-notfound">${_("No matches found.")}</div>
+      # endif
+
+      # call(note, page) jmacros.wikihelp('TracReports'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using and creating reports.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

@@ -1,0 +1,55 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'prefs.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block preftitle
+      ${_("General")}
+      # endblock preftitle
+    </title>
+  </head>
+  <body>
+    # block prefpanel
+    <p class="hint">
+      # if not req.is_authenticated:
+      #   trans
+
+      This information is used to automatically populate some forms on
+      this site with your contact details.
+
+      #   endtrans
+      # else:
+      #   trans
+
+      This information is used to associate your login name with your
+      email address and full name, which is used for email
+      notification and RSS feeds, for example.
+
+      #   endtrans
+      # endif
+    </p>
+    <table>
+      <tr class="field">
+        <th><label for="name">${_("Full name:")}</label></th>
+        <td><input type="text" id="name" name="name" size="30"
+            value="${session.get('name', '')}" /></td>
+      </tr>
+      <tr class="field">
+        <th><label for="email">${_("Email address:")}</label></th>
+        <td><input type="text" id="email" name="email" size="30"
+            value="${session.get('email', '')}" /></td>
+      </tr>
+    </table>
+    # endblock prefpanel
+  </body>
+</html>

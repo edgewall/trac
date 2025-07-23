@@ -1,0 +1,107 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${title}
+      ${ super() }
+      # endblock title
+    </title>
+    # block head
+    ${ super() }
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <script>
+      jQuery(function($) {
+        $("#fieldhist").on("mouseenter mouseleave", "tr", function() {
+          $(".inlinebuttons", $(this)).toggle();
+        });
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="${resource.realm}">
+      <h1>${tag_("Change History for %(name)s",
+            name='<a href="%s">%s</a>'|safe %
+                 (url or url_of(resource), name or name_of(resource)))}
+      </h1>
+      # if history:
+      <form id="history" class="printableform" method="get" action="${req.request_path}">
+        <div class="buttons">
+          <input type="hidden" name="action" value="${diff_action or 'diff'}" />
+          # for k, v in  diff_args or []:
+          <input type="hidden" name="${k}" value="${v}"/>
+          # endfor
+          <input type="submit" value="${_('View changes')}" />
+        </div>
+        # set has_comment = history|rejectattr('comment', 'none')|list
+        <table id="fieldhist" class="listing">
+          <thead>
+            <tr>
+              <th class="diff"></th>
+              <th class="version">${_("Version")}</th>
+              <th class="date">${_("Date")}</th>
+              <th class="author">${_("Author")}</th>
+              # if has_comment:
+              <th class="comment">${_("Comment")}</th>
+              # endif
+            </tr>
+          </thead>
+          <tbody>
+            # for item in history:
+            <tr class="${loop.cycle('odd', 'even')}">
+              <td class="diff">
+                <input type="radio" name="old_version" value="${item.version}"
+                       ${{'checked': loop.index0 == 1}|htmlattr} />
+                <input type="radio" name="version" value="${item.version}"
+                       ${{'checked': loop.first}|htmlattr} />
+              </td>
+              <td class="version">
+                <a href="${item.url or url_of(resource, version=item.version)}"
+                   title="${_('View this version')}">${item.version}</a>
+              </td>
+              <td class="date">${pretty_dateinfo(item.date, dateonly=True)}</td>
+              <td class="author">${authorinfo(item.author)}</td>
+              # if has_comment:
+              <td class="comment">
+                ${wiki_to_oneliner(context.child(resource), item.comment,
+                                   shorten=true)}
+                # if can_edit_comment:
+                <span class="inlinebuttons">
+                  <a href="${url_of(resource, action='edit_comment',
+                             version=item.version)}">${
+                    captioned_button("✎", _("Edit"))}</a>
+                </span>
+                # endif
+              </td>
+              # endif
+            </tr>
+            # endfor
+          </tbody>
+        </table>
+        # if len(history) is greaterthan(10):
+        <div class="buttons">
+          <input type="submit" value="${_('View changes')}" />
+        </div>
+        # endif
+      </form>
+      # endif
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

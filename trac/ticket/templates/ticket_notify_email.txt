@@ -1,0 +1,29 @@
+${ticket_body_hdr}
+${ticket_props}
+# if ticket.new:
+${ticket.description}
+# else:
+#   if changes_body:
+${_('Changes (by %(author)s):', author=change.author)}
+
+${changes_body}
+#   endif
+#   if changes_descr:
+#     if not changes_body and not change.comment and change.author:
+${_('Description changed by %(author)s:', author=change.author)}
+#     endif
+${changes_descr}
+--
+#   endif
+#   if change.comment:
+
+${_('Comment:') if changes_body else
+  _('Comment (by %(author)s):', author=change.author)}
+
+${change.comment}
+#   endif
+# endif
+${'-- '}
+${_('Ticket URL: <%(link)s>', link=ticket.link)}
+${project.name} <${project.url or abs_href()}>
+${project.descr}

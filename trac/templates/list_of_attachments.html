@@ -1,0 +1,103 @@
+{# Copyright (C) 2010-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Displays a list of attachments.
+
+{# Arguments:
+ - alist: the data for the list of attachments
+ - compact=False: if True, show the list in compact format (e.g. as used in the wiki view)
+ - add_button_title=None: the title of the "Attach" button
+ - foldable=False: if True, make the list of attachments foldable
+#}
+
+# macro show_one_attachment(attachment)
+#   set attachment_links
+<a href="${url_of(attachment.resource)}" title="${_('View attachment')}">${
+  attachment.filename
+  }</a><a href="${url_of(attachment.resource, format='raw')}"
+          class="trac-rawlink" title="${_('Download')}">&#8203;</a>
+#  endset
+#   with
+#     set size
+<span title="${ngettext('%(num)d byte', '%(num)d bytes', num=attachment.size)}">${
+  pretty_size(attachment.size)}</span>
+#     endset
+#     set author = authorinfo(attachment.author)
+#     set date = pretty_dateinfo(attachment.date)
+#     trans attachment_links, size, author, date
+
+${attachment_links} (${size}) - added by ${author} ${date}.
+
+#     endtrans
+#   endwith
+# endmacro
+
+
+# with
+#   set compact = compact|default(false)
+#   set add_button_title = add_button_title|default(none)
+#   set foldable = foldable|default(false)
+
+#   set download_all_as_zip
+<p>
+  ${_("Download all attachments as:")}
+  <a rel="nofollow" href="${alist.download_href}">.zip</a>
+</p>
+#   endset
+
+#   if alist.attachments or alist.can_create:
+<div id="attachments">
+  #   if compact and alist.attachments:
+  <h3 ${{'class': 'foldable' if foldable}|htmlattr}>
+    ${_("Attachments")}
+    <span class="trac-count">(${len(alist.attachments)})</span></h3>
+  <div>
+    <ul>
+      # for attachment in alist.attachments:
+      <li>
+        ${show_one_attachment(attachment)}
+        # if compact and attachment.description:
+        <q>${wiki_to_oneliner(context, attachment.description)}</q>
+        # endif
+      </li>
+      # endfor
+    </ul>
+    #   if alist.download_href:
+    ${ download_all_as_zip|safe }
+    #   endif
+  </div>
+  #   elif not compact:
+  <h3 ${{'class': 'foldable' if foldable}|htmlattr}>
+    ${_("Attachments")}
+    <span class="trac-count">(${len(alist.attachments)})</span></h3>
+  #     if alist.attachments or alist.can_create:
+  <div class="attachments">
+    #     if alist.attachments:
+    <dl class="attachments">
+      #     for attachment in alist.attachments:
+      <dt>${show_one_attachment(attachment)}</dt>
+      #       if attachment.description:
+      <dd>${wiki_to_oneliner(context, attachment.description)}</dd>
+      #       endif
+      #     endfor
+    </dl>
+    #     endif
+    #     if alist.attachments and alist.download_href:
+    ${ download_all_as_zip|safe }
+    #     endif
+    #     include 'attach_file_form.html'
+  </div>
+  #     endif
+  #   endif
+</div>
+#   endif
+# endwith
+## jinjacheck: "got (a a span CDATA p div )" OK

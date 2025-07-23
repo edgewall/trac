@@ -1,0 +1,95 @@
+{# Copyright (C) 2008-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Template snippet for a table of repositories
+
+<table class="listing dirlist" ${{'id': repoindex}|htmlattr}>
+  # include 'dirlist_thead.html'
+  <tbody>
+    # for repository in repo.repositories:
+    #   set reponame, repoinfo, repos, change, err, raw_href = repository
+    #   set chgset_context = change and context.child('changeset', change.rev, parent=repos.resource)
+    #   set chgset_view = change and change.is_viewable(perm)
+    <tr class="${loop.cycle('odd', 'even')}">
+      <td class="name">
+        # set root_dir_link
+        <a class="dir" title="${_('View Root Directory')}"
+           href="${href.browser(repos.reponame if repos else reponame,
+                 order=order if order != 'name' else none, desc=desc)}">${
+          reponame}</a>
+        # endset
+
+        # set checked_root_dir_link
+        #   if err:
+        <em>${root_dir_link | safe}</em>
+        #   else:
+        ${root_dir_link | safe}
+        #   endif
+        # endset
+
+        # if repoinfo.alias == '':
+        <strong>${checked_root_dir_link | safe}</strong>
+        # else:
+        ${checked_root_dir_link | safe}
+        # endif
+      </td>
+      <td class="size">
+        # if raw_href:
+        <a class="trac-ziplink" href="${raw_href}"
+           title="${_('Download as Zip archive')}">&#8203;</a>
+        # endif
+      </td>
+      <td class="rev">
+        # if change and not err:
+        <a title="${_('View Revision Log')}"
+           href="${href.log(repos.reponame)}">${
+          repos.display_rev(change.rev)}</a>
+
+        <a title="${_('View Changeset')}" class="chgset"
+           href="${href.changeset(change.rev, repos.reponame)}">&nbsp;</a>
+        # endif
+      </td>
+      <td class="age"
+          ${{'style': {
+          'border-color': ('rgb(%s,%s,%s)' % repo.colorize_age(repo.timerange.relative(change.date))) if
+          chgset_view and change and repo.timerange
+          }}|htmlattr}>
+        ${pretty_dateinfo(change.date, dateonly=True) if chgset_view else
+        '&ndash;'|safe}
+      </td>
+      <td class="author">${authorinfo_short(change.author) if chgset_view else
+        '&ndash;'|safe}</td>
+      <td class="change">
+        # if err:
+        <em>${err}</em>
+        # elif chgset_view:
+        #   if wiki_format_messages:
+        ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
+        #   else:
+        ${shorten_line(change.message)}
+        #   endif
+        # else:
+        &ndash;
+        # endif
+      </td>
+    </tr>
+
+    #   if repoinfo.description:
+    <tr class="${loop.cycle('odd', 'even')}" >
+      <td class="description" colspan="6">${
+        wiki_to_html(context.child('source', '/', parent=repos.resource),
+        repoinfo.description)}</td>
+    </tr>
+    #   endif
+
+    # endfor
+  </tbody>
+</table>

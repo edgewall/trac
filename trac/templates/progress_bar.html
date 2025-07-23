@@ -1,0 +1,64 @@
+{# Copyright (C) 2010-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+## Display groups of tickets in a progress bar.
+{# Arguments:
+ - stats: an instance of trac.ticket.roadmap.TicketGroupStats
+ - interval_hrefs: link associated to each interval in stats.intervals
+ - percent=None: show that value as percentage, instead of stats.done_percent
+ - legend=True: show a legend of label and count for each interval
+ - style=None: explicit styling for the table.progress
+ - stats_href=None: link associated to the total
+#}
+# with
+#   set percent = none if percent is undefined else percent
+#   set legend = true if legend is undefined else legend
+#   set style = none if style is undefined else style
+#   set stats_href = none if stats_href is undefined else stats_href
+  <table class="progress"${{'style': style}|htmlattr}>
+    <tr>
+      # for interval in stats.intervals:
+      <td${{'class': interval.css_class,
+            'style': 'width: %d%%' % interval.percent if
+                         interval.percent is greaterthan 0 else
+                     'display: none'
+           }|htmlattr}>
+        <a${{'href': interval_hrefs[loop.index0] if interval_hrefs,
+             'title': _('%(count)s/%(total)s %(title)s',
+                        count=interval.count,
+                        total=stats.count,
+                        title=interval.title)
+             }|htmlattr}></a>
+      </td>
+      # endfor
+    </tr>
+  </table>
+
+  <p class="percent">${
+    '%d%%' % stats.done_percent if percent is none else percent}</p>
+
+  #   if legend:
+  <p class="legend">
+    <span class="first interval">
+      <a href="${stats_href}">${_("Total number of %(unit)s: %(count)s",
+        unit=stats.unit,
+        count=stats.count)}</a>
+    </span>
+    #   for interval in stats.intervals:
+    <span class="interval">
+      - <a${{'href': interval_hrefs[loop.index0] if interval_hrefs
+            }|htmlattr}>${_("%(title)s: %(count)s",
+          title=interval.title,
+          count=interval.count)}</a>
+    </span>
+    #   endfor
+  </p>
+#   endif
+# endwith

@@ -1,0 +1,27 @@
+===== test_attachment_list =====
+
+Name     Size     Author  Date                 Description
+----------------------------------------------------------
+foo.txt  0 bytes          %(date)s
+
+===== test_attachment_list_empty =====
+
+Name  Size  Author  Date  Description
+-------------------------------------
+
+===== test_attachment_add_nonexistent_resource =====
+ResourceNotFound: NonExistentPage doesn't exist, can't create attachment
+===== test_attachment_rename =====
+
+Name     Size     Author  Date                 Description
+----------------------------------------------------------
+bar.txt  0 bytes          %(date)s
+
+===== test_attachment_reparent =====
+
+Name     Size     Author  Date                 Description
+----------------------------------------------------------
+foo.txt  0 bytes          %(date)s
+
+===== test_attachment_move_nonexistent_resource =====
+ResourceNotFound: NonExistentPage doesn't exist, can't move attachment

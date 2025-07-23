@@ -1,0 +1,255 @@
+= Email Notification of Ticket Changes
+[[TracGuideToc]]
+
+Trac supports notification of ticket changes via email.
+
+Email notification is useful to keep users up-to-date on tickets of interest, and also provides a convenient way to post all ticket changes to a dedicated mailing list.
+
+Disabled by default, notification can be activated and configured in [TracIni trac.ini].
+
+== Receiving Notification Mails
+When reporting a new ticket or adding a comment, enter a valid email address or your Trac username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac may send you an email when changes are made to the ticket, depending on how your notification preferences are configured.
+
+Permission groups can also be entered in the CC field,
+to notify all members of the group.
+
+=== How to use your username to receive notification mails
+
+To receive notification mails, you can either enter a full email address or your Trac username. To get notified with a simple username or login, you need to specify a valid email address in your [/prefs preferences].
+
+Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file, see [#ConfigurationOptions Configuration Options] below. In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
+
+When using apache and mod_kerb for authentication against Kerberos / Active Directory, usernames take the form ('''`username@EXAMPLE.LOCAL`'''). To avoid this being interpreted as an email address, add the Kerberos domain to ('''`ignore_domains`''').
+
+=== Ticket attachment notifications
+
+Since 1.0.3 Trac will send notifications when a ticket attachment is added or deleted. Usually attachment notifications will be enabled in an environment by default. To disable the attachment notifications for an environment the `TicketAttachmentNotifier` component must be disabled:
+{{{#!ini
+[components]
+trac.ticket.notification.TicketAttachmentNotifier = disabled
+}}}
+
+== Configuring SMTP Notification
+
+'''Important:''' The [[TracIni#trac-base_url-option|[trac] base_url]] option must be configured for links in the notification message to be correctly generated.
+
+=== Configuration Options
+These are the available options for the `[notification]` section in trac.ini:
+
+[[TracIni(section=notification)]]
+
+=== Example Configuration (SMTP)
+{{{#!ini
+[notification]
+smtp_enabled = true
+smtp_server = mail.example.com
+smtp_from = notifier@example.com
+smtp_replyto = myproj@projects.example.com
+smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
+}}}
+
+=== Example Configuration (`sendmail`)
+{{{#!ini
+[notification]
+smtp_enabled = true
+email_sender = SendmailEmailSender
+sendmail_path = /usr/sbin/sendmail
+smtp_from = notifier@example.com
+smtp_replyto = myproj@projects.example.com
+smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
+}}}
+
+=== Subscriber Configuration
+The default subscriptions are configured in the [TracIni#notification-subscriber-section "[notification-subscriber]"] section.
+
+[[TracIni(section=notification-subscriber)]]
+
+Each user can override these defaults in their ''Notifications'' preferences.
+
+For example to unsubscribe from notifications for one's own changes and comments, the rule "Never notify: I update a ticket" should be added above other subscription rules.
+
+The subscription rule name on the left side of the `=` can be anything, it has no meaning outside this configuration file. The subscriber name on the right side of the `=` must be one of the subscribers listed in the above table.
+
+The following attributes of default subscriptions can be configured:
+* `.distributor` (Default: `email`)
+  * Other values require plugins. For example `on-site` requires [https://trac-hacks.org/wiki/OnSiteNotificationsPlugin OnSiteNotificationsPlugin].
+* `.priority` (Default: `100`)
+  * Smaller values override larger values.
+  * If you use `0`, then users will not be able to override this rule.
+* `.adverb` (Default: `always`)
+  * `never` can be used to silence other subscription rules with higher values.
+* `.format` (Default: `text/plain`)
+  * Other values require plugins. For example `text/html` requires [https://trac-hacks.org/wiki/TracHtmlNotificationPlugin TracHtmlNotificationPlugin].
+
+=== Example Configuration (default subscriptions)
+
+This example implements the often desired
+//Never Notify Updater// behavior by setting
+the priority of that rule to the highest value,
+thereby taking precedence over other rules.
+
+{{{#!ini
+[notification-subscriber]
+always_notify_owner = TicketOwnerSubscriber
+always_notify_owner.distributor = email
+always_notify_owner.priority = 100
+always_notify_owner.adverb = always
+always_notify_owner.format = text/plain
+
+always_notify_previous_updater = TicketPreviousUpdatersSubscriber
+
+never_notify_updater = TicketUpdaterSubscriber
+never_notify_updater.adverb = never
+never_notify_updater.priority = 0
+
+notify_cc_html = CarbonCopySubscriber
+notify_cc_html.format = text/html
+}}}
+
+=== Customizing the email subject
+The email subject can be customized with the `ticket_subject_template` option, which contains a [https://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet. The default value is:
+{{{#!genshi
+${prefix} #${ticket.id}: ${summary}
+}}}
+The following variables are available in the template:
+
+ * `changes`: The ticket changes (prepared by [trac:source:/branches/1.4-stable/trac/ticket/model.py Ticket.get_change]).
+ * `env`: The project environment (see [trac:source:/branches/1.4-stable/trac/env.py env.py]).
+ * `prefix`: The prefix defined in `smtp_subject_prefix`.
+ * `summary`: The ticket summary, with the old value if the summary was edited.
+ * `ticket`: The ticket model object (see [trac:source:/branches/1.4-stable/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, eg `${ticket.milestone}`.
+
+=== Customizing the email content #CustomizingContent
+
+The notification email content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`. You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default is:
+
+{{{#!jinja
+${ticket_body_hdr}
+${ticket_props}
+# if ticket.new:
+${ticket.description}
+# else:
+#   if changes_body:
+${_('Changes (by %(author)s):', author=change.author)}
+
+${changes_body}
+#   endif
+#   if changes_descr:
+#     if not changes_body and not change.comment and change.author:
+${_('Description changed by %(author)s:', author=change.author)}
+#     endif
+${changes_descr}
+--
+#   endif
+#   if change.comment:
+
+${_('Comment:') if changes_body else
+  _('Comment (by %(author)s):', author=change.author)}
+
+${change.comment}
+#   endif
+# endif
+${'-- '}
+${_('Ticket URL: <%(link)s>', link=ticket.link)}
+${project.name} <${project.url or abs_href()}>
+${project.descr}
+}}}
+
+See the [trac:CookBook/Notification/Templates cookbook] for additional template customization recipes.
+
+== Sample Email
+{{{
+#42: testing
+---------------------------+------------------------------------------------
+       Id:  42             |      Status:  assigned
+Component:  report system  |    Modified:  Fri Apr  9 00:04:31 2004
+ Severity:  major          |   Milestone:  0.9
+ Priority:  lowest         |     Version:  0.6
+    Owner:  anonymous      |    Reporter:  jonas@example.com
+---------------------------+------------------------------------------------
+Changes:
+  * component:  changeset view => search system
+  * priority:  low => highest
+  * owner:  jonas => anonymous
+  * cc:  daniel@example.com =>
+         daniel@example.com, jonas@example.com
+  * status:  new => assigned
+
+Comment:
+I'm interested too!
+
+--
+Ticket URL: <http://example.com/trac/ticket/42>
+My Project <http://myproj.example.com/>
+}}}
+
+== Using GMail as the SMTP relay host
+
+Use the following configuration snippet:
+{{{#!ini
+[notification]
+smtp_enabled = true
+use_tls = true
+mime_encoding = base64
+smtp_server = smtp.gmail.com
+smtp_port = 587
+smtp_user = user
+smtp_password = password
+}}}
+
+where ''user'' and ''password'' match an existing GMail account, ie the ones you use to log in on [https://gmail.com].
+
+Alternatively, you can use `smtp_port = 25`.[[br]]
+You should not use `smtp_port = 465`. Doing so may deadlock your ticket submission. Port 465 is reserved for the SMTPS protocol, which is not supported by Trac. See [trac:comment:2:ticket:7107 #7107] for details.
+
+== Troubleshooting
+
+If notifications are not working, inspect the [TracLogging log] for error messages.
+
+Notification errors are not always reported through the web interface, so the user who submits a change or creates a ticket may not get notified about a notification failure. The Trac administrator needs to look at the log to find the error message and traceback.
+
+=== Permission denied error
+
+Typical error message:
+{{{#!sh
+  ...
+  File ".../smtplib.py", line 303, in connect
+    raise socket.error, msg
+  error: (13, 'Permission denied')
+}}}
+
+This error usually comes from a security settings on the server: many Linux distributions do not allow the web server (Apache, ...) to post email messages to the local SMTP server.
+
+Many users get confused when their manual attempts to contact the SMTP server succeed:
+{{{#!sh
+telnet localhost 25
+}}}
+This is because a regular user may connect to the SMTP server, but the web server cannot:
+{{{#!sh
+sudo -u www-data telnet localhost 25
+}}}
+
+In such a case, you need to configure your server so that the web server is authorized to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help in the Trac [trac:MailingList MailingList] archive.
+
+Relevant ML threads:
+ * SELinux: http://article.gmane.org/gmane.comp.version-control.subversion.trac.general/7518
+
+For SELinux in Fedora 10:
+{{{#!sh
+$ setsebool -P httpd_can_sendmail 1
+}}}
+
+=== Suspected spam error
+
+Some SMTP servers may reject the notification email sent by Trac.
+
+The default Trac configuration uses Base64 encoding to send emails to the recipients. The whole body of the email is encoded, which sometimes trigger ''false positive'' spam detection on sensitive email servers. In such an event, change the default encoding to "quoted-printable" using the `mime_encoding` option.
+
+Quoted printable encoding works better with languages that use one of the Latin charsets. For Asian charsets, stick with the Base64 encoding.
+
+=== Emails not sent
+
+If you are switching back to using Trac to send emails from, say, the [https://trac-hacks.org/wiki/AnnouncerPlugin AnnouncerPlugin], be sure to enable `EmailDistributor` in your Trac configuration. It may have been disabled when using an email plugin. There may be no message in the Trac log when all is good to go, but the actual sending is disabled.
+
+----
+See also: TracTickets, TracIni, TracGuide, [trac:TracDev/NotificationApi]

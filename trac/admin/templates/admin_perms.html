@@ -1,0 +1,223 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'admin.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block admintitle
+      ${_("Permissions")}
+      # endblock admintitle
+    </title>
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        // Add group toggling behavior to row label.
+        $("#permlist tr, #grouplist tr").find("td:first").click(function () {
+          var checkboxes = $(this).closest('tr').find("input:checkbox");
+          var numChecked = checkboxes.filter(":checked").length;
+          var allChecked = numChecked === checkboxes.length;
+          checkboxes.prop("checked", !allChecked).change();
+        }).css({"cursor": "pointer"})
+          .attr({"title": _("Toggle all")});
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block adminpanel
+    <h2>${_("Manage Permissions and Groups")}</h2>
+
+    <div>
+      # if 'PERMISSION_GRANT' in perm('admin', 'general/perm'):
+      <form id="addperm" class="addnew" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Grant Permission:")}</legend>
+          <div class="field">
+            <label>${_("Action:")}
+              <select id="action" name="action">
+                # for action in sorted(allowed_actions):
+                <option>${action}</option>
+                # endfor
+              </select>
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Subject:")} <input id="gp_subject" type="text" name="subject" /></label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}" />
+          </div>
+          <p class="help">
+            # trans
+
+            Grant permission for an action to a subject, which can be
+            either a user or a group.
+
+            # endtrans
+          </p>
+        </fieldset>
+      </form>
+
+      <form id="copyperm" class="addnew" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Copy Permissions:")}</legend>
+          <div class="field">
+            <label>${_("Subject:")} <input id="cp_subject" type="text" name="subject" /></label>
+          </div>
+          <div class="field">
+            <label>${_("Target:")} <input id="cp_target" type="text" name="target" /></label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="copy" value="${_('Add')}"/>
+          </div>
+          <p class="help">
+            # trans
+
+            Copy all of subject's permissions to target.
+            Subject and target can be either users or groups.
+
+            # endtrans
+          </p>
+        </fieldset>
+      </form>
+
+      <form id="addsubj" class="addnew" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Add Subject to Group:")}</legend>
+          <div class="field">
+            <label>${_("Subject:")} <input id="sg_subject" type="text" name="subject"/></label>
+          </div>
+          <div class="field">
+            <label>${_("Group:")} <input id="sg_group" type="text" name="group" /></label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
+          </div>
+          <p class="help">
+            # trans
+
+            Add a user or group to an existing permission group.
+
+            # endtrans
+          </p>
+        </fieldset>
+      </form>
+      # endif
+
+      # with
+      #   set can_revoke = 'PERMISSION_REVOKE' in perm('admin', 'general/perm')
+      <form id="revokeform" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <h3>${_("Permissions")}</h3>
+        <table class="listing" id="permlist">
+          <thead>
+            <tr><th>${_("Subject")}</th><th>${_("Action")}</th></tr>
+          </thead>
+          <tbody>
+            # for subject, subject_actions in perms|dictsort(true):
+            <tr class="${loop.cycle('odd', 'even')}">
+              <td>${subject}</td>
+              <td>
+                # for action in subject_actions:
+                <label>
+                  #   set invalid = action not in actions
+                  #   set has_perm = action in perm
+                  #   if can_revoke:
+                  <input type="checkbox" name="sel"
+                         class="trac-disable-determinant"
+                         title="${_('You don\'t have permission to revoke this action')
+                                  if not has_perm and not invalid}"
+                         value="${'%s:%s' % (unicode_to_base64(subject),
+                                             unicode_to_base64(action))}"
+                         ${{'disabled': not has_perm and not invalid}|htmlattr} />
+                  #   endif
+                  <span${{'class': {'missing': invalid},
+                          'title': _('%(action)s is no longer defined', action=action) if invalid else action
+                         }|htmlattr}>${action}</span>
+                </label>
+                # endfor
+              </td>
+            </tr>
+            # endfor
+            # if not perms:
+            <tr>
+              <td colspan="2">${_("No permissions")}</td>
+            </tr>
+            # endif
+          </tbody>
+        </table>
+
+        <h3>${_("Group Membership")}</h3>
+        <table class="listing" id="grouplist">
+          <thead>
+            <tr><th>${_("Group")}</th><th>${_("Subject")}</th></tr>
+          </thead>
+          <tbody>
+            # for group, group_subjects in groups|dictsort(true):
+            <tr class="${loop.cycle('odd', 'even')}">
+              <td>${group}</td>
+              <td>
+                # for subject in group_subjects:
+                <label>
+                  # if can_revoke:
+                  <input type="checkbox" name="sel"
+                         class="trac-disable-determinant"
+                         value="${'%s:%s' % (unicode_to_base64(subject),
+                                unicode_to_base64(group))}"/>
+                  # endif
+                  ${subject}
+                </label>
+                # endfor
+              </td>
+            </tr>
+            # endfor
+            # if not groups:
+            <tr>
+              <td colspan="2">${_("No group memberships")}</td>
+            </tr>
+            # endif
+          </tbody>
+        </table>
+        # if can_revoke:
+        <div class="buttons">
+          <input type="submit" name="remove" class="trac-disable" value="${_('Remove selected items')}" />
+        </div>
+        # endif
+      </form>
+      # endwith
+
+      <p class="help">
+        # trans
+
+        Note that <em>Subject</em> or <em>Group</em> names can't be all
+        upper-case, as that is reserved for permission names.
+
+        # endtrans
+      </p>
+
+      # call(note, page) jmacros.wikihelp('TracPermissions'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using permissions.
+
+      #   endtrans
+      # endcall
+    </div>
+    # endblock adminpanel
+  </body>
+
+</html>

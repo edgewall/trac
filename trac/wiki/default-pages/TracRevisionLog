@@ -1,0 +1,72 @@
+= Viewing Revision Logs
+[[TracGuideToc]]
+
+Each path in the //Repository Browser// contains a contextual navigation link to the //Revision Log//. The //Revision Log// displays a list of the most recent changesets in which the current path or any other path below it has been modified.
+
+== The Revision Log Form
+
+It is possible to set the revision at which the revision log should start, using the ''View log starting at'' field. An empty value or a value of ''head'' is interpreted as the newest changeset.
+
+It is also possible to specify the revision at which the log should stop, using the ''Back to'' field. By default it is empty,
+which means the revision log will show the [TracIni#revisionlog-default_log_limit-option default log limit], which defaults to the latest 100 revisions.
+
+There are three modes of operation of the revision log.
+
+By default, the revision log ''stops on copy'', which means that whenever an ''Add'', ''Copy'' or ''Rename'' operation is detected, no older revision will be shown. That's very convenient when working with branches, as one only sees the history for that branch.
+
+It is also possible to indicate that one wants include what happened before a ''Copy'' or ''Rename'' change, by selecting the
+''Follow copies'' mode. This will continue to list all revisions across copies and renames.
+Each time the name of the path changes, there will be an additional indentation level. That way, the changes on the different paths are easily grouped together visually.
+
+It is even possible to go past an ''Add'' change, in order to see if there has been a ''Delete'' change on that path, before
+that ''Add''. This mode is labeled ''Show only adds, moves and deletes''. The operation can be quite resource intensive and therefore take some time to display.
+
+Finally, there's a checkbox ''Show full log messages'', which controls whether the full content of the commit log message
+should be displayed for each change, or only a shortened version of it.
+
+== The Revision Log Information
+
+For each revision log entry, the following columns are displayed:
+ 1. The first column contains a pair of radio buttons and should be used
+    for selecting the ''old'' and the ''new'' revisions that will be used for [#InspectingChangesBetweenRevisions viewing the actual changes].
+ 1. A color code (similar to the one used for the
+    [TracChangeset#ChangesetHeader changesets]) indicates the kind of change.
+    Clicking on this column refreshes the revision log so that it restarts
+    with this change.
+ 1. The '''Revision''' number, displayed as `@xyz`.
+    This is a link to the TracBrowser, using the displayed revision as the base line.
+ Next to it, you can see a little "wheel" icon [[Image(htdocs:../common/changeset.png)]],  which is clickable and leads to the TracChangeset view for that revision.
+ 1. The '''Age'''/'''Date''' at which the change was made.
+    Depending on your [/prefs/localization session preference], the date is displayed in either //Relative// or //Absolute// format.
+  * //Relative// format shows the '''Age''': the time elapsed as the number of hours, days, weeks, months, or years.
+  * //Absolute// format shows the '''Date''' of the revision as a datetime.
+ 1. The '''Author''' of the change.
+ 1. The '''Log Message''', which contains either the truncated or full commit
+    log message, depending on the value of the ''Show full log messages''
+    checkbox in the form above.
+
+== Inspecting Changes Between Revisions
+
+The ''View changes...'' buttons (placed above and below the list of changes, on the left side) will show the set of differences
+corresponding to the aggregated changes starting from the ''old'' revision (first radio-button) to the ''new'' revision (second
+radio-button), in the TracChangeset view.
+
+Note that the ''old'' revision doesn't need to be actually ''older'' than the ''new'' revision: it simply gives a base
+for the diff. It's therefore entirely possible to easily generate a ''reverse diff'', for reverting what has been done
+in the given range of revisions.
+
+Finally, if the two revisions are identical, the corresponding changeset will be shown. This has the same effect as clicking on the changeset number.
+
+== Alternative Formats
+
+=== The !ChangeLog Text
+
+At the bottom of the page, there's a ''!ChangeLog'' link that will show the range of revisions as currently shown, but as a simple text, matching the usual conventions for !ChangeLog files.
+
+=== RSS Support
+
+The revision log also provides an RSS feed to monitor the changes. To subscribe to an RSS feed for a file or directory, open its
+revision log in the browser and click the orange 'XML' icon at the bottom of the page. For more information on RSS support in Trac, see TracRss.
+
+----
+See also: TracBrowser, TracChangeset

@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2004-2023 Edgewall Software
+# Copyright (C) 2004 Jonas Borgström <jonas@edgewall.com>
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at https://trac.edgewall.com/license.html.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at https://trac.edgewall.org/.
+#
+# This script will enforce the following policy:
+#
+#  "A checkin must reference an open ticket."
+#
+# This script should be invoked from the subversion pre-commit hook like this:
+#
+#  REPOS="$1"
+#  TXN="$2"
+#  TRAC_ENV="/somewhere/trac/project/"
+#  LOG=`/usr/bin/svnlook log -t "$TXN" "$REPOS"`
+#  /usr/bin/python /some/path/trac-pre-commit-hook "$TRAC_ENV" "$LOG" || exit 1
+#
+
+import os
+import re
+import sys
+
+from trac.env import open_environment
+
+
+if 'PYTHON_EGG_CACHE' not in os.environ:
+    os.environ['PYTHON_EGG_CACHE'] = os.path.join(sys.argv[1], '.egg-cache')
+
+
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: %s <trac_project> <log_message>" % sys.argv[0],
+              file=sys.stderr)
+        sys.exit(1)
+
+    env_path = sys.argv[1]
+    log = sys.argv[2]
+
+    tickets = []
+    for tmp in re.findall('(?:close|closed|closes|fix|fixed|fixes|addresses|'
+                          'references|refs|re|see)'
+                          '.?(#[0-9]+(?:(?:[, &]+| *and *)#[0-9]+)*)', log.lower()):
+        tickets += re.findall('#([0-9]+)', tmp)
+
+    # At least one ticket has to be mentioned in the log message
+    if not tickets:
+        print("At least one open ticket must be mentioned in the log "
+              "message.", file=sys.stderr)
+        sys.exit(1)
+
+    env = open_environment(env_path, use_cache=True)
+
+    count = None
+    for count, in env.db_query("""
+            SELECT COUNT(id) FROM ticket
+            WHERE status <> 'closed' AND id IN (%s)
+            """ % ','.join(['%s']*len(tickets)), tickets):
+        break
+
+    if not count or count < 1:
+        print("At least one open ticket must be mentioned in the log "
+              "message.", file=sys.stderr)
+        sys.exit(1)
+    else:
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()
+
+
+

@@ -1,0 +1,1169 @@
+SVN-fs-dump-format-version: 2
+
+UUID: 92ea810a-adf3-0310-b540-bef912dcf5ba
+
+Revision-number: 0
+Prop-content-length: 56
+Content-length: 56
+
+K 8
+svn:date
+V 27
+2005-04-01T09:57:41.312767Z
+PROPS-END
+
+Revision-number: 1
+Prop-content-length: 124
+Content-length: 124
+
+K 8
+svn:date
+V 27
+2005-04-01T10:00:52.353248Z
+K 7
+svn:log
+V 25
+Initial directory layout.
+K 10
+svn:author
+V 4
+john
+PROPS-END
+
+Node-path: branches
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: tags
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: tête
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 2
+Prop-content-length: 112
+Content-length: 112
+
+K 7
+svn:log
+V 13
+Added README.
+K 10
+svn:author
+V 4
+john
+K 8
+svn:date
+V 27
+2005-04-01T13:12:18.216267Z
+PROPS-END
+
+Node-path: tête/README.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 8
+Text-content-md5: a0691c0f61f52683bcb05da98fe028c8
+Text-content-sha1: 59ccaf31a075b2a2fe64f83ca05e2694d692d4fc
+Content-length: 18
+
+PROPS-END
+A text.
+
+
+Revision-number: 3
+Prop-content-length: 113
+Content-length: 113
+
+K 8
+svn:date
+V 27
+2005-04-01T13:24:58.234643Z
+K 7
+svn:log
+V 14
+Fixed README.
+
+K 10
+svn:author
+V 4
+kate
+PROPS-END
+
+Node-path: tête/README.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 75
+Text-content-length: 8
+Text-content-md5: eaf1c95c78c9f848636d357788bd4a4c
+Text-content-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
+Content-length: 83
+
+K 13
+svn:mime-type
+V 10
+text/plain
+K 13
+svn:eol-style
+V 6
+native
+PROPS-END
+A test.
+
+
+Revision-number: 4
+Prop-content-length: 116
+Content-length: 116
+
+K 7
+svn:log
+V 17
+More directories.
+K 10
+svn:author
+V 4
+john
+K 8
+svn:date
+V 27
+2005-04-01T15:42:35.450595Z
+PROPS-END
+
+Node-path: tête/dir1
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: tête/dir2
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: tête/dir3
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 5
+Prop-content-length: 117
+Content-length: 117
+
+K 7
+svn:log
+V 18
+Moved directories.
+K 10
+svn:author
+V 4
+kate
+K 8
+svn:date
+V 27
+2005-04-01T16:25:39.658099Z
+PROPS-END
+
+Node-path: tête/dir1/dir2
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 4
+Node-copyfrom-path: tête/dir2
+
+
+Node-path: tête/dir1/dir3
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 4
+Node-copyfrom-path: tête/dir3
+
+
+Node-path: tête/dir2
+Node-action: delete
+
+
+Node-path: tête/dir3
+Node-action: delete
+
+
+Revision-number: 6
+Prop-content-length: 118
+Content-length: 118
+
+K 8
+svn:date
+V 27
+2005-04-01T18:56:46.985846Z
+K 7
+svn:log
+V 19
+More things to read
+K 10
+svn:author
+V 4
+john
+PROPS-END
+
+Node-path: tête/README2.txt
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 3
+Node-copyfrom-path: tête/README.txt
+Text-copy-source-md5: eaf1c95c78c9f848636d357788bd4a4c
+Text-copy-source-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
+
+
+Revision-number: 7
+Prop-content-length: 151
+Content-length: 151
+
+K 7
+svn:log
+V 42
+test the tag operation (copy of directory)
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-14T15:06:20.717616Z
+PROPS-END
+
+Node-path: tags/v1
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 6
+Node-copyfrom-path: tête
+
+
+Revision-number: 8
+Prop-content-length: 124
+Content-length: 124
+
+K 8
+svn:date
+V 27
+2005-04-22T08:57:33.499643Z
+K 7
+svn:log
+V 15
+Fix stuff in v1
+K 10
+svn:author
+V 13
+Administrator
+PROPS-END
+
+Node-path: branches/v1x
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 7
+Node-copyfrom-path: tags/v1
+
+
+Revision-number: 9
+Prop-content-length: 127
+Content-length: 127
+
+K 8
+svn:date
+V 27
+2005-04-22T08:59:24.308979Z
+K 7
+svn:log
+V 18
+Now that's the fix
+K 10
+svn:author
+V 13
+Administrator
+PROPS-END
+
+Node-path: branches/v1x/README.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 16
+Text-content-md5: 02bcabffffd16fe0fc250f08cad95e0c
+Text-content-sha1: 0828324174b10cc867b7255a84a8155cf89e1b8b
+Content-length: 16
+
+This is a test.
+
+
+Revision-number: 10
+Prop-content-length: 141
+Content-length: 141
+
+K 8
+svn:date
+V 27
+2005-04-22T09:00:34.549980Z
+K 7
+svn:log
+V 32
+Tagging v1.1 from the fix branch
+K 10
+svn:author
+V 13
+Administrator
+PROPS-END
+
+Node-path: tags/v1.1
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 9
+Node-copyfrom-path: branches/v1x
+
+
+Revision-number: 11
+Prop-content-length: 191
+Content-length: 191
+
+K 7
+svn:log
+V 82
+''(a few months later)'' We don't need the fix branch anymore, 1.1 is super-stable
+K 10
+svn:author
+V 13
+Administrator
+K 8
+svn:date
+V 27
+2005-04-22T09:01:38.361737Z
+PROPS-END
+
+Node-path: branches/v1x
+Node-action: delete
+
+
+Revision-number: 12
+Prop-content-length: 166
+Content-length: 166
+
+K 8
+svn:date
+V 27
+2005-04-22T09:06:37.011174Z
+K 7
+svn:log
+V 57
+''(a few years later)'' Argh... v1.1 was buggy, after all
+K 10
+svn:author
+V 13
+Administrator
+PROPS-END
+
+Node-path: branches/v1x
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 11
+Node-copyfrom-path: tags/v1.1
+
+
+Revision-number: 13
+Prop-content-length: 143
+Content-length: 143
+
+K 8
+svn:date
+V 27
+2005-11-17T15:13:16.197772Z
+K 7
+svn:log
+V 43
+Setting property on the repository_dir root
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: 
+Node-kind: dir
+Node-action: change
+Prop-content-length: 37
+Content-length: 37
+
+K 10
+svn:ignore
+V 6
+*.pyc
+
+PROPS-END
+
+
+Node-path: tête
+Node-kind: dir
+Node-action: change
+Prop-content-length: 37
+Content-length: 37
+
+K 10
+svn:ignore
+V 6
+*.pyc
+
+PROPS-END
+
+
+Revision-number: 14
+Prop-content-length: 119
+Content-length: 119
+
+K 8
+svn:date
+V 27
+2005-11-30T08:47:03.467814Z
+K 7
+svn:log
+V 19
+Testing rename+edit
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: tête/README3.txt
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 13
+Node-copyfrom-path: tête/README2.txt
+Text-copy-source-md5: eaf1c95c78c9f848636d357788bd4a4c
+Text-copy-source-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
+Text-content-length: 42
+Text-content-md5: 211b820b566541dd49a1283d6476d89f
+Text-content-sha1: 7e9f46800519d6ae305f44cc07bd7568be3c9d5c
+Content-length: 42
+
+A test of svn move, followed by a change.
+
+
+Node-path: tête/README2.txt
+Node-action: delete
+
+
+Revision-number: 15
+Prop-content-length: 162
+Content-length: 162
+
+K 8
+svn:date
+V 27
+2005-12-06T12:47:36.271020Z
+K 7
+svn:log
+V 62
+Removing original file, just before committing the wc->wc copy
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: tags/v1.1/README2.txt
+Node-action: delete
+
+
+Revision-number: 16
+Prop-content-length: 138
+Content-length: 138
+
+K 8
+svn:date
+V 27
+2005-12-06T12:47:51.122376Z
+K 7
+svn:log
+V 38
+Committing wc->wc copy + local changes
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: branches/v2
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 14
+Node-copyfrom-path: tags/v1.1
+
+
+Node-path: branches/v2/README2.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 47
+Text-content-md5: 9b7bad978c6ad159f939c3db2038cbb1
+Text-content-sha1: 4a475c10d832c28f9a9798477885c48146c0bc18
+Content-length: 47
+
+A test + local modifications after wc->wc copy
+
+
+Revision-number: 17
+Prop-content-length: 139
+Content-length: 139
+
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2006-03-31T12:30:25.421875Z
+K 7
+svn:log
+V 39
+Test des caractères accentués (cp437)
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 13
+Text-content-md5: 858e52306ecdfcb6f6eadb50d6f9086b
+Text-content-sha1: f4802e1b42e6256148438ce62d9b95ba671c23f8
+Content-length: 23
+
+PROPS-END
+En r�sum� ...
+
+Revision-number: 18
+Prop-content-length: 124
+Content-length: 124
+
+K 7
+svn:log
+V 24
+Prepare for fancy rename
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2006-09-27T10:40:38.671875Z
+PROPS-END
+
+Node-path: tête/Xprimary_proc
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: tête/Xprimary_proc/Xprimary_pkg.vhd
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 5
+Text-content-md5: 2debfdcf79f03e4a65a667d21ef9de14
+Text-content-sha1: 4c49b08e9b258e0e5867d76ce583c159597b6857
+Content-length: 15
+
+PROPS-END
+TEST
+
+
+Revision-number: 19
+Prop-content-length: 145
+Content-length: 145
+
+K 8
+svn:date
+V 27
+2006-09-27T10:41:27.484375Z
+K 7
+svn:log
+V 45
+Fancy copy+rename resulting in double delete.
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: tête/mpp_proc
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 18
+Node-copyfrom-path: tête/Xprimary_proc
+
+
+Node-path: tête/mpp_proc/Xprimary_proc
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 18
+Node-copyfrom-path: tête/Xprimary_proc
+
+
+Node-path: tête/mpp_proc/Xprimary_proc/Xprimary_pkg.vhd
+Node-action: delete
+
+
+Node-path: tête/mpp_proc/Xprimary_pkg.vhd
+Node-action: delete
+
+
+Node-path: tête/Xprimary_proc
+Node-action: delete
+
+
+Revision-number: 20
+Prop-content-length: 132
+Content-length: 132
+
+K 8
+svn:date
+V 27
+2006-12-04T10:47:24.015625Z
+K 7
+svn:log
+V 20
+Chez moi ça marche
+
+K 10
+svn:author
+V 16
+Jonas Borgström
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 25
+Text-content-md5: c3744e0035c756a17fdf6dbbdd5719f0
+Text-content-sha1: f7453fe6bac18f7dc717295a30331297ff05ae14
+Content-length: 25
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 21
+Prop-content-length: 139
+Content-length: 139
+
+K 8
+svn:date
+V 27
+2007-04-30T17:45:26.234375Z
+K 7
+svn:log
+V 39
+copy from outside of the scope + delete
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: tête/v2
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 20
+Node-copyfrom-path: branches/v2
+
+
+Node-path: tête/v2/dir1
+Node-action: delete
+
+
+Node-path: tête/v2/README2.txt
+Node-action: delete
+
+
+Revision-number: 22
+Prop-content-length: 130
+Content-length: 130
+
+K 8
+svn:date
+V 27
+2010-02-26T14:48:19.377000Z
+K 7
+svn:log
+V 30
+test delete after copy (#4900)
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: branches/v3
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 21
+Node-copyfrom-path: tête
+
+
+Node-path: branches/v3/v2
+Node-action: delete
+
+
+Node-path: branches/v3/dir1
+Node-action: delete
+
+
+Node-path: branches/v3/mpp_proc
+Node-action: delete
+
+
+Revision-number: 23
+Prop-content-length: 137
+Content-length: 137
+
+K 8
+svn:date
+V 27
+2013-04-27T13:00:34.579240Z
+K 7
+svn:log
+V 37
+Verifying keyword substitution (#717)
+K 10
+svn:author
+V 5
+cboos
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 53
+Text-content-length: 421
+Text-content-md5: c9a55f49668aff4b30606a4821f13c3a
+Text-content-sha1: 1b7c636fcaed8360bbf39589655b4e5b37b4ea9a
+Content-length: 474
+
+K 12
+svn:keywords
+V 19
+Revision Author URL
+PROPS-END
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (not substituted)
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 24
+Prop-content-length: 144
+Content-length: 144
+
+K 7
+svn:log
+V 44
+Adding Id keyword and testing Id and Header.
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2013-04-27T14:38:50.346459Z
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 56
+Text-content-length: 523
+Text-content-md5: 2387ca7586289babae8f3714750677b6
+Text-content-sha1: 983c9d507f95133315e9a8942a1a9161e69a0644
+Content-length: 579
+
+K 12
+svn:keywords
+V 22
+Revision Author URL Id
+PROPS-END
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (now substituted)
+# $Id$:      Combination
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+# $Header::                                           $ combination with URL
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 25
+Prop-content-length: 132
+Content-length: 132
+
+K 7
+svn:log
+V 32
+Adding Header and Date keywords.
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2013-04-27T14:43:15.010597Z
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 68
+Text-content-length: 530
+Text-content-md5: 6f322fe2e36a5340ab89a45c5e1a99ea
+Text-content-sha1: 796511deb4b792770ffa96c72665d04013e7e351
+Content-length: 598
+
+K 12
+svn:keywords
+V 34
+Revision Author URL Date Id Header
+PROPS-END
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (now really substituted)
+# $Id$:      Combination
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+# $Header::                                           $ combination with URL
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 26
+Prop-content-length: 99
+Content-length: 99
+
+K 8
+svn:date
+V 27
+2013-04-28T05:36:06.029637Z
+K 7
+svn:log
+V 0
+
+K 10
+svn:author
+V 5
+jomae
+PROPS-END
+
+Node-path: tête/Résumé.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 600
+Text-content-md5: 72f0bd05783567014a5c9b5b25624bd5
+Text-content-sha1: c7c17825559c15a3ac12cfdbc25c3bfeecc33444
+Content-length: 600
+
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (now really substituted)
+# $Id$:      Combination
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+# $Header::                                           $ combination with URL
+
+Overlapped keywords:
+# $Xxx$Rev$Xxx$
+# $Rev$Xxx$Rev$
+# $Rev$Rev$Rev$
+
+En r�sum� ... �a marche.
+
+
+Revision-number: 27
+Prop-content-length: 99
+Content-length: 99
+
+K 8
+svn:date
+V 27
+2013-04-28T06:04:22.547569Z
+K 7
+svn:log
+V 0
+
+K 10
+svn:author
+V 5
+jomae
+PROPS-END
+
+Node-path: 
+Node-kind: dir
+Node-action: change
+Prop-content-length: 40
+Content-length: 40
+
+K 10
+svn:ignore
+V 9
+*.py[co]
+
+PROPS-END
+
+
+Revision-number: 28
+Prop-content-length: 99
+Content-length: 99
+
+K 8
+svn:date
+V 27
+2013-05-02T14:15:35.530857Z
+K 7
+svn:log
+V 0
+
+K 10
+svn:author
+V 5
+jomae
+PROPS-END
+
+Node-path: branches/v4
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 27
+Node-copyfrom-path: tête
+
+
+Node-path: branches/v4/README.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 57
+Text-content-md5: 59d8741096e01b80360963223f5c7394
+Text-content-sha1: f0c8bf5fedb3b2c06381e8dba6957a7d36667027
+Content-length: 57
+
+A test.
+# $Rev$ is not substituted with no svn:keywords.
+
+
+Revision-number: 29
+Prop-content-length: 134
+Content-length: 134
+
+K 7
+svn:log
+V 34
+blame with urlencoded percent sign
+K 10
+svn:author
+V 5
+jomae
+K 8
+svn:date
+V 27
+2014-04-14T16:49:44.990695Z
+PROPS-END
+
+Node-path: branches/t10386
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 28
+Node-copyfrom-path: tête
+
+
+Node-path: branches/t10386/READ%25ME.txt
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 28
+Node-copyfrom-path: tête/README3.txt
+Text-copy-source-md5: 211b820b566541dd49a1283d6476d89f
+Text-copy-source-sha1: 7e9f46800519d6ae305f44cc07bd7568be3c9d5c
+
+
+Node-path: branches/t10386/README3.txt
+Node-action: delete
+
+
+Revision-number: 30
+Prop-content-length: 141
+Content-length: 141
+
+K 8
+svn:date
+V 27
+2015-06-15T14:09:13.664490Z
+K 7
+svn:log
+V 41
+Added custom keyword definitions (#11364)
+K 10
+svn:author
+V 5
+jomae
+PROPS-END
+
+Node-path: branches/v4/Résumé.txt
+Node-kind: file
+Node-action: change
+Prop-content-length: 1549
+Text-content-length: 2643
+Text-content-md5: 7a09b7211e13225f849550059e1f38e8
+Text-content-sha1: 2e54597e8bd48362d443db08974dfa96a960633b
+Content-length: 4192
+
+K 12
+svn:keywords
+V 1513
+Revision Author URL Date Id Header
+_Author=%a
+_Basename=%b
+_ShortDate=%d
+_LongDate=%D
+_Path=%P
+_Rev=%r
+_RootURL=%R
+_URL=%u
+_Header=%H
+_Id=%I
+_Header2=%P%_%r%_%d%_%a
+_Id2=%b%_%r%_%d%_%a
+_tété=%a
+42=%a
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234=%a
+12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678=%a
+123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789=%a
+1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890=%a
+12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901=%a
+_TooLong=%P%P%P%P%P%P%P%P%P%P%P%P%P%P%P%P%P%P%P%P
+PROPS-END
+# Simple test for svn:keywords property substitution (#717)
+# $Rev$:     Revision of last commit
+# $Author$:  Author of last commit
+# $Date$:    Date of last commit (now really substituted)
+# $Id$:      Combination
+
+Now with fixed width fields:
+# $URL::                                              $ the configured URL
+# $HeadURL::                                          $ same
+# $URL::                $ same, but truncated
+# $Header::                                           $ combination with URL
+
+Overlapped keywords:
+# $Xxx$Rev$Xxx$
+# $Rev$Xxx$Rev$
+# $Rev$Rev$Rev$
+
+Custom keyword definitions (#11364)
+# $_Author$:
+# $_Basename$:
+# $_ShortDate$:
+# $_LongDate$:
+# $_Path$:
+# $_Rev$:
+# $_RootURL$:
+# $_URL$:
+# $_Header$:
+# $_Id$:
+# $_Header2$:
+# $_Id2$:
+# $_tété$:
+# $42$:
+# $123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789$:
+# $1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890$:
+# $12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901$:
+# $_TooLong$:
+
+Custom keyword definitions with fixed width
+# $1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234::       $
+# $1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234::        $
+# $12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678::   $
+# $12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678::    $
+
+
+Revision-number: 31
+Prop-content-length: 162
+Content-length: 162
+
+K 10
+svn:author
+V 4
+john
+K 8
+svn:date
+V 27
+2017-01-09T06:12:33.247657Z
+K 7
+svn:log
+V 63
+$Author$ is the last user to change this file in the repository
+PROPS-END
+
+Node-path: 
+Node-kind: dir
+Node-action: change
+Prop-content-length: 53
+Content-length: 53
+
+K 10
+svn:ignore
+V 21
+*.py[co]
+__pycache__
+
+PROPS-END
+
+

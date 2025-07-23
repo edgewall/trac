@@ -1,0 +1,169 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# import 'macros.html' as jmacros with context
+  <script>
+    jQuery(function($) {
+      function updateDueDate() {
+        $("#duedate").enable($("#due").checked());
+      }
+      $("#due").click(updateDueDate);
+      updateDueDate();
+      function updateCompletedDate() {
+        var checked = $("#completed").checked();
+        $("#completeddate").enable(checked);
+        var retarget = $("#retarget");
+        retarget.enable(checked);
+        $("#target").enable(checked && retarget.checked());
+        $("#retarget-comment").enable(checked && retarget.checked());
+        $("#retargeting").toggleClass("disabled", !checked);
+      }
+      $("#completed").click(updateCompletedDate);
+      updateCompletedDate();
+      $("#retarget").click(function() {
+        $("#target").enable(this.checked);
+        $("#retarget-comment").enable(this.checked);
+      });
+      $("#description").autoPreview("${href.wiki_render()}", {
+          realm: "${milestone.resource.realm}",
+          id: ${to_json(milestone.resource.id)|safe}
+        }, $("#preview").showOnPreview());
+    });
+  </script>
+  # with
+  <form id="edit" class="mod" method="post" action="${req.request_path}">
+    ${jmacros.form_token_input()}
+    # set disabled = 'disabled' if can_modify is sameas false
+    # set readonly = 'readonly' if can_modify is sameas false
+    <fieldset>
+      <legend>
+        # if readonly:
+        ${_("View Milestone:")}
+        # elif milestone.name:
+        ${_("Modify Milestone:")}
+        # else:
+        ${_("Create Milestone:")}
+        # endif
+      </legend>
+      <div class="field">
+        <input type="hidden" name="action" value="edit"/>
+        <label>${_("Name:")}<br />{# /!\ #}
+          ## Twill trips up on a <br/> and wouldn't detect the "name" field...
+          <input type="text" id="name" name="name" class="trac-autofocus"{#
+              #} size="32"${
+               {'value': milestone.name or req.args.get('name'),
+                'readonly': readonly
+               }|htmlattr}/>
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="due" name="due"${
+               {'checked': milestone.due,
+                'disabled': disabled
+               }|htmlattr}/>
+          ${_("Due:")}<br/>
+        </label>
+        <label${{'class': {'readonly': readonly}}|htmlattr}>
+          <input type="text" id="duedate" name="duedate"
+                 class="trac-datetimepicker"${
+               {'size': len(datetime_hint) + 1,
+                'value': format_datetime(milestone.due or default_due),
+                'readonly': readonly,
+                'title': _('Format: %(datehint)s', datehint=datetime_hint)
+               }|htmlattr}/>
+          <span class="trac-datetimehint">${
+            _("Format: %(datehint)s", datehint=datetime_hint)}</span>
+        </label>
+      </div>
+      <div class="field">
+        <label>
+          <input type="checkbox" id="completed" name="completed"${
+               {'checked': milestone.completed,
+                'disabled': disabled
+               }|htmlattr}/>
+          ${_("Completed:")}<br/>
+        </label>
+        <label${{'class': {'readonly': readonly}}|htmlattr}>
+          <input type="text" id="completeddate" name="completeddate"
+                 class="trac-datetimepicker"${
+               {'size': len(datetime_hint) + 1,
+                'value': format_datetime(milestone.completed),
+                'readonly': readonly,
+                'title': _('Format: %(datehint)s', datehint=datetime_hint)
+               }|htmlattr}/>
+          <span class="trac-datetimehint">${
+            _("Format: %(datehint)s", datehint=datetime_hint)}</span>
+        </label>
+      </div>
+      # if num_open_tickets or num_open_tickets == 0:
+      <fieldset id="retargeting">
+        <legend>${_("Retargeting")}</legend>
+        # if num_open_tickets != 0:
+        <label>
+          <input type="checkbox" id="retarget" name="retarget"${
+               {'checked': not milestone.completed}|htmlattr}/>
+            ${_("Retarget associated open tickets to milestone:")}
+        </label>
+        <select id="target" name="target">
+          <option value="">${_("None")}</option>
+          # for label, milestones in milestone_groups if milestones:
+          <optgroup label="${label}">
+            # for milestone in milestones:
+            <option${{'selected': retarget_to == milestone.name,
+                      'value': milestone.name
+                     }|htmlattr}>${milestone.name}</option>
+            # endfor
+          </optgroup>
+          # endfor
+        </select>
+        <br/>
+        <label for="retarget-comment">${_("Comment:")}</label>
+        ## Don't translate ticket comment (comment:40:ticket:5658)
+        <input type="text" id="retarget-comment" class="wikitext"
+               name="comment" size="40"
+               value="Ticket retargeted after milestone closed"/>
+        # else:
+        <p class="help">
+          ${_("There are no open tickets associated with this milestone.")}
+        </p>
+        # endif
+      </fieldset>
+      # endif
+      <div class="field description">
+        <label for="description">${_("Description:")}</label>
+        <textarea id="description" name="description" rows="8" cols="78"
+                  class="wikitext trac-fullwidth trac-resizable"${
+                {'readonly': readonly}|htmlattr}>
+${milestone.description}</textarea>
+        <label for="description" class="trac-textarea-hint">
+          # trans wikiformatting = jmacros.wikiformatting_link()
+
+          You may use ${wikiformatting} here.
+
+          # endtrans
+        </label>
+      </div>
+      <div id="preview" class="trac-content trac-draft" style="display:none">
+      </div>
+    </fieldset>
+    <div class="buttons">
+      # if milestone.exists:
+      <input type="submit" name="save" class="trac-disable-on-submit"${
+           {'disabled': disabled,
+            'value': _('Submit changes')
+           }|htmlattr}/>
+      # else:
+      <input type="submit" name="add" value="${_('Add milestone')}"/>
+      # endif
+      <input type="submit" name="cancel" value="${_('Cancel')}"/>
+    </div>
+  </form>
+  # endwith

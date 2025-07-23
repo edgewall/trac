@@ -1,0 +1,141 @@
+= Trac Macros
+
+[[PageOutline(2-5,Contents,pullout)]]
+
+'''Trac macros''' extend Trac with custom functionality. Macros are a special type of plugin and are written in Python. A macro generates HTML in any context supporting WikiFormatting.
+
+The macro syntax is `[[macro-name(optional-arguments)]]`.
+
+'''WikiProcessors''' are another kind of macro, commonly used for source code highlighting using a processor like `!#python` or `!#apache`:
+
+{{{
+{{{#!wiki-processor-name
+...
+}}}
+}}}
+
+== Using Macros
+
+Macro calls are enclosed in double-square brackets `[[..]]`. Like Python functions macros can have arguments, which take the form of a comma separated list within parentheses `[[..(,)]]`. A common macro used is a list of the 3 most recent changes to a wiki page, or here, for example, all wiki pages starting with 'Trac':
+
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  [[RecentChanges(Trac,3)]]
+  }}}
+}}}
+{{{#!td style="padding-left: 2em;"
+[[RecentChanges(Trac,3)]]
+}}}
+
+=== Getting Detailed Help
+
+The list of available macros and the full help can be obtained using the !MacroList macro, see [#AvailableMacros below].
+
+A brief list can be obtained via `[[MacroList(*)]]` or `[[?]]`.
+
+Detailed help on a specific macro can be obtained by passing it as an argument to !MacroList, e.g. `[[MacroList(MacroList)]]`, or more conveniently, by appending a question mark (`?`) to the macro's name, like in `[[MacroList?]]`.
+
+== Available Macros
+
+[[MacroList]]
+
+== Contributed macros
+
+The [https://trac-hacks.org/ Trac Hacks] site provides a large collection of macros and other Trac [TracPlugins plugins] contributed by the Trac community. If you are looking for new macros, or have written one that you would like to share, please visit that site.
+
+== Developing Custom Macros
+
+Macros, like Trac itself, are written in the [https://python.org/ Python programming language] and are a type of [TracPlugins plugin].
+
+Here are 2 simple examples showing how to create a Macro. For more information about developing macros, see the [trac:TracDev development resources] and [trac:browser:branches/1.4-stable/sample-plugins sample-plugins].
+
+=== Macro without arguments
+
+To test the following code, copy it to `timestamp_sample.py` in the TracEnvironment's `plugins/` directory.
+
+{{{#!python
+from trac.util.datefmt import datetime_now, format_datetime, utc
+from trac.util.html import tag
+from trac.wiki.macros import WikiMacroBase
+
+class TimestampMacro(WikiMacroBase):
+    _description = "Inserts the current time (in seconds) into the wiki page."
+
+    def expand_macro(self, formatter, name, content, args=None):
+        t = datetime_now(utc)
+        return tag.strong(format_datetime(t, '%c'))
+}}}
+
+=== Macro with arguments
+
+To test the following code, copy it to `helloworld_sample.py` in the TracEnvironment's `plugins/` directory.
+
+{{{#!python
+from trac.util.translation import cleandoc_
+from trac.wiki.macros import WikiMacroBase
+
+class HelloWorldMacro(WikiMacroBase):
+    _description = cleandoc_(
+    """Simple HelloWorld macro.
+
+    Note that the name of the class is meaningful:
+     - it must end with "Macro"
+     - what comes before "Macro" ends up being the macro name
+
+    The documentation of the class (i.e. what you're reading)
+    will become the documentation of the macro, as shown by
+    the !MacroList macro (usually used in the WikiMacros page).
+    """)
+
+    def expand_macro(self, formatter, name, content, args=None):
+        """Return some output that will be displayed in the Wiki content.
+
+        `name` is the actual name of the macro (no surprise, here it'll be
+        `'HelloWorld'`),
+        `content` is the text enclosed in parenthesis at the call of the
+          macro. Note that if there are ''no'' parenthesis (like in, e.g.
+          [[HelloWorld]]), then `content` is `None`.
+        `args` will contain a dictionary of arguments when called using the
+          Wiki processor syntax and will be `None` if called using the
+          macro syntax.
+        """
+        return 'Hello World, content = ' + unicode(content)
+}}}
+
+Note that `expand_macro` optionally takes a 4^th^ parameter ''`args`''. When the macro is called as a [WikiProcessors WikiProcessor], it is also possible to pass `key=value` [WikiProcessors#UsingProcessors processor parameters]. If given, those are stored in a dictionary and passed in this extra `args` parameter. When called as a macro, `args` is `None`.
+
+For example, when writing:
+{{{
+{{{#!HelloWorld style="polite" -silent verbose
+<Hello World!>
+}}}
+
+{{{#!HelloWorld
+<Hello World!>
+}}}
+
+[[HelloWorld(<Hello World!>)]]
+}}}
+
+One should get:
+{{{
+Hello World, text = <Hello World!>, args = {'style': u'polite', 'silent': False, 'verbose': True}
+Hello World, text = <Hello World!>, args = {}
+Hello World, text = <Hello World!>, args = None
+}}}
+
+Note that the return value of `expand_macro` is '''not''' HTML escaped. Depending on the expected result, you should escape it yourself (using `return Markup.escape(result)`), or if this is indeed HTML, wrap it in a Markup object: `return Markup(result)` (`from trac.util.html import Markup`).
+
+You can also recursively use a wiki formatter to process the `content` as wiki markup:
+
+{{{#!python
+from trac.wiki.formatter import format_to_html
+from trac.wiki.macros import WikiMacroBase
+
+class HelloWorldMacro(WikiMacroBase):
+    def expand_macro(self, formatter, name, content, args):
+        content = "any '''wiki''' markup you want, even containing other macros"
+        # Convert Wiki markup to HTML
+        return format_to_html(self.env, formatter.context, content)
+}}}

@@ -1,0 +1,1045 @@
+@charset "UTF-8"; /* -*- coding: utf-8 -*- */
+
+html { overflow-y: scroll }
+body {
+ font-size: 100%;
+ background: #fff; /* body_bg */
+ color: #000;
+ margin: .5em;
+ padding: 0;
+}
+body, th, tr {
+ font-style: normal;
+ font-family: Roboto,'Segoe UI',Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
+}
+h1, h2, h3, h4 {
+ font-weight: bold;
+ letter-spacing: -0.018em;
+ page-break-after: avoid;
+}
+h1 { font-size: 1.8em; margin: .15em 1em 0.5em 0 }
+h2 { font-size: 1.6em; }
+h3 { font-size: 1.2em; }
+
+hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0 }
+address { font-style: normal }
+img { border: none }
+
+.underline { text-decoration: underline }
+ol.loweralpha { list-style-type: lower-alpha }
+ol.upperalpha { list-style-type: upper-alpha }
+ol.lowerroman { list-style-type: lower-roman }
+ol.upperroman { list-style-type: upper-roman }
+ol.arabic     { list-style-type: decimal }
+
+/* Link styles */
+:link, :visited {
+ text-decoration: none;
+ color: #b00;
+ border-bottom: 1px dotted #bbb;
+}
+:link:hover, :visited:hover {
+ background-color: rgba(238, 238, 238, .5);
+ color: #500;
+ border-radius: .1em;
+ box-shadow: 0 0 0 .15em rgba(238, 238, 238, .5);
+}
+h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
+h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
+ color: inherit;
+}
+
+/* Heading anchors */
+.anchor:link, .anchor:visited {
+ border: none;
+ color: #d7d7d7;
+ font-size: .8em;
+ vertical-align: text-top;
+}
+* > .anchor:link, * > .anchor:visited {
+ visibility: hidden;
+}
+h1:hover .anchor, h2:hover .anchor, h3:hover .anchor,
+h4:hover .anchor, h5:hover .anchor, h6:hover .anchor,
+span:hover .anchor {
+ visibility: visible;
+}
+
+h1:target, h2:target, h3:target, h4:target, h5:target, h6:target,
+span:target {
+ background: #fbffb6; /* trac_hl_color */
+ box-shadow: 0 0 .4em 0.1em rgba(172, 172, 172, .25);
+}
+
+/* option anchors in TracIni macro */
+.tracini table.wiki tbody tr:target { background: #ffb }
+.tracini .tracini-option { border: none; position: relative }
+.tracini .tracini-option:link:hover, .tracini .tracini-option:visited:hover {
+ background-color: transparent;
+}
+.tracini tr[id]:hover .tracini-option:before {
+ content: "\00b6";
+ position: absolute;
+ display: block;
+ left: -1em;
+ width: 1em;
+ color: #d7d7d7;
+ z-index: 1;
+}
+
+@media screen {
+ a.ext-link .icon {
+  background: url(../extlink.gif) left center no-repeat;
+  padding-left: 15px;
+ }
+ a.mail-link .icon {
+  background: url(../envelope.png) left center no-repeat;
+  padding-left: 16px;
+ }
+ a.trac-rawlink, a.trac-ziplink {
+  background: url('../download.png') right center no-repeat;
+  padding-right: 16px;
+  border-bottom: none;
+ }
+}
+
+/* Forms */
+input, textarea, select, .trac-button { margin: 2px }
+/* Avoid respect to system font settings for controls on Firefox, #11607 */
+input, select, button {
+ font-style: normal;
+ font-size: .9em;
+ font-family: Roboto,'Segoe UI',Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
+}
+
+textarea {
+ white-space: pre-wrap; /* Avoid to inherit white-space of its parent element for IE 11, #11376 */
+ font-size: 1em;
+}
+input, select, .trac-button { vertical-align: middle }
+select {
+ background: linear-gradient(to top, #dbdbdb 0%, #eee 30%, #fbfbfb 100%); /* select_gradient_darker */
+ border-radius: .2em;
+ padding-bottom: .15em;
+}
+select[disabled] { background: #fdfdfd }
+input[type=button], input[type=submit], input[type=reset], .trac-button {
+ background: #eee;
+ color: #222;
+ border: 1px solid #bbb;
+ border-radius: .3em;
+ box-shadow: .1em .1em .1em 0 #ccc;
+ padding: .25em .5em .35em; /* Chrome (.3em .5em) vs. FF (.2em .5em .4em) */
+ font-size: .9em;
+ text-shadow: .04em .04em #ddd;
+ cursor: pointer;
+}
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover,
+.trac-button:hover {
+ background: #f6f6f6;
+ box-shadow: .1em .1em .2em 0 #999;
+ text-shadow: .04em .04em #fcfcfc;
+}
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active,
+.trac-button:active, .inlinebuttons a:active {
+ position: relative;
+ top: .1em;
+ left: .1em;
+}
+input[type=button][disabled], input[type=submit][disabled],
+input[type=reset][disabled], .trac-button[disabled] {
+ background: #f6f6f6;
+ border-style: solid;
+ color: #999;
+}
+input[type=text], input.textwidget, textarea {
+ border: 1px solid #d7d7d7;
+ border-radius: .3em;
+ box-shadow: .1em .1em .4em 0 #f6f6f6 inset;
+}
+input[type=text], input.textwidget { padding: .25em .5em }
+input[type=text]:focus, input.textwidget:focus, textarea:focus {
+ border: 1px solid #886;
+}
+option { border-bottom: 1px dotted #d7d7d7 }
+fieldset {
+ border: 1px solid #d7d7d7;
+ border-radius: .4em;
+ margin: 1em 0;
+ background: #F7F7F0;
+ box-shadow: .1em .1em 1em 0 #E7E7E7 inset;
+ padding: 1em;
+}
+p.hint, span.hint, span.trac-datetimehint {
+ color: #666;
+ font-size: .9em;
+ font-style: italic;
+ margin: .5em 0;
+ padding-left: 1em;
+}
+.trac-has-js .trac-nodatetimehint,
+.trac-has-js .trac-datetimehint {
+ display: none !important
+}
+label.trac-textarea-hint {
+ color: #666;
+ display: block;
+ font-size: .9em;
+ font-style: italic;
+ margin: .25em 0;
+ text-align: right;
+}
+span.hint { vertical-align: middle; }
+p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
+legend {
+ color: #999;
+ margin-left: .6em;
+ padding: 0 .25em;
+ font-size: 90%;
+ font-weight: bold;
+}
+label.disabled, .disabled span.hint, .disabled p.help, .disabled legend,
+.disabled input, .disabled select, .readonly span.hint, .readonly p.help {
+ color: #d7d7d7
+}
+.buttons { margin: .5em .5em .5em 0 }
+.buttons form, .buttons form div { display: inline }
+.buttons input { margin: 1em .5em .1em 0; }
+
+.inlinebuttons input,
+.inlinebuttons .trac-button,
+.inlinebuttons a {
+ border: 1px solid #ddd;
+ border-radius: 1em;
+ height: 1.6em;
+ padding: 0 .4em .1em;
+ font-size: 70%;
+ box-shadow: none;
+ margin: 0 .1em .1em;
+ background: none;
+ color: #808080;
+ cursor: pointer;
+}
+.uisymbols .inlinebuttons input[type=button],
+.uisymbols .inlinebuttons input[type=submit],
+.uisymbols .inlinebuttons .trac-button,
+.uisymbols .inlinebuttons a {
+ font-size: 100%;
+}
+.inlinebuttons input[type=button]:hover,
+.inlinebuttons input[type=submit]:hover,
+.inlinebuttons .trac-button:hover,
+.inlinebuttons a:hover {
+ background: #f6f6f6;
+ color: #333;
+ box-shadow: .1em .1em .4em 0 #dfdfdf;
+}
+input[type=button].trac-delete,
+input[type=submit].trac-delete,
+.trac-button.trac-delete {
+ color: #d31313;
+}
+input[type=button].trac-delete:hover,
+input[type=submit].trac-delete:hover,
+.trac-button.trac-delete:hover {
+ color: #e31313;
+}
+textarea {
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
+}
+textarea.trac-fullwidth, input.trac-fullwidth, button.trac-fullwidth {
+ -moz-box-sizing: border-box;
+ box-sizing: border-box;
+ margin-left: 0;
+ margin-right: 0;
+ width: 100%;
+}
+textarea.trac-fullwidth { padding: 2px; }
+/* Resource edit forms (detailed view) */
+form.mod { margin: 1em 0 }
+form.mod .field { margin: .5em 0; }
+form.mod .field.description { margin-top: 1em; }
+form.mod .field label { padding-left: .2em }
+form.mod #changeinfo .field { margin: 0.25em 0 0.75em 0 }
+form.mod #changeinfo .options { padding: 0 0 0.5em 1em }
+
+/* Header */
+#header hr { display: none }
+#header h1 { margin: 1.5em 0 -1.5em; padding: 0 }
+#header img { border: none; margin: 0 0 -3em }
+#header :link, #header :visited, #header :link:hover, #header :visited:hover {
+ background: transparent;
+ color: #555;
+ margin-bottom: 2px;
+ border: none;
+ padding: 0;
+}
+#header h1 :link:hover, #header h1 :visited:hover { color: #000 }
+
+/* Quick search */
+#search {
+ clear: both;
+ font-size: .8em;
+ height: 2.2em;
+ margin: 0 0 1em;
+ text-align: right;
+}
+#search input { font-size: 1em }
+#search label { display: none }
+
+/* Navigation */
+.nav h2, .nav hr { display: none }
+.nav ul {
+ font-size: .9em; /* ctxtnav_font_size */
+ list-style: none;
+ margin: 0;
+ padding: 0;
+ text-align: right;
+}
+.nav li {
+ border-right: 1px solid #d7d7d7;
+ display: inline-block;
+ padding: 0 .75em;
+ white-space: nowrap;
+}
+.nav li.last { border-right: none }
+
+/* Meta navigation bar */
+#metanav {
+ padding-top: .3em;
+}
+#metanav form.trac-logout {
+ display: inline;
+ margin: 0;
+ padding: 0;
+}
+#metanav form.trac-logout button {
+ margin: 0;
+ padding: 0;
+ border: 0;
+ outline: 0;
+ background: transparent;
+ font-family: inherit;
+ font-size: 100%;
+ color: #b00;
+ border-bottom: 1px dotted #bbb;
+ cursor: pointer;
+}
+#metanav form.trac-logout button::-moz-focus-inner { border: 0; padding: 0 }
+#metanav form.trac-logout button:hover { /* cf. :link:hover */
+ background-color: rgba(238, 238, 238, .5);
+ color: #500;
+ border-radius: .1em;
+ box-shadow: 0 0 0 .15em rgba(238, 238, 238, .5);
+}
+#metanav form.trac-logout button:active { position: static }
+
+/* Main navigation bar */
+#mainnav {
+ font-size: .9em;
+ font-weight: 600;
+ letter-spacing: 0.03em;
+ box-shadow: 0 .3em 1em #f2f2f2;
+ border: 1px solid #e4e4e4;
+ border-radius: .4em;
+ margin: .66em 0 .33em;
+}
+#mainnav ul { margin: -1px }
+#mainnav li {
+ background: white url(../topbar_gradient.png) 0 0; /* fallback */
+ background: linear-gradient(to bottom,#f2f2f2 0%,#fafafa 25%,#fefefe 49%,#fff 51%,#fafafa 85%,#f2f2f2 100%);
+ border: 1px solid #e4e4e4;
+ margin: 0px .3em 0 -.4em;
+ padding: .4em 0; /* mainnav_padding = (mainnav_v_padding = .4em) 0  */
+ font-weight: 600;
+ text-transform: uppercase;
+}
+
+#mainnav .first, #mainnav .first :link {
+ border-top-left-radius: .5em;
+ border-bottom-left-radius: .5em;
+}
+#mainnav .last, #mainnav .last :link {
+ border-top-right-radius: .5em;
+ border-bottom-right-radius: .5em;
+ margin-right: 0;
+}
+
+#mainnav :link, #mainnav :visited {
+ border-bottom: none;
+ color: #666;
+ padding: .5em 20px;  /* mainnav_v_padding */
+}
+
+#mainnav :link:hover, #mainnav :visited:hover {
+ background: #000 url(../topbar_gradient2.png) 0 0 repeat-x; /* fallback */
+ background: linear-gradient(to bottom,#888 0%,#555 25%,#333 49%,#333 51%,#444 85%,#888 100%);
+ color: #eee;
+ padding: .5em 20px; /* mainnav_v_padding */
+}
+
+#mainnav .active {
+ border: 1px solid #666;
+}
+#mainnav .active :link, #mainnav .active :visited {
+ background: #000 url(../topbar_gradient2.png) 0 0 repeat-x; /* fallback */
+ background: linear-gradient(to bottom,#555 0%,#333 25%,#111 49%,#000 51%,#333 75%,#555 100%);
+ color: #eee;
+}
+
+/* Context-dependent navigation links */
+#ctxtnav {
+ min-height: 1em;
+ padding: .4em 0; /* mainnav_padding */
+}
+#ctxtnav li ul {
+ background: #f7f7f7;
+ color: #ccc;
+ border: 1px solid;
+ padding: 0;
+ display: inline;
+ margin: 0;
+}
+#ctxtnav li li { padding: 0; }
+#ctxtnav li li :link, #ctxtnav li li :visited { padding: 0 1em }
+#ctxtnav li li :link:hover, #ctxtnav li li :visited:hover {
+ background: #bba;
+ color: #fff;
+}
+
+.trac-nav, .trac-topnav {
+ float: right;
+ font-size: 80%;
+}
+.trac-topnav {
+ margin-top: 14px;
+}
+
+/* Alternate links */
+#altlinks {
+ clear: both;
+ margin-top: .4em;
+ text-align: center;
+}
+#altlinks h3 { font-size: 1.1em; letter-spacing: normal; margin: 0 }
+#altlinks ul { list-style: none; margin: 0; padding: 0 }
+#altlinks li {
+ border-right: 1px solid #d7d7d7;
+ display: inline;
+ font-size: 1.1em;
+ line-height: 1.5;
+ padding: 0 1em;
+ white-space: nowrap;
+}
+#altlinks li.last { border-right: none }
+#altlinks li :link, #altlinks li :visited {
+ background-repeat: no-repeat;
+ color: #666;
+ border: none;
+ padding: 0 0 2px;
+}
+#altlinks li a.ics {
+ background: url(../ics.png) left center no-repeat;
+ padding-left: 22px;
+}
+#altlinks li a.rss {
+ background: url(../feed.png) left center no-repeat;
+ padding-left: 20px;
+}
+
+/* Footer */
+#footer {
+ clear: both;
+ color: #bbb;
+ font-size: .9em;
+ height: 31px;
+ padding: .25em 0;
+}
+#footer :link, #footer :visited { color: #bbb; }
+#footer hr { display: none }
+#footer #tracpowered { border: 0; float: left }
+#footer #tracpowered:hover { background: transparent }
+#footer p { margin: 0 }
+#footer p.left {
+ float: left;
+ margin-left: 1em;
+ padding: 0 1em;
+ border-left: 1px solid #d7d7d7;
+ border-right: 1px solid #d7d7d7;
+}
+#footer p.right {
+ float: right;
+ text-align: right;
+}
+
+/* Container for all the elements in the page, usually single child of the body element */
+#content {
+ position: relative; /* reference for absolute positioning of children */
+}
+
+/* Information content */
+div.trac-content {
+ padding: .5rem 1rem; /* trac_content_padding_left trac_content_padding_right */
+ margin: .3em auto;
+ border: 1px solid #e4e4e4;
+ border-radius: .4em; /* main_border_radius */
+ box-shadow: .3em .3em .4em #f2f2f2; /* main_box_shadow */
+}
+div.trac-content.borderless {
+ border: none;
+ box-shadow: none;
+}
+/* Draft content */
+div.trac-draft {
+ background: #fbfbfb url(../draft.png);
+}
+
+/* Author info */
+.trac-author-anonymous, .trac-author-none {
+ font-style: italic;
+}
+.trac-author-user {
+ font-weight: bold;
+ color: #666;
+}
+
+/* Help links */
+.uinohelp .trac-help { display: none }
+.trac-help {
+ clear: both;
+ color: #999;
+ font-size: 90%;
+ margin: 1em;
+ text-align: right;
+}
+.trac-help :link, .trac-help :visited { cursor: help }
+.trac-help hr { display: none }
+
+/* Section folding */
+.foldable :link, .foldable :visited {
+ background: url(../expanded.png) 4px 50% no-repeat;
+ border: #e4e4e4 solid 1px;
+ border-radius: .3em;
+ box-shadow: .1em .15em .3em 0 #d7d7d7;
+ color: #222;
+ text-shadow: .04em .04em #fcfcfc;
+ padding: .2em .5em .3em 20px;
+}
+.foldable :link:hover, .foldable :visited:hover { background-color: transparent }
+.collapsed > .foldable :link, .collapsed > .foldable :visited {
+ background-image: url(../collapsed.png);
+}
+.collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { display: none }
+fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
+ color: #666;
+ font-size: 110%;
+ text-shadow: .04em .04em #ddd;
+}
+.collapsed legend.foldable { background: white }
+
+.expander {
+ background: url(../expander_normal.png) 0 50% no-repeat;
+ cursor: pointer;
+ padding-left: 8px;
+ margin-left: 4px;
+}
+.expander:hover {
+ background: url(../expander_normal_hover.png) 0 50% no-repeat;
+}
+.expander.expanded {
+ background: url(../expander_open.png) 0 50% no-repeat;
+ padding-left: 12px;
+ margin-left: 0;
+}
+.expander.expanded:hover {
+ background: url(../expander_open_hover.png) 0 50% no-repeat;
+}
+
+/* Section with count */
+h2 .trac-count, h3 .trac-count {
+ margin-left: .2em;
+ vertical-align: baseline;
+ color: #999;
+ font-size: 90%;
+ font-weight: normal;
+}
+
+/* Page preferences form */
+#prefs {
+ background: #f7f7f0;
+ border: 1px solid #d4d4d4;
+ border-radius: 11px; /* main_border_radius_px */
+ box-shadow: .1em .3em .5em 0 #d4d4d4; /* aside_box_shadow */
+ float: right;
+ font-size: .9em;
+ padding: .8em;
+ position: relative;
+ margin: 0 1em 1em;
+}
+#prefs input, #prefs select { font-size: .9em; vertical-align: middle }
+#prefs fieldset {
+ background: transparent;
+ border: none;
+ box-shadow: none;
+ margin: .5em;
+ padding: 0;
+}
+#prefs fieldset legend {
+ background: transparent;
+ color: #000;
+ font-size: .9em;
+ font-weight: normal;
+ margin: 0 0 0 -1.5em;
+ padding: 0;
+}
+#prefs .buttons { text-align: right }
+
+/* Version information (browser, wiki, attachments) */
+#info {
+ margin: 1em 0 0 0;
+ background: #f7f7f0;
+ border: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ clear: both;
+ width: 100%;
+}
+#info th, #info td { font-size: .9em; padding: 2px .5em; vertical-align: top }
+#info th { font-weight: bold; text-align: left }
+#info td.message { width: 100% }
+#info .message ul { padding: 0; margin: 0 2em }
+#info .message p { margin: .5em 0; padding: 0 }
+#info .message hr { margin: .5em 0; padding: 0 }
+a.trac-diff:after { content: "∆" }
+
+/* Wiki */
+.wikipage h1, .wikipage h2, .wikipage h3, .wikipage h4, .wikipage h5, .wikipage h6 {
+ margin-left: -1.5rem; /* wiki_h_margin_left = -(wiki_h_left_padding + wikipage_content_padding_left) */
+ margin-right: -1rem; /* wiki_h_margin_right (= -trac_content_padding_right) */
+}
+.wikipage table h1, .wikipage table h2, .wikipage table h3 {
+ margin-left: -1rem;
+ margin-right: -.25rem;
+}
+div.compact > p:first-child { margin-top: 0 }
+div.compact > p:last-child { margin-bottom: 0 }
+
+/* Delete */
+#delete-confirm li { list-style-type: square; }
+
+/* Styles related to RTL support */
+.rtl { direction: rtl; }
+.rtl div.wiki-toc { float: left; }
+.rtl .wiki-toc ul ul, .wiki-toc ol ol { padding-right: 1.2em }
+
+a.missing:link, a.missing:visited, a.missing, span.missing,
+a.forbidden, span.forbidden { color: #666 }
+a.missing::after { content: "?" }
+a.missing:hover { color: #000 }
+a.closed:link, a.closed:visited, span.closed { text-decoration: line-through }
+
+/* User-selectable styles for blocks */
+.important {
+ background: #fcb;
+ border: 1px dotted #d00;
+ color: #500;
+ padding: 0 .5em 0 .5em;
+ margin: .5em;
+}
+
+dl.wiki dt { font-weight: bold }
+dl.compact dt { float: left; padding-right: .5em }
+dl.compact dd { margin: 0; padding: 0 }
+
+pre.wiki, pre.literal-block {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+ box-shadow: 0.3em 0.3em 0.75em 0.1em rgba(210, 215, 220, 0.3); /* content_box_shadow */
+ border-radius: .3em;  /* content_border_radius */
+ margin: 1em 1.75em;
+ padding: .25em;
+ overflow: auto;
+}
+
+div.wiki-code {
+ margin: 1em 1.75em;
+}
+
+code, tt {
+ color: #600;
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
+ border: 1px solid #edc;
+ border-radius: .25em;
+ padding: 0 0.15em;
+ background: #fcfcfc;
+ margin: 0 .1em;
+ white-space: pre-wrap;
+}
+h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+ color: #500;
+ font-weight: 500;
+}
+
+pre {
+ font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
+ font-size: .9em;
+}
+
+blockquote.citation {
+ margin: -0.6em 0 0 0;
+ border-style: solid;
+ border-width: 0 0 0 2px;
+ padding-left: .5em;
+ border-color: #b44;
+}
+.citation blockquote.citation { border-color: #4b4; }
+.citation .citation blockquote.citation { border-color: #44b; }
+.citation .citation .citation blockquote.citation { border-color: #c55; }
+li blockquote.citation { margin-top: 0 }
+
+table.wiki {
+ border: 1px solid #ccc;
+ border-collapse: collapse;
+ border-spacing: 0;
+ box-shadow: 0.3em 0.3em 0.75em 0.1em rgba(210, 215, 220, 0.3); /* content_box_shadow */
+}
+table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
+table.wiki th {
+ border: 1px solid #bbb;
+ padding: .1em .25em;
+ background-color: #f7f7f7;
+}
+table.wiki tbody tr.even { background-color: #fcfcfc }
+table.wiki tbody tr.odd { background-color: #f7f7f7 }
+
+.wikitoolbar {
+ margin-top: 0.3em;
+ border: solid #d7d7d7;
+ border-width: 1px 1px 1px 0;
+ height: 18px;
+ width: 234px;
+}
+.wikitoolbar :link, .wikitoolbar :visited {
+ background: transparent url(../edit_toolbar.png) no-repeat;
+ border: 1px solid #fff;
+ border-left-color: #d7d7d7;
+ cursor: default;
+ display: block;
+ float: left;
+ width: 24px;
+ height: 16px;
+}
+.wikitoolbar :link:hover, .wikitoolbar :visited:hover {
+ background-color: transparent;
+ border: 1px solid #fb2;
+}
+.wikitoolbar a.trac-wikitoolbar-em { background-position: 0 0 }
+.wikitoolbar a.trac-wikitoolbar-strong { background-position: 0 -16px }
+.wikitoolbar a.trac-wikitoolbar-heading { background-position: 0 -32px }
+.wikitoolbar a.trac-wikitoolbar-link { background-position: 0 -48px }
+.wikitoolbar a.trac-wikitoolbar-code { background-position: 0 -64px }
+.wikitoolbar a.trac-wikitoolbar-hr { background-position: 0 -80px }
+.wikitoolbar a.trac-wikitoolbar-np { background-position: 0 -96px }
+.wikitoolbar a.trac-wikitoolbar-br { background-position: 0 -112px }
+.wikitoolbar a.trac-wikitoolbar-img { background-position: 0 -128px }
+
+/* Textarea resizer */
+div.trac-resizable { display: inline-table; width: 100% }
+div.trac-resizable > div { display: table-cell }
+div.trac-resizable textarea { display: block; margin-bottom: 0 }
+div.trac-grip {
+ height: 5px;
+ overflow: hidden;
+ background: #eee url(../grip.png) no-repeat center 1px;
+ border: 1px solid #ddd;
+ border-top-width: 0;
+ cursor: s-resize;
+}
+
+/* Styles for the list of attachments. */
+#attachments > div.attachments {
+ padding: 0 0 1em 1em;
+}
+#attachments dl.attachments { margin-left: 2em; padding: 0 }
+#attachments dt { display: list-item; list-style: square; }
+#attachments dd { font-style: italic; margin-left: 0; padding-left: 0; }
+#attachments p {
+ margin-left: 2em;
+ font-size: 90%;
+ color: #666;
+}
+#attachments > div.attachments > p {
+ float: right;
+ margin: .4em 0;
+}
+#attachments span.trac-author { font-style: italic; }
+
+.attachment #preview { margin-top: 1em }
+
+/* Styles for tabular listings such as those used for displaying directory
+   contents and report results. */
+table.listing {
+ clear: both;
+ border-bottom: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ box-shadow: .3em .3em .4em 0 #f2f2f2; /* main_box_shadow */
+ margin: 1em 0;
+ width: 100%;
+}
+table.listing th { text-align: left; padding: 0 1em .1em 0; font-size: 1em }
+table.listing th.sel, table.listing td.sel { text-align: center; width: 1% }
+table.listing thead tr { background: #f7f7f0 }
+table.listing thead th {
+ border: 1px solid #d7d7d7;
+ border-bottom-color: #999;
+ font-size: 1em;
+ font-weight: bold;
+ padding: 2px .5em;
+ vertical-align: bottom;
+ white-space: nowrap;
+}
+table.listing thead th :link:hover, table.listing thead th :visited:hover {
+ background-color: transparent;
+}
+table.listing thead th a { border: none; padding-right: 12px }
+table.listing th.asc a, table.listing th.desc a {
+ font-weight: bold;
+ background-position: 100% 50%;
+ background-repeat: no-repeat;
+}
+table.listing th.asc a { background-image: url(../asc.png) }
+table.listing th.desc a { background-image: url(../desc.png) }
+table.listing tbody td, table.listing tbody th {
+ border: 1px dotted #ddd;
+ padding: .3em .5em;
+ vertical-align: top;
+}
+table.listing tbody td a:hover, table.listing tbody th a:hover {
+ background-color: transparent;
+}
+table.listing tbody tr { border-top: 1px solid #ddd }
+table.listing tbody tr.even { background-color: #fcfcfc }
+table.listing tbody tr.odd { background-color: #f7f7f7 }
+table.listing tbody tr:hover td { background: #eed !important }
+table.listing tbody tr.focus { background: #ddf !important }
+
+table.listing pre { white-space: pre-wrap }
+
+/* Styles for the page history table
+   (extends the styles for "table.listing") */
+#fieldhist td { padding: 0 .5em }
+#fieldhist td.date, #fieldhist td.diff, #fieldhist td.version,
+#fieldhist td.author {
+ white-space: nowrap;
+}
+#fieldhist td.version { text-align: center }
+#fieldhist td.comment { width: 100% }
+#fieldhist .inlinebuttons {
+ display: none;
+ float: right;
+}
+.uisymbols #fieldhist .inlinebuttons a { font-size: 85% }
+
+/* Auto-completion interface */
+.suggestions { background: #fff; border: 1px solid #886; color: #222; }
+.suggestions ul {
+ font-family: sans-serif;
+ max-height: 20em;
+ min-height: 3em;
+ list-style: none;
+ margin: 0;
+ overflow: auto;
+ padding: 0;
+ width: 440px;
+}
+* html .suggestions ul { height: 10em; }
+.suggestions li { background: #fff; cursor: pointer; padding: 2px 5px }
+.suggestions li.selected { background: #b9b9b9 }
+
+/* Styles for the error page */
+#content.error .message, div.system-message {
+ background: #fdc;
+ border: 2px solid #d00;
+ color: #500;
+ padding: .5em;
+ margin: 1em 0;
+}
+#content.error div.message pre, div.system-message pre {
+ margin-left: 1em;
+ overflow: hidden;
+ white-space: pre-wrap;
+}
+
+div.system-message p { margin: 0 }
+div.system-message p.system-message-title { font-weight: bold; }
+
+/* rst errors are less emphasized */
+span.system-message {
+ float: left;
+ background: #fdc;
+ padding: 0.2em;
+ margin: 1px;
+ border-radius: 0.25em;
+}
+
+/* whole-page admonitions in theme.html */
+div.system-message {
+ border-radius: .4em; /* main_border_radius */
+ box-shadow: .3em .3em .4em 0 #f2f2f2; /* main_box_shadow */
+}
+
+#warning.system-message, .warning.system-message {
+ background: #ffb;
+ border: 1px solid #bb8;
+}
+#warning.system-message li { list-style-type: square; }
+
+#notice.system-message, .notice.system-message {
+ background: #dfd;
+ border: 1px solid #8b8;
+}
+#notice.system-message li { list-style-type: square; }
+
+div.system-message .trac-close-msg {
+ display: none; /* hidden when no Javascript available */
+ float: right;
+ font-size: 80%;
+ /* taken from .inlinebuttons */
+ border: 1px solid #ddd;
+ border-radius: 1em;
+ height: 1.6em;
+ padding: 0 .4em .1em;
+ box-shadow: none;
+ margin: 0 .1em .1em 0;
+ background: none;
+ color: #999;
+ /* taken from trac-delete */
+ color: #d31313;
+ /* override */
+ height: 1.4em;
+}
+div.system-message .trac-close-msg:hover {
+ /* taken from .inlinebuttons */
+ background: #f6f6f6;
+ color: #333;
+ text-shadow: .04em .04em #fcfcfc;
+ box-shadow: .1em .1em .6em 0 #999;
+}
+.uisymbols div.system-message .trac-close-msg > span {
+ display: none;
+}
+.uisymbols div.system-message .trac-close-msg:after {
+ content: "x"; /* or &ndash; "–"; */
+}
+
+/* error.html page */
+#content.error form.newticket { display: inline; }
+#content.error form.newticket textarea { display: none; }
+
+#content.error #traceback { margin-left: 1em; }
+#content.error #traceback :link, #content.error #traceback :visited {
+  border: none;
+}
+#content.error #tbtoggle { font-size: 80%; }
+#content.error #traceback div { margin-left: 1em; }
+#content.error #traceback h3 { font-size: 95%; margin: .5em 0 0; }
+#content.error #traceback :link var, #content.error #traceback :visited var {
+  font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
+  font-style: normal;
+  font-weight: bold;
+}
+#content.error #traceback span.file { color: #666; font-size: 85%; }
+#content.error #traceback ul { list-style: none; margin: .5em 0; padding: 0; }
+#content.error #traceback table.code td { white-space: pre; font-size: 90%; }
+#content.error #traceback table.code tr.current td { background: #e6e6e6; }
+#content.error #traceback table { margin: .5em 0 1em;  }
+#content.error #traceback th, #content.error #traceback td {
+ font-size: 85%;
+ padding: 1px;
+}
+#content.error #traceback th var {
+  font-family: 'Open Sans Mono',Consolas,'Lucida Console',monospace; /* code_monospace */
+  font-style: normal;
+}
+#content.error #traceback td code { white-space: pre; }
+#content.error #traceback pre { font-size: 95%; }
+
+#content .paging { margin: 0 0 2em; padding: .5em 0 0;
+  font-size: 85%; line-height: 2em; text-align: center;
+}
+#content .paging .current {
+  padding: .1em .3em;
+  border: 1px solid #333;
+  background: #999; color: #fff;
+}
+
+#content .paging :link, #content .paging :visited {
+  padding: .1em .3em;
+  border: 1px solid #666;
+  background: transparent; color: #666;
+}
+#content .paging :link:hover, #content .paging :visited:hover {
+  background: #999; color: #fff;  border-color: #333;
+}
+#content .paging .previous a,
+#content .paging .next a {
+  font-size: 150%; font-weight: bold; border: none;
+}
+#content .paging .previous a:hover,
+#content .paging .next a:hover {
+  background: transparent; color: #666;
+}
+
+#content h2 .numresults { color: #666; font-size: 90%; }
+
+/* Styles for the About page */
+#content.about a.logo { border: none; float: right; margin-left: 2em; }
+#content.about a.logo img { display: block; }
+#content.about #python-logo img { width: 140px; height: 56px; }
+#content.about p.copyright { color: #999; font-size: 90%; }
+
+/* Styles for environment info (error and about pages) */
+#environmentinfo h2 { margin-top: 2em; }
+#environmentinfo table { margin: 1em; width: auto; }
+#environmentinfo table th, #environmentinfo table td { border: 1px solid #ddd; font-size: 90%; }
+#environmentinfo table th { background: #f7f7f7; font-weight: bold; white-space: nowrap; }
+#environmentinfo table td.file { color: #666; }
+#environmentinfo table tr.disabled th,
+#environmentinfo table tr.disabled td { color: #999; }
+#environmentinfo #config th, #content.about #config td { padding: 3px; }
+#environmentinfo #config tr.modified { background: #ffd; }
+#environmentinfo #config tr.modified td.value { font-style: italic; }
+#environmentinfo #config td.doc { padding: 3px 1em; }
+
+/* Styles for jquery-ui */
+.trac-placeholder { background: #eed }
+
+/* Styles for search word highlighting */
+@media screen {
+ .searchword0 { background: #ff9 }
+ .searchword1 { background: #cfc }
+ .searchword2 { background: #cff }
+ .searchword3 { background: #ccf }
+ .searchword4 { background: #fcf }
+}
+
+@media print {
+ #header, #altlinks, #footer, .trac-help, #warning, #notice { display: none }
+ .nav, form, .buttons form, form .buttons, form .inlinebuttons,
+ .noprint, .trac-nav, .trac-topnav,
+ #attachments > div.attachments > p {
+  display: none;
+ }
+ form.printableform { display: block }
+ pre.wiki, pre.literal-block { box-shadow: none }
+ :link, :visited { border-bottom: none }
+ div.trac-content {
+  box-shadow: none;
+  border: none;
+ }
+ .foldable :link, .foldable :visited {
+  text-shadow: none;
+  box-shadow: none;
+ }
+}

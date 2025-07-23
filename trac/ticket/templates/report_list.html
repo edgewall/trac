@@ -1,0 +1,190 @@
+{# Copyright (C) 2009-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${_("Available Reports")}
+      ${ super() }
+      # endblock title
+    </title>
+
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($){
+        $("span.foldable").enableFolding(true);
+        $("#trac-toggle-description").click(function() {
+          if ($(this).checked())
+            $("div.description").parent().removeClass("collapsed");
+          else
+            $("div.description").parent().addClass("collapsed");
+        });
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="report">
+
+      <h1>${_("Available Reports")}</h1>
+
+      <form id="prefs" method="get" action="${req.request_path}">
+        <div>
+          <input id="trac-toggle-description" type="checkbox"/>
+          <label for="trac-toggle-description">${_("Show Descriptions")}</label>
+        </div>
+      </form>
+
+      <div id="description"></div>
+
+      <div class="reports">
+        # if saved_query_href:
+        <div>
+          <form method="post" action="${href.report()}">
+            <div class="inlinebuttons">
+              ${jmacros.form_token_input()}
+              <input type="hidden" name="action" value="clear"/>
+              <input type="submit" value="${captioned_button('x', _('Clear'))}"
+                     title="${_('Forget last query')}" class="trac-delete"/>
+            </div>
+          </form>
+          <h3>
+            <a href="${saved_query_href}">
+              <em>${_("Return to Last Query")}</em>
+            </a>
+          </h3>
+          <span class="foldable"></span>
+          <div class="description">
+            <p>
+              # trans
+
+              Continue browsing through the current list of results,
+              from the last selected report or custom query.
+
+              # endtrans
+            </p>
+          </div>
+        </div>
+        # endif
+
+        # if query_href:
+        <div>
+          <h3><a href="${query_href}"><em>${_("New Custom Query")}</em></a></h3>
+          <span class="foldable"></span>
+          <div class="description">
+            <p>
+              # trans
+
+              Compose a new ticket query by selecting filters and
+              columns to display.
+
+              # endtrans
+            </p>
+          </div>
+        </div>
+        # endif
+
+        # if reports:
+        <h2>${_("SQL reports and saved custom queries")}
+          # with
+          #   set report_asc = asc if sort == 'report' else none
+          #   set title_asc = asc if sort == 'title' else none
+          #   set a_identifier
+          <a${{'class': ('desc', 'asc')[report_asc] if report_asc is not none,
+               'href': href.report(sort='report',
+                                   asc='0' if report_asc else '1')
+              }|htmlattr}>${_("Identifier")}</a>
+          #   endset
+          #   set a_title
+          <a${{'class': ('desc', 'asc')[title_asc] if title_asc is not none,
+               'href': href.report(sort='title', asc='0' if title_asc else '1')
+              }|htmlattr}>${_("Title")}</a>
+          #   endset
+          <span id="trac-sort-order">
+            # trans a_identifier, a_title
+
+            Sort by: ${a_identifier} ${a_title}
+
+            # endtrans
+          </span>
+          # endwith
+        </h2>
+
+        #   for id, title, description, can_edit, can_delete in reports:
+        <div>
+          #   if can_delete:
+          <form method="get" action="${href.report(id)}">
+            <div class="inlinebuttons">
+              <input type="hidden" name="action" value="delete"/>
+              <input type="submit" value="${captioned_button('–', _('Delete'))}"
+                     title="${_('Delete report')}" class="trac-delete"/>
+            </div>
+          </form>
+          #   endif
+          #   if can_edit:
+          <form method="get" action="${href.report(id)}">
+            <div class="inlinebuttons">
+              <input type="hidden" name="action" value="edit"/>
+              <input type="submit" value="${captioned_button('✎', _('Edit'))}"
+                     title="${_('Edit report')}"/>
+            </div>
+          </form>
+          #   endif
+          <h3>
+            <a title="${_('View report')}" href="${href.report(id)}">
+              # if sort == 'title':
+              ${title} <em>{${id}}</em>
+              # else:
+              <em>{${id}}</em> ${title}
+              # endif
+            </a>
+          </h3>
+          <span class="foldable"></span>
+          #   if description:
+          <div class="description">
+            ${wiki_to_html(context.child('report', id), description)}
+          </div>
+          #   endif
+        </div>
+        #   endfor
+        # else:
+        <p>${_("No reports available.")}</p>
+        # endif
+      </div>
+
+      # if 'REPORT_CREATE' in perm('report'):
+      <div class="buttons">
+        <form action="${req.request_path}" method="get" id="create_report">
+          <div>
+            <input type="hidden" name="action" value="new"/>
+            <input type="submit" value="${_('Create new report')}"/>
+          </div>
+        </form>
+      </div>
+      # endif
+
+      # call(note, page) jmacros.wikihelp('TracReports'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using and creating reports.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock
+  </body>
+</html>

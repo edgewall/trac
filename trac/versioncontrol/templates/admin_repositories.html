@@ -1,0 +1,305 @@
+{# Copyright (C) 2009-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'admin.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block admintitle
+      ${_("Repositories")}
+      # endblock admintitle
+    </title>
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        $("#trac-reposlist").addSelectAllCheckboxes();
+      # if view == 'detail':
+        $("#description").autoPreview("${href.wiki_render()}", {
+            realm: "repository",
+            id: ${to_json(reponame)|safe}
+          }, $("#preview").showOnPreview());
+      # endif
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block adminpanel
+    #   set sorted_repos = repositories|dictsort
+    <h2>
+      # set nb_repos
+      #   if view == 'list':
+      <span class="trac-count">(${len(repositories)})</span>
+      #   endif
+      # endset
+      # trans nb_repos
+
+      Manage Repositories ${nb_repos}
+
+      # endtrans
+    </h2>
+
+    <div>
+      #   macro type_field(editable, multiline=false, selected=none)
+      <div class="field">
+        <label>
+          ${_("Type:")}
+          # if multiline:
+          <br />
+          # endif
+          <select size="1" id="trac-type" name="type"${
+                {'disabled': not editable}|htmlattr}>
+            # for type in types:
+            <option${{'value': type,
+                      'selected': type == selected
+                     }|htmlattr}>${type or _('(default)')}</option>
+            # endfor
+            # if selected and selected not in types:
+            <option selected="selected">${selected}</option>
+            # endif
+          </select>
+        </label>
+        <span class="hint">
+          ${_("Default: %(default_type)s", default_type=default_type)}
+        </span>
+      </div>
+      #   endmacro
+
+      #   macro alias_field(editable, multiline=false, selected=none)
+      <div class="field">
+        <label>
+          ${_("Repository:")}
+          # if multiline:
+          <br />
+          # endif
+          <select size="1" id="trac-repository" name="alias"${
+                {'disabled': not editable}|htmlattr}>
+            # for reponame, info in sorted_repos:
+            #   if 'alias' not in info:
+            <option${{'value': info.name,
+                      'selected': info.name == selected
+                     }|htmlattr}>${info.name or _('(default)')}</option>
+            #   endif
+            # endfor
+            # if selected is not none and selected not in repositories:
+            <option selected="selected">${selected}</option>
+            # endif
+          </select>
+        </label>
+      </div>
+      #   endmacro
+
+      #   if view == 'detail':
+      #     set info = repositories[reponame]
+      <form id="edit" class="mod" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          # with
+          #   set readonly = 'readonly' if not info.editable
+          #   if info.editable:
+          <legend>${_("Modify Repository:")}</legend>
+          #   else:
+          <legend>${_("View Repository:")}</legend>
+          #   endif
+          #   if readonly:
+          <p class="hint">
+            #   trans note = jmacros.note()
+
+            ${note} This repository is not defined in the database and
+            cannot be edited on this page.
+
+            #   endtrans
+          </p>
+          # endif
+          <div class="field">
+            <label>${_("Name:")}<br /><input type="text" name="name"
+                                            class="trac-autofocus"${
+                                          {'value': info.name,
+                                           'readonly': readonly
+                                          }|htmlattr}/></label>
+          </div>
+          # if 'alias' in info:
+          ${alias_field(info.editable, true, info.alias)}
+          # else:
+          ${type_field(info.editable, true, info.type)}
+          <div class="field">
+            <label>${_("Directory:")}<br /><input type="text" name="dir" size="48"${
+                                          {'value': info.dir,
+                                           'readonly': readonly
+                                          }|htmlattr}/></label>
+          </div>
+          <div class="field">
+            <label>${_("URL:")}<br /><input type="text" name="url" size="48"${
+                                          {'value': info.url,
+                                           'readonly': readonly
+                                          }|htmlattr}/></label>
+          </div>
+          # endif
+          # if 'alias' not in info:
+          <div class="field">
+            <label><input type="checkbox" name="sync_per_request" value="1"${
+                        {'checked': info.sync_per_request,
+                         'disabled': not info.editable
+                        }|htmlattr}/>
+              ${_("Sync on every request")}
+            </label>
+            <span class="hint">
+              # set tracreposadmin
+              <a href="${href.wiki('TracRepositoryAdmin') + '#Synchronization'}">${
+                _("repository synchronization")}</a>
+              # endset
+              # trans tracreposadmin
+
+              Not recommended. See ${tracreposadmin}.
+
+              # endtrans
+            </span>
+          </div>
+          # endif
+          <div class="field">
+            <label><input type="checkbox" name="hidden" value="1"${
+                        {'checked': info.hidden,
+                         'disabled': not info.editable
+                        }|htmlattr}/>
+              ${_("Hide from repository index")}
+            </label>
+          </div>
+          <div class="field description">
+            <label for="description">${_("Description:")}</label>
+            <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
+                      rows="8" cols="78"${
+                    {'readonly': readonly
+                    }|htmlattr}>${info.description}</textarea>
+            <label for="description" class="trac-textarea-hint">
+              # trans wikiformatting = jmacros.wikiformatting_link()
+
+              You may use ${wikiformatting} here.
+
+              # endtrans
+            </label>
+          </div>
+          <div id="preview" class="trac-content trac-draft" style="display:none">
+          </div>
+          # endwith
+        </fieldset>
+        <div class="buttons">
+          # if info.editable:
+          <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}" />
+          # endif
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
+        </div>
+      </form>
+
+      #   else:
+      <form class="addnew" id="trac-addrepos" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Add Repository:")}</legend>
+          <div class="field">
+            <label>${_("Name:")} <input type="text" name="name"/></label>
+          </div>
+          ${type_field(true)}
+          <div class="field">
+            <label>${_("Directory:")} <input type="text" name="dir"/></label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="add_repos" class="trac-disable-on-submit" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
+
+      #     if can_add_alias:
+      <form class="addnew" id="trac-addalias" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Add Alias:")}</legend>
+          <div class="field">
+            <label>${_("Name:")} <input type="text" name="name"/></label>
+          </div>
+          ${alias_field(true)}
+          <div class="buttons">
+            <input type="submit" name="add_alias" class="trac-disable-on-submit" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
+      #     endif
+
+      #     if sorted_repos:
+      <form id="trac-repository_table" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <table class="listing" id="trac-reposlist">
+          <thead>
+            <tr><th class="sel"></th>
+              <th>${_("Name")}</th><th>${_("Type")}</th><th>${_("Directory")}</th><th>${_("Revision")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            # for reponame, info in sorted_repos:
+            <tr>
+              <td class="sel">
+                # if info.editable:
+                <input type="checkbox" class="trac-disable-determinant"
+                       name="sel" value="${info.name}"/>
+                # endif
+              </td>
+              <td class="name">
+                <a href="${panel_href(info.name or '(default)')}">${info.name or _('(default)')}</a>
+              </td>
+              <td>${(info.type or _('(default)')) if 'alias' not in info}</td>
+              <td>
+                # if 'alias' in info:
+                <em>
+                  # trans repo = info.alias or _('(default)')
+
+                  Alias of ${repo}
+
+                  # endtrans
+                </em>
+                # else:
+                #   if info.error:
+                <span class="missing" title="${info.error}">${
+                  info.prettydir}</span>
+                #   else:
+                ${info.prettydir}
+                #   endif
+              </td>
+              # endif
+              <td>
+                # if info.rev and info.display_rev:
+                <a href="${href.changeset(info.rev, reponame)}">[${info.display_rev}]</a>
+                # endif
+              </td>
+            </tr>
+            # endfor
+          </tbody>
+        </table>
+        <div class="buttons">
+          <input type="submit" name="refresh" value="${_('Refresh')}"/>
+          <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}"/>
+        </div>
+      </form>
+      #     endif
+      #   endif
+
+      #   call(note, page) jmacros.wikihelp('TracRepositoryAdmin'):
+      #     trans note, page
+
+      ${note} See ${page} for help on administering repositories.
+
+      #     endtrans
+      #   endcall
+    </div>
+    # endblock adminpanel
+  </body>
+
+</html>

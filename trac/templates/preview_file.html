@@ -1,0 +1,48 @@
+{# Copyright (C) 2010-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+{# Displays a div for visualizing a preview of a file content.
+
+Arguments:
+ - `preview` a preview usually obtained from calling Mimeview.preview_data()
+
+#}
+${preview.rendered}
+
+# if preview.size == 0:
+<p>
+  <strong>${_("(The file is empty)")}</strong>
+</p>
+# elif not preview.rendered:
+<p>
+#   if preview.max_file_size_reached:
+#     set size = pretty_size(preview.max_file_size)
+#     trans size
+
+      <strong>HTML preview not available</strong>,
+      since the file size exceeds ${size}.
+
+#     endtrans
+#   else:
+#     trans
+
+      <strong>HTML preview not available</strong>,
+      since no preview renderer could handle it.
+
+#     endtrans
+#   endif
+#   trans url = preview.raw_href
+
+    Try <a href="${url}">downloading</a> the file instead.
+
+#   endtrans
+</p>
+# endif

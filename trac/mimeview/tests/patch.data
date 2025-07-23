@@ -1,0 +1,171 @@
+# simple
+
+<div class="diff">
+
+  <ul class="entries">
+    <li class="entry">
+      <h2>
+        <a>README</a>
+      </h2>
+      <table class="trac-diff inline" cellspacing="0">
+        <colgroup>
+          <col class="lineno"/><col class="lineno"/><col class="content"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <th title="File README.orig 2006-10-27 14:42:04.062500000 +0200">
+              old
+            </th>
+            <th title="File README 2006-10-27 14:42:28.125000000 +0200">
+              new
+            </th>
+            <td>
+              <em></em>
+              &nbsp;
+            </td>
+          </tr>
+        </thead>
+        <tbody class="unmod">
+
+          <tr>
+            <th>1</th><th>1</th><td class="l"><span>----</span></td>
+          </tr>
+        </tbody>
+        <tbody class="mod">
+
+
+          <tr class="first">
+            <th>2</th><th>&nbsp;</th><td class="l"><span>b<del>as</del>e</span></td>
+          </tr>
+          <tr>
+            <th>3</th><th>&nbsp;</th><td class="l"><span><del></del>base</span></td>
+          </tr>
+          <tr>
+            <th>4</th><th>&nbsp;</th><td class="l"><span>base<del></del></span></td>
+          </tr>
+
+          <tr>
+            <th>&nbsp;</th><th>2</th><td class="r"><span>b<ins></ins>e</span></td>
+          </tr>
+          <tr>
+            <th>&nbsp;</th><th>3</th><td class="r"><span><ins>the </ins>base</span></td>
+          </tr>
+          <tr class="last">
+            <th>&nbsp;</th><th>4</th><td class="r"><span>base<ins>&nbsp;modified</ins></span></td>
+          </tr>
+        </tbody>
+        <tbody class="unmod">
+
+          <tr>
+            <th>5</th><th>5</th><td class="l"><span>.</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </li>
+  </ul>
+</div>
+# no_newline_in_base
+
+<div class="diff">
+
+  <ul class="entries">
+    <li class="entry">
+      <h2>
+        <a>(a) nonewline vs. (b) newline</a>
+      </h2>
+      <table class="trac-diff inline" cellspacing="0">
+        <colgroup>
+          <col class="lineno"/><col class="lineno"/><col class="content"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <th title="File nonewline 2006-10-27 08:36:48.453125000 +0200">
+              a
+            </th>
+            <th title="File newline 2006-10-27 08:36:57.187500000 +0200">
+              b
+            </th>
+            <td>
+              <em></em>
+              &nbsp;
+            </td>
+          </tr>
+        </thead>
+        <tbody class="mod">
+
+
+          <tr class="first">
+            <th>1</th><th>&nbsp;</th><td class="l"><span>ONELINE</span></td>
+          </tr>
+          <tr>
+            <th>2</th><th>&nbsp;</th><td class="l"><span><em>&nbsp;No newline at end of file</em></span></td>
+          </tr>
+
+          <tr class="last">
+            <th>&nbsp;</th><th>1</th><td class="r"><span>ONELINE</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </li>
+  </ul>
+</div>
+# no_newline_in_changed
+
+<div class="diff">
+
+  <ul class="entries">
+    <li class="entry">
+      <h2>
+        <a>(a) newline vs. (b) nonewline</a>
+      </h2>
+      <table class="trac-diff inline" cellspacing="0">
+        <colgroup>
+          <col class="lineno"/><col class="lineno"/><col class="content"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <th title="File newline 2006-10-27 08:36:57.187500000 +0200">
+              a
+            </th>
+            <th title="File nonewline 2006-10-27 08:36:48.453125000 +0200">
+              b
+            </th>
+            <td>
+              <em></em>
+              &nbsp;
+            </td>
+          </tr>
+        </thead>
+        <tbody class="mod">
+
+
+          <tr class="first">
+            <th>1</th><th>&nbsp;</th><td class="l"><span>ONELINE</span></td>
+          </tr>
+
+          <tr>
+            <th>&nbsp;</th><th>1</th><td class="r"><span>ONELINE</span></td>
+          </tr>
+          <tr class="last">
+            <th>&nbsp;</th><th>2</th><td class="r"><span><em>&nbsp;No newline at end of file</em></span></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </li>
+  </ul>
+</div>
+# range_information_with_no_lines
+
+<div class="diff">
+
+  <ul class="entries">
+    <li class="entry">
+      <h2>
+        <a>filename.txt</a>
+      </h2>
+    </li>
+  </ul>
+</div>

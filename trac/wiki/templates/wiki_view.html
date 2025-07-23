@@ -1,0 +1,251 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      #   if title:
+      ${title} ${ super() }
+      #   else:
+      ${project.name or 'Trac'}
+      #   endif
+      # endblock title
+    </title>
+
+    # block head
+    #   set modify_perm = 'WIKI_MODIFY' in perm(page.resource)
+    #   set is_not_latest = page.exists and page.version != latest_version
+
+    ${ super() }
+
+    #   if version or page.author == 'trac':
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    #   endif
+    #   if modify_perm:
+    <link rel="alternate" type="application/x-wiki"
+          href="${href.wiki(page.name, action='edit',
+                version=page.version if is_not_latest)}"
+          title="${_('Revert page to this version') if is_not_latest else
+                   _("Edit this page")}"/>
+    #   endif
+    <script>
+      jQuery(function($) {
+        wikiColumn($("#wikipage"));
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    #   set modify_perm = 'WIKI_MODIFY' in perm(page.resource)
+    #   set create_perm = 'WIKI_CREATE' in perm(page.resource)
+    #   set admin_perm = 'WIKI_ADMIN' in perm(page.resource)
+    #   set is_not_latest = page.exists and page.version != latest_version
+    <div id="content" class="${classes('wiki', narrow=not fullwidth, create=not page.exists)}">
+
+      # if version:
+      <br />
+      <table id="info">
+        <tr><th scope="row">
+            # with
+            #   set version = page.version
+            #   set author = authorinfo(page.author)
+            #   set date = pretty_dateinfo(page.time)
+            #   set diff
+            <a href="${href.wiki(page.name, action='diff', version=version)}">
+              ${_("diff")}</a>
+            #   endset
+            #   trans version, author, date, diff
+
+            Version ${version} (modified by ${author}, ${date})
+            (${diff})
+
+            #   endtrans
+            # endwith
+        </th></tr>
+        <tr><td class="message">
+            ${wiki_to_html(context, page.comment or '--')}
+        </td></tr>
+      </table>
+      # endif
+
+      <div class="wikipage searchable">
+        # if page.exists:
+        <div id="wikipage" class="trac-content borderless">${
+          wiki_to_html(context, text)
+        }</div>
+        #   if not version:
+        <div class="trac-modifiedby">
+          <span>
+            # with
+            #   set href = href.wiki(page.name, action='diff',
+                                     version=page.version)
+            #   set last_modification = (
+                  _('Version %(version)s by %(author)s: %(comment)s',
+                    version=page.version, author=format_author(page.author),
+                    comment=page.comment)
+                  if page.comment else
+                  _('Version %(version)s by %(author)s', version=page.version,
+                    author=format_author(page.author))
+                )
+            #   set last_modified
+            <a href="${href}" title="${last_modification}">${
+              _("Last modified")}</a>
+            #   endset
+            #   set date = pretty_dateinfo(page.time)
+            #   trans last_modified, date
+
+            ${last_modified} ${date}
+
+            #   endtrans
+            # endwith
+          </span>
+          <span class="trac-print">
+            ${_("Last modified on %(date)s", date=format_datetime(page.time))}
+          </span>
+        </div>
+        #   endif
+        # else:
+        <p>
+          # set name
+          <strong>${name_of(page.resource)}</strong>
+          # endset
+          # trans name
+
+          The page ${name} does not exist.  You can create it here.
+
+          # endtrans
+        </p>
+        # endif
+      </div>
+
+      # with
+      #   set alist = attachments
+      #   set compact = True
+      #   set foldable = True
+      #   include 'list_of_attachments.html'
+      # endwith
+
+      # with
+      #   set delete_perm = 'WIKI_DELETE' in perm(page.resource)
+      #   set rename_perm = 'WIKI_RENAME' in perm(page.resource)
+      #   if modify_perm or create_perm or delete_perm:
+      <div class="buttons">
+        #   if modify_perm or create_perm:
+        <form method="get" action="${href.wiki(page.name)}" id="modifypage">
+          <div>
+            <input type="hidden" name="action" value="edit" />
+            # if is_not_latest and modify_perm:
+            <input type="hidden" name="version" value="${page.version}"/>
+            <input type="submit" value="${_('Revert to this version')}"/>
+            # elif page.exists and modify_perm:
+            <input type="submit" value="${_('Edit this page')}"
+                   ${accesskey("e")}/>
+            # elif not page.exists and create_perm:
+            <input type="submit" value="${_('Create this page')}"
+                   ${accesskey("e")}/>
+            #   if templates:
+            <div id="template">
+              <label for="template">${_("using the template:")}</label>
+              <select name="template">
+                <option ${{'selected': not default_template in templates
+                        }|htmlattr}
+                        value="">${_("(blank page)")}</option>
+                # for t in sorted(templates):
+                <option value="${t}"
+                        ${{'selected': t == default_template
+                        }|htmlattr}>${t}</option>
+                # endfor
+              </select>
+            </div>
+            #   endif
+            # endif
+          </div>
+        </form>
+
+        #     if page.exists:
+        #       with alist = attachments
+        #         include 'attach_file_form.html'
+        #       endwith
+        #     endif
+        #   endif
+
+        #   if page.exists and rename_perm:
+        <form method="get" action="${href.wiki(page.name)}" id="rename">
+          <div>
+            <input type="hidden" name="action" value="rename"/>
+            <input type="submit" value="${_('Rename page')}"/>
+          </div>
+        </form>
+        #   endif
+        #   if page.exists and delete_perm:
+        <form method="get" action="${href.wiki(page.name)}" id="delete">
+          <div>
+            <input type="hidden" name="action" value="delete"/>
+            <input type="hidden" name="version" value="${page.version}"/>
+            # if page.version == latest_version:
+            <input type="submit" name="delete_version"
+                   value="${_('Delete this version')}"/>
+            # endif
+            <input type="submit" id="delete_page" value="${_('Delete page')}"/>
+          </div>
+        </form>
+        #   endif
+      </div>
+      #   endif
+      # endwith
+
+      # if not page.exists and higher:
+      <div class="wikipage searchable">
+        <p>
+          ${_("You could also create the same page higher in the hierarchy:")}
+        </p>
+        <ul>
+          # for markup in higher:
+          <li>${markup}</li>
+          # endfor
+        </ul>
+      </div>
+      # endif
+
+      # if not page.exists and related:
+      <div class="wikipage searchable">
+        <p>
+          # trans
+
+          The following pages have a name similar to this page, and
+          may be related:
+
+          # endtrans
+        </p>
+        <ul>
+          # for markup in related:
+          <li>${markup}</li>
+          # endfor
+        </ul>
+      </div>
+      # endif
+
+      # call(note, page) jmacros.wikihelp('TracWiki'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using the wiki.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

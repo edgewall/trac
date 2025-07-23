@@ -1,0 +1,73 @@
+{# Copyright (C) 2010-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      # block title
+      ${title}
+      ${ super() }
+      # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="wiki">
+      # with current_href = href.wiki(page.name)
+      <h1>${tag_("Rename %(name)s",
+                 name='<a href="%s">%s</a>'|safe % (current_href, page.name))}
+      </h1>
+      <form id="rename-form" action="${current_href}" method="post" class="mod">
+        ${jmacros.form_token_input()}
+        <p>
+          <input type="hidden" name="action" value="rename" />
+          <strong>
+            # trans
+
+            Renaming the page will rename all existing versions of the
+            page in place.
+
+            # endtrans
+            </strong><br />
+          # trans
+
+          The complete history of the page will be moved to the new location.
+
+          # endtrans
+        </p>
+        <div class="field">
+          <label>${_("New name:")}
+            <input type="text" name="new_name" class="trac-autofocus"
+                   size="40" value="${new_name}" /></label>
+        </div>
+        <div class="field">
+          <label>
+            <input type="checkbox" id="redirect" name="redirect" />
+            ${_("Leave a redirection page at the old location")}
+          </label>
+        </div>
+        <div class="buttons">
+          <input type="submit" name="submit" class="trac-disable-on-submit"
+                 value="${_('Rename page')}" />
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
+        </div>
+      </form>
+      # endwith
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

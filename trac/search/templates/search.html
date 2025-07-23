@@ -1,0 +1,119 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+This software is licensed as described in the file COPYING, which
+you should have received as part of this distribution. The terms
+are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+This software consists of voluntary contributions made by many
+individuals. For the exact contribution history, see the revision
+history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    # block title
+    #   if query:
+    ${_("Search Results")}
+    #   else:
+    ${_("Search")}
+    #   endif
+    ${ super() }
+    # endblock title
+    </title>
+
+    # block head
+
+    ${ super() }
+
+    #   if results:
+    <meta name="startIndex" content="${results.span[0] + 1}"/>
+    <meta name="totalResults" content="${results.num_items}"/>
+    <meta name="itemsPerPage" content="${results.max_per_page}"/>
+    #   endif
+
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="search">
+
+      <h1><label for="q">${_("Search")}</label></h1>
+      <form id="fullsearch" action="${href.search()}" method="get">
+        <p>
+          <input type="text" id="q" name="q" class="trac-autofocus" size="40"
+                 ${{'value': query}|htmlattr} />
+          <input type="hidden" name="noquickjump" value="1" />
+          <input type="submit" value="${_('Search')}" />
+        </p>
+        <p class="filters">
+          # for filter in filters:
+          <input type="checkbox" id="${filter.name}" name="${filter.name}"
+                 ${{'checked': filter.active}|htmlattr} />
+          <label for="${filter.name}">${filter.label}</label>
+          # endfor
+        </p>
+      </form>
+
+      # if results or quickjump:
+      <hr />
+      #   if results:
+      <h2>
+        ${_("Results")}
+        <span class="numresults">(${results.displayed_items()})</span>
+      </h2>
+      #   endif
+
+      #   with paginator = results
+      #     include 'page_index.html'
+
+      <div>
+        <dl id="results">
+          # if quickjump:
+          <dt id="quickjump">
+            <a href="${quickjump.href}">${
+              tag_('Quickjump to %(name)s', name=quickjump.name)}</a>
+          </dt>
+          <dd>${quickjump.description}</dd>
+          # endif
+          # for result in results:
+          <dt><a href="${result.href}"
+                 class="searchable">${result.title}</a></dt>
+          <dd class="searchable">${result.excerpt}</dd>
+          #   if result.author:
+          <dd>
+            ${tag_("By %(author)s", author=authorinfo(result.author))} &mdash;
+            <span class="date">${result.date}</span>
+          </dd>
+          #   else:
+          <dd><span class="date">${result.date}</span></dd>
+          #   endif
+          # endfor
+        </dl>
+      </div>
+
+      #     include 'page_index.html'
+      #   endwith
+
+      # elif query:
+      <div id="notfound">
+        ${_("No matches found")}.
+      </div>
+      # endif
+
+      # call(note, page) jmacros.wikihelp('TracSearch'):
+      #   trans note, page
+
+      ${note} See ${page} for help on searching.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

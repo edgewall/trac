@@ -1,0 +1,311 @@
+# Polish translations for Trac.
+# Copyright (C) 2012-2023 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 1.5.4\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2022-12-14 22:34-0500\n"
+"PO-Revision-Date: 2022-12-20 02:57+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pl\n"
+"Language-Team: pl <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: tracopt/ticket/htdocs/ticketclone.js:22
+msgid "Clone"
+msgstr "Klonuj"
+
+#: tracopt/ticket/htdocs/ticketclone.js:34
+msgid "Create a new ticket from this comment"
+msgstr "Utwórz nowe zgłoszenie z tego komentarza"
+
+#: tracopt/ticket/htdocs/ticketclone.js:41
+#, python-format
+msgid "(part of #%(ticketid)s) %(summary)s"
+msgstr "(część %(ticketid)s) %(summary)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:47
+#, python-format
+msgid ""
+"Copied from [%(source)s]:\n"
+"%(description)s"
+msgstr ""
+"Skopiowany z [%(source)s]:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:59
+msgid "Create a copy of this ticket"
+msgstr "Utwórz kopię tego zgłoszenia"
+
+#: tracopt/ticket/htdocs/ticketclone.js:60
+#, python-format
+msgid "%(summary)s (cloned)"
+msgstr "%(summary)s (sklonowany)"
+
+#: tracopt/ticket/htdocs/ticketclone.js:65
+#, python-format
+msgid ""
+"Cloned from #%(id)s:\n"
+"%(description)s"
+msgstr ""
+"Sklonowany z #%(id)s:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+msgid "Delete"
+msgstr "Usuń"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+msgid "Delete ticket"
+msgstr "Usuń zgłoszenie"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "Usuń komentarz 1%(num)s"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr "Przełącz wszystkie"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(brak informacji o zestawie zmian)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Zamknij"
+
+#: trac/htdocs/js/diff.js:117
+msgid "Tabular"
+msgstr "tabelaryczny"
+
+#: trac/htdocs/js/diff.js:123
+msgid "Unified"
+msgstr "zunifikowany"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Rozwiń podkatalog w miejscu"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Ponownie rozwiń katalog"
+
+#: trac/htdocs/js/expand_dir.js:122
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Ładowanie %(entry)s…"
+
+#: trac/htdocs/js/expand_dir.js:150
+msgid "(empty)"
+msgstr "(pusto)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "(error)"
+msgstr "(błąd)"
+
+#: trac/htdocs/js/expand_dir.js:165
+msgid "Fold directory"
+msgstr "Zwiń katalog"
+
+#: trac/htdocs/js/folding.js:61
+#, python-format
+msgid "Show %(title)s"
+msgstr "Pokaż %(title)s"
+
+#: trac/htdocs/js/folding.js:73
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (kliknij aby ukryć kolumnę)"
+
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr "$year$month"
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
+msgid "Done"
+msgstr "Gotowe"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "Poprzedni"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "Następny"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "Dziś"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "tydz."
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:31
+msgid "Choose Time"
+msgstr "Wybierz godzinę"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:33
+msgid "Time"
+msgstr "Czas"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Hour"
+msgstr "Godzina"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Minute"
+msgstr "Minuta"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Second"
+msgstr "Sekunda"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:36
+msgid "Time Zone"
+msgstr "Strafa czasowa"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:38
+msgid "Now"
+msgstr "Teraz"
+
+#: trac/htdocs/js/query.js:160
+msgid "A filter already exists for that property"
+msgstr "Istnieje już filtr dla tej właściwości"
+
+#: trac/htdocs/js/query.js:187
+msgid "or"
+msgstr "lub"
+
+#: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
+msgid "yes"
+msgstr "tak"
+
+#: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
+msgid "no"
+msgstr "nie"
+
+#: trac/htdocs/js/query.js:218
+#, python-format
+msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
+msgstr "<label>pomiędzy%(start)s</label><label>i%(end)s</label>"
+
+#: trac/htdocs/js/query.js:381
+msgid " remove:"
+msgstr " usuń:"
+
+#: trac/htdocs/js/query.js:391
+msgid " add:"
+msgstr " dodaj:"
+
+#: trac/htdocs/js/query.js:425
+#, python-format
+msgid "Select ticket #%(id)s for modification"
+msgstr "Wybierz zgłoszenie #%(id)s do modyfikacji"
+
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr "Pokaż wszystkie repozytoria"
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
+msgstr "Ukryj wszystkie repozytoria"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Odnośnik tu"
+
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
+msgstr "Przełącz grupę"
+
+#: trac/htdocs/js/trac.js:96
+msgid "At least one item must be selected"
+msgstr "Przynajmniej jeden element musi być wskazany"
+
+#: trac/htdocs/js/trac.js:243
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+"Występują niezapisane zmiany. Zmiany zostaną utracone jeśli opuscisz "
+"stronę bez ich zapisania."
+
+#: trac/htdocs/js/wiki.js:75
+#: trac/notification/templates/prefs_notification.html:16
+#: trac/ticket/templates/ticket.html:4
+msgid "Link to this section"
+msgstr "Odnośnik do tej sekcji"
+
+#: trac/htdocs/js/wiki.js:77
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Odnośnik do #%(id)s"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Bold text: **Example**"
+msgstr "Pogrubienie: **Przykład**"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Italic text: ''Example''"
+msgstr "Kursywa: ''Przykład''"
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Heading: == Example"
+msgstr "Nagłówek: == Przykład"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Odnośnik: [http://www.example.com/ Przykład]"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Code block: {{{ example }}}"
+msgstr "Blok kodu: {{{ przykład }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "Horizontal rule: ----"
+msgstr "Linia pozioma: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "New paragraph"
+msgstr "Nowy akapit"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Line break: \\\\"
+msgstr "Podział linii: \\\\"
+
+#: trac/htdocs/js/wikitoolbar.js:83
+msgid "Image: [[Image()]]"
+msgstr "Obraz: [[Image()]]"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr "Przeciągnij reguły by zmienić kolejność"
+
+#: trac/versioncontrol/templates/changeset.html:8
+msgid "Link to this diff"
+msgstr "Odnośnik do tej zmiany"
+

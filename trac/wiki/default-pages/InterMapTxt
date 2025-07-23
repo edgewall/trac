@@ -1,0 +1,126 @@
+= InterMapTxt
+
+== This is the place for defining InterWiki prefixes
+
+This page is interpreted in a special way by Trac, in order to support
+!InterWiki links in a flexible and dynamic way.
+It is modeled after the MeatBall:InterMapTxt page.
+In addition, an optional comment is allowed after the mapping.
+
+The [#PrefixDefinitions code block] after the first line separator in this page
+will be interpreted as a list of !InterWiki specifications:
+{{{
+prefix URL [# comment]
+}}}
+
+See InterWiki for more details of the URL syntax.
+
+New !InterWiki links can be created by editing this page and adding to the list.
+Note however that ''deletions'' are also taken into account immediately,
+so be aware that your changes might disable links in your wiki. It may be better to use comments for deprecating prefixes that are used in your wiki.
+
+The definitions below can be viewed in the [InterWiki#ListofActivePrefixes list of active prefixes].
+
+----
+
+== Prefix Definitions
+
+{{{
+PEP     https://www.python.org/dev/peps/pep-$1/   # Python Enhancement Proposal
+PythonBug    https://bugs.python.org/issue$1      # Python Issue #$1
+Python-issue https://bugs.python.org/issue$1      # Python Issue #$1
+PythonWiki    https://wiki.python.org/moin/       # Python Wiki
+
+
+Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/ # Message $1 in Trac Mailing List
+trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/   # Message $1 in Trac Development Mailing List
+
+apidoc https://www.edgewall.org/docs/trac-trunk/html/$1.html # $1 in the API documentation for Trac
+apiref https://www.edgewall.org/docs/trac-trunk/epydoc/$1.html # $1 in the Epydoc API reference for Trac
+
+bitten   https://bitten.edgewall.org/intertrac/    # Bitten's Trac
+
+Mercurial https://www.mercurial-scm.org/wiki/              # the wiki for the Mercurial distributed SCM
+hg        https://www.mercurial-scm.org/repo/$1/rev/$2     # Changeset $1 $2 in Mercurial repository
+hg-issue  https://www.mercurial-scm.org/bts/issue          # Issue $1 in Mercurial BTS
+
+RFC       https://tools.ietf.org/html/rfc$1          # IETF's RFC $1
+ISO       https://en.wikipedia.org/wiki/ISO_         # ISO Standard $1 in Wikipedia
+kb        https://support.microsoft.com/kb/$1/en-us/ # Article $1 in Microsoft's Knowledge Base
+
+pypi        https://pypi.org/project/   # $1 package in the Python Package Index
+CheeseShop  https://pypi.org/project/   # $1 package in the Python Package Index
+peak        http://peak.telecommunity.com/DevCenter/     # $1 in Python Enterprise Application Kit's Wiki
+setuptools-issue https://bugs.python.org/setuptools/issue # issue$1 in legacy Setuptools tracker
+pypa-setuptools-issue https://bitbucket.org/pypa/setuptools/issue/ # issue #$1 in BitBucket Setuptools tracker
+
+SQLite      https://www.sqlite.org/cvstrac/wiki?p=$1     # $1 page in the CvsTrac for SQLite
+SQLiteTkt   https://www.sqlite.org/cvstrac/tktview?tn=$1 # Ticket $1 in the CvsTrac for SQLite
+
+mysql-bugs  https://bugs.mysql.com/bug.php?id=  # Bug #$1 in MySQL's bug database
+mysql-issue https://bugs.mysql.com/bug.php?id=  # Bug #$1 in MySQL's bug database
+
+MODPYTHON          https://issues.apache.org/jira/browse/MODPYTHON- # Issue $1 in mod_python's JIRA instance
+mod-python-issue   https://issues.apache.org/jira/browse/MODPYTHON- # Issue $1 in mod_python's JIRA instance
+
+SvnWiki     https://www.orcaware.com/svn/wiki/                       # Subversion Wiki
+svnissue    https://issues.apache.org/jira/browse/SVN-               # Subversion issue #$1
+svn-issue   https://issues.apache.org/jira/browse/SVN-               # Subversion issue #$1
+svncset     https://svn.apache.org/r                                 # Subversion [$1]
+
+mod-wsgi    https://code.google.com/p/modwsgi/wiki/                 # mod_wsgi Wiki on Google Code
+mod-wsgi-issue  https://code.google.com/p/modwsgi/issues/detail?id= # mod_wsgi Issue Tracker on Google Code
+
+chromium-issue  https://code.google.com/p/chromium/issues/detail?id=
+
+Django      https://code.djangoproject.com/intertrac/ # Django's Trac
+AgileTrac   http://www.agile-trac.org/intertrac/     # Plugin adding Iterations to Trac
+
+CreoleWiki   http://wikicreole.org/wiki/
+Creole1Wiki  http://wikicreole.org/wiki/
+Creole2Wiki  http://wiki.wikicreole.org/
+
+MediaWiki    https://www.mediawiki.org/wiki/
+
+SO  https://stackoverflow.com/questions/ # Question $1 in StackOverflow
+
+Transifex         https://www.transifex.com/cboos/trac/
+TransifexLang     https://www.transifex.com/cboos/trac/language/$1/
+TransifexResource https://www.transifex.com/cboos/trac/$1/
+TransifexView     https://www.transifex.com/cboos/trac/viewstrings/#$1/$2
+
+kwquery      /query?group=status&keywords=~  # Custom query for tickets matching keyword $1
+
+#
+# A arbitrary pick of InterWiki prefixes...
+#
+Acronym          https://www.acronymfinder.com/$1.html
+C2find           http://c2.com/cgi/wiki?FindPage&value=
+Cache            https://www.google.com/search?q=cache:
+CPAN             https://search.cpan.org/perldoc?
+DebianBug        https://bugs.debian.org/
+DebianPackage    https://packages.debian.org/
+DebianPTS        https://packages.qa.debian.org/
+Dictionary       http://www.dict.org/bin/Dict?Database=*&Form=Dict1&Strategy=*&Query=
+Google           https://www.google.com/search?q=
+lmgtfy           https://lmgtfy.com/?q= # Well, just search for "$1", follow the link to see how to do it...
+GoogleGroups     https://groups.google.com/group/$1/msg/$2        # Message $2 in $1 Google Group
+gdiscussion      https://groups.google.com/d/topic/$1/$2/discussion # Discussion $2 in $1 Google
+gmessage         https://groups.google.com/g/$1/c/$2 # Message $2 in $1 Google Group
+gforum           https://groups.google.com/forum/#!forum/$1 # Forum $1 in Google Groups
+JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=
+MeatBall         http://meatballwiki.org/wiki/
+MetaWiki         http://sunir.org/apps/meta.pl?
+MetaWikiPedia    https://meta.wikipedia.org/wiki/
+MoinMoin         https://moinmo.in/
+TracHacks        https://trac-hacks.org/wiki/
+OSM              https://wiki.openstreetmap.org/wiki/
+WhoIs            http://www.whois.sc/
+Why              http://clublet.com/c/c/why?
+c2Wiki           http://c2.com/cgi/wiki?
+WikiPedia        https://en.wikipedia.org/wiki/
+}}}
+
+
+----
+See also: InterWiki, InterTrac

@@ -1,0 +1,65 @@
+= TracAdmin
+
+[[PageOutline(2-5, Contents, pullout)]]
+[[TracGuideToc]]
+
+Trac is distributed with a powerful command-line configuration tool. This tool can be used to configure and customize your Trac installation to better fit your needs.
+
+Some of the configurations can also be performed via the web administration module.
+
+== Usage
+
+For nearly every `trac-admin` command, the first argument must be the path to the TracEnvironment:
+{{{#!sh
+$ trac-admin /path/to/projenv wiki list
+}}}
+
+The only exception is for the `help` command, but even in this case, if you omit the environment you will only get a very succinct list of commands (`help` and `initenv`), the same list you would get when invoking `trac-admin` alone.
+`trac-admin --version` will tell you about the Trac version (e.g. 1.2) corresponding to the program.
+
+To get a comprehensive list of the available commands and sub-commands, specify the path to an environment followed by the subcommand `help`:
+{{{#!sh
+$ trac-admin /path/to/projenv help
+}}}
+
+Some commands have more detailed help, which you can access by specifying the command's name as a subcommand for `help`:
+{{{#!sh
+$ trac-admin /path/to/projenv help <command>
+}}}
+
+When an error occurs in a `trac-admin` command the return value will be `2` and any error messages are printed to `stderr`.
+
+=== `trac-admin <targetdir> initenv` #initenv
+
+This subcommand is very important as is the one used to create a TracEnvironment in the specified `<targetdir>`. That directory must not exist prior to the call.
+
+[[TracAdminHelp(initenv)]]
+
+It supports the `--inherit` option, which specifies a global configuration file for sharing settings between several environments. You can also inherit from a shared configuration afterwards, by setting the `[inherit] file` option in the `conf/trac.ini` file in your newly created environment. The advantage of specifying the inherited configuration file at environment creation time is that only the options ''not'' specified in the global configuration file will be written to the environment's `conf/trac.ini` file.
+See TracIni#GlobalConfiguration.
+
+== Interactive Mode
+
+`trac-admin` starts in interactive mode when the environment path is the only argument.
+Commands can then be executed on the selected environment using the prompt, which offers tab-completion when the Python `readline` module is available. It also offers automatic repetition of the last command issued.
+
+The `readline` module should be available on all Unix-compatible platforms. For Windows, support can be obtained by installing [https://pypi.python.org/pypi/pyreadline pyreadline].
+
+In interactive mode, you can also get help on specific commands or subsets of commands. For example, to get an explanation of the `resync` command, run:
+{{{#!sh
+$ help resync
+}}}
+
+To get help on all the Wiki-related commands, run:
+{{{#!sh
+$ help wiki
+}}}
+
+== Full Command Reference
+
+The commands available by default in `trac-admin` are listed below. Note that this may not match the list given by `trac-admin <yourenv> help`, as the commands pertaining to components disabled in that environment won't be available and conversely some plugins activated in the environment may add their own commands.
+
+[[TracAdminHelp()]]
+
+----
+See also: TracBackup, TracEnvironment, TracIni, [trac:TracMigrate TracMigrate]

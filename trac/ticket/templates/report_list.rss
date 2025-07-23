@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+##
+## Report list view - RSS flavor
+##
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>${project.name}: Available Reports</title>
+    <link>${abs_href.report()}</link>
+    <description>List of available reports</description>
+    <language>en-us</language>
+    # if chrome.logo.src_abs:
+    <image>
+      <title>${project.name}</title>
+      <url>${chrome.logo.src_abs}</url>
+      <link>${abs_href.report()}</link>
+    </image>
+    # endif
+    <generator>Trac v${trac.version}</generator>
+    # for report, title, descr in rows:
+    <item>
+      <title>{${report}}: ${title}</title>
+      <link>${abs_href.report(report)}</link>
+      <guid isPermaLink="false">${abs_href.report(report)}</guid>
+      <category>Report</category>
+    </item>
+    # endfor
+  </channel>
+</rss>

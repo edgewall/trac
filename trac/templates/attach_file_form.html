@@ -1,0 +1,28 @@
+{# Copyright (C) 2010-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Renders an ''Attach File'' button conditionally.
+
+{# Arguments:
+ - alist: the data for the list of attachments
+ - add_button_title=None: the title of the "Attach" button
+#}
+# if alist.can_create:
+<form method="get" action="${alist.attach_href}" id="attachfile">
+  <div>
+    <input type="hidden" name="action" value="new" />
+    <input type="submit" id="attachfilebutton" value="${
+                  add_button_title or
+                  (_("Attach another file") if alist.attachments else
+                   _("Attach file"))}"/>
+  </div>
+</form>
+# endif

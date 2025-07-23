@@ -1,0 +1,320 @@
+= Trac Reports
+
+[[TracGuideToc]]
+
+The Trac reports module provides a simple, yet powerful reporting facility to present information about tickets in the Trac database.
+
+Rather than have its own report definition format, TracReports relies on standard SQL `SELECT` statements for custom report definition.
+
+  '''Note:''' The report module is being phased out in its current form because it seriously limits the ability of the Trac team to make adjustments to the underlying database schema. We believe that the [wiki:TracQuery query module] is a good replacement that provides more flexibility and better usability. While there are certain reports that cannot yet be handled by the query module, we intend to further enhance it so that at some point the reports module can be completely removed. This also means that there will be no major enhancements to the report module anymore.
+
+  You can already completely replace the reports module by the query module simply by disabling the former in [wiki:TracIni trac.ini]:
+  {{{#!ini
+  [components]
+  trac.ticket.report.* = disabled
+  }}}
+  This will make the query module the default handler for the “View Tickets” navigation item. We encourage you to try this configuration and report back what kind of features of reports you are missing, if any.
+
+A report consists of these basic parts:
+ * '''ID''' — Unique (sequential) identifier
+ * '''Title''' — Descriptive title
+ * '''Description''' — A brief description of the report, in WikiFormatting text.
+ * '''Report Body''' — List of results from report query, formatted according to the methods described below.
+ * '''Footer''' — Links to alternative download formats for this report.
+
+== Changing Sort Order
+
+Simple reports - ungrouped reports to be specific - can be sorted by clicking the column header.
+
+If a column header is a hyperlink (red), click the column to sort by it. Clicking the same header again reverses the sort order.
+
+== Navigating Tickets
+
+Clicking on one of the report results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' contextual navigation links, or click the ''Back to Report'' link to return to the report page.
+
+You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Report'' links after saving your results, but when you return to the report, there will be no hint about what has changed, in contrast to the query results (see TracQuery#NavigatingTickets).
+
+== Alternate Download Formats
+
+In addition to the HTML view, reports can also be exported in a number of alternate formats.
+At the bottom of the report page, you will find a list of available data formats. Click the desired link to
+download the alternate format.
+
+=== Comma-delimited - CSV (Comma Separated Values)
+
+Export the report as plain text, each row on its own line, columns separated by a single comma (',').
+'''Note:''' The output is fully escaped so carriage returns, line feeds, and commas will be preserved in the output.
+
+=== Tab-delimited
+
+Like above, but uses tabs (\t) instead of comma.
+
+=== RSS - XML Content Syndication
+
+All reports support syndication using XML/RSS 2.0. To subscribe to an RSS feed, click the orange 'XML' icon at the bottom of the page. See TracRss for general information on RSS support in Trac.
+
+== Creating Custom Reports
+
+Creating a custom report requires a comfortable knowledge of SQL.
+
+Note that you need grant [TracPermissions#Reports permissions] in order to see the buttons for adding or editing reports.
+
+A report is basically a single named SQL query, executed and presented by Trac. Reports can be viewed and created from a custom SQL expression directly in the web interface.
+
+Typically, a report consists of a SELECT-expression from the 'ticket' table, using the available columns and sorting the way you want it.
+
+== Ticket columns
+
+The ''ticket'' table has the following columns:
+ * id
+ * type
+ * time
+ * changetime
+ * component
+ * severity
+ * priority
+ * owner
+ * reporter
+ * cc
+ * version
+ * milestone
+ * status
+ * resolution
+ * summary
+ * description
+ * keywords
+
+See TracTickets for a detailed description of the column fields.
+
+Example: '''All active tickets, sorted by priority and time'''
+{{{#!sql
+SELECT id AS ticket, status, severity, priority, owner, time AS created, summary
+FROM ticket
+WHERE status IN ('new', 'assigned', 'reopened')
+ORDER BY priority, time
+}}}
+
+== Advanced Reports: Dynamic Variables
+
+For more flexible reports, Trac supports the use of ''dynamic variables'' in report SQL statements.
+In short, dynamic variables are ''special'' strings that are replaced by custom data before query execution. Dynamic variables are entered through the preferences form and the values are autocompleted //(Since 1.3.2)//.
+
+=== Using Variables in a Query
+
+The syntax for dynamic variables is simple, any upper case word beginning with `$` is considered a variable.
+
+Example:
+{{{#!sql
+SELECT id AS ticket,summary FROM ticket WHERE priority=$PRIORITY
+}}}
+
+The value of the dynamic variable can be assigned in the report preferences form.
+
+To assign a value to `$PRIORITY` in the URL for a report, leave out the leading `$`:
+{{{
+ https://trac.edgewall.org/reports/14?PRIORITY=high
+}}}
+
+To use multiple variables, separate them with an `&`:
+{{{
+ https://trac.edgewall.org/reports/14?PRIORITY=high&SEVERITY=critical
+}}}
+
+It is possible to assign a default value to the variable, within a SQL comment:
+
+{{{#!sql
+-- PRIORITY = high
+
+SELECT id AS ticket,summary FROM ticket WHERE priority=$PRIORITY
+}}}
+
+
+=== !Special/Constant Variables
+
+There is one dynamic variable whose value is set automatically (the URL does not have to be changed) to allow practical reports.
+
+ * $USER — Username of logged in user.
+
+Example: List all tickets assigned to me:
+{{{#!sql
+SELECT id AS ticket,summary FROM ticket WHERE owner=$USER
+}}}
+
+== Advanced Reports: Custom Formatting
+
+Trac is also capable of more advanced reports, including custom layouts, result grouping and user-defined CSS styles. To create such reports, we will use specialized SQL statements to control the output of the Trac report engine.
+
+=== Special Columns
+
+To format reports, TracReports look for 'magic' column names in the query result. These 'magic' names are processed and affect the layout and style of the final report.
+
+=== Automatically formatted columns
+
+ * '''ticket''' — Ticket ID number. Becomes a hyperlink to that ticket.
+ * '''id''' — same as '''ticket''' above when '''realm''' is not set
+ * '''realm''' — together with '''id''', can be used to create links to other resources than tickets (e.g. a realm of ''wiki'' and an ''id'' to a page name will create a link to that wiki page)
+   - for some resources, it may be necessary to specify their ''parent'' resources (e.g. for ''changeset'', the ''repos'') and this can be achieved using the '''parent_realm''' and '''parent_id''' columns
+ * '''created, modified, date, time''' — Format cell as a date and/or time.
+ * '''description''' — Ticket description field, parsed through the wiki engine.
+
+'''Example:'''
+{{{#!sql
+SELECT id AS ticket, created, status, summary FROM ticket
+}}}
+
+Those columns can also be defined but marked as hidden, see [#column-syntax below].
+
+See [trac:CookBook/Configuration/Reports] for examples of creating reports for realms other than ''ticket''.
+
+=== Custom formatting columns
+
+Columns whose names begin and end with 2 underscores (e.g. '''`__color__`''') are
+assumed to be ''formatting hints'', affecting the appearance of the row.
+
+ * '''`__group__`''' — Group results based on values in this column. Each group will have its own header and table.
+ * '''`__grouplink__`''' — Make the header of each group a link to the specified URL. The URL is taken from the first row of each group.
+ * '''`__color__`''' — Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
+ {{{#!html
+<div style="margin-left:3em">Defaults:
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #fdc; border-color: #e88; color: #a22">Color 1</span>
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #ffb; border-color: #eea; color: #880">Color 2</span>
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #fbfbfb; border-color: #ddd; color: #444">Color 3</span>
+<span style="border: none; color: #333; background: transparent; font-size: 85%; background: #e7ffff; border-color: #cee; color: #099">Color 4</span>
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #e7eeff; border-color: #cde; color: #469">Color 5</span>
+</div>
+}}}
+ * '''`__style__`''' — A custom CSS style expression to use on the `<tr>` element of the current row.
+ * '''`__class__`''' — Zero or more space-separated CSS class names to be set on the `<tr>` element of the current row. These classes are added to the class name derived from `__color__` and the odd / even indicator.
+
+'''Example:''' List active tickets, grouped by milestone, group header linked to milestone page, colored by priority:
+{{{#!sql
+SELECT p.value AS __color__,
+     t.milestone AS __group__,
+     '../milestone/' || t.milestone AS __grouplink__,
+     (CASE owner WHEN 'daniel' THEN 'font-weight: bold; background: red;' ELSE '' END) AS __style__,
+     t.id AS ticket, summary
+FROM ticket t,enum p
+WHERE t.status IN ('new', 'assigned', 'reopened')
+  AND p.name = t.priority AND p.type = 'priority'
+ORDER BY t.milestone, p.value, t.severity, t.time
+}}}
+
+Note that table join is used to match ''ticket'' priorities with their numeric representation from the ''enum'' table.
+
+=== Changing layout of report rows === #column-syntax
+
+By default, all columns on each row are display on a single row in the HTML report, possibly formatted according to the descriptions above. However, it is also possible to create multi-line report entries.
+
+ * '''`column_`''' — ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be continued on a second line.
+
+ * '''`_column_`''' — ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
+
+ * '''`_column`''' — ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
+   This can be used to hide any kind of column, even important ones required for identifying the resource, e.g. `id as _id` will hide the '''Id''' column but the link to the ticket will be present.
+
+'''Example:''' List active tickets, grouped by milestone, colored by priority, with  description and multi-line layout:
+
+{{{#!sql
+SELECT p.value AS __color__,
+       t.milestone AS __group__,
+       (CASE owner
+          WHEN 'daniel' THEN 'font-weight: bold; background: red;'
+          ELSE '' END) AS __style__,
+       t.id AS ticket, summary AS summary_,             -- ## Break line here
+       component,version, severity, milestone, status, owner,
+       time AS created, changetime AS modified,         -- ## Dates are formatted
+       description AS _description_,                    -- ## Uses a full row
+       changetime AS _changetime, reporter AS _reporter -- ## Hidden from HTML output
+FROM ticket t,enum p
+WHERE t.status IN ('new', 'assigned', 'reopened')
+  AND p.name = t.priority AND p.type = 'priority'
+ORDER BY t.milestone, p.value, t.severity, t.time
+}}}
+
+=== Reporting on custom fields
+
+If you have added [TracTicketsCustomFields custom fields] to your tickets, you can write a SQL query to include them in a report. You'll need to make a join on the `ticket_custom` table.
+
+If you have tickets in the database ''before'' you declare the extra fields in trac.ini, there will be no associated data in the `ticket_custom` table. To get around this, use SQL's `LEFT OUTER JOIN` clauses. See [trac:TracIniReportCustomFieldSample TracIniReportCustomFieldSample] for some examples.
+
+=== A note about SQL rewriting #rewriting
+
+Beyond the relatively trivial replacement of dynamic variables, the SQL query is also altered in order to support two features of the reports:
+ 1. [#sort-order sorting]
+ 1. pagination: limiting the number of results displayed on each page
+In order to support the first feature, the sort column is inserted in the `ORDER BY` clause in the first position or in the second position if a `__group__` column is specified (an `ORDER BY` clause is created if needed). In order to support pagination, a `LIMIT ... OFFSET ...` clause is appended.
+The query might be too complex for the automatic rewrite to work correctly, resulting in an erroneous query. In this case you still have the possibility to control exactly how the rewrite is done by manually inserting the following tokens:
+ - `@SORT_COLUMN@`, the place where the name of the selected sort column will be inserted,
+ - `@LIMIT_OFFSET@`, the place where the pagination support clause will be added
+Note that if you write them after an SQL comment, `--`, you'll effectively disable rewriting if this is what you want!
+
+Let's take an example, consider the following SQL query:
+{{{#!sql
+-- ## 4: Assigned, Active Tickets by Owner ## --
+
+--
+-- List assigned tickets, group by ticket owner, sorted by priority.
+--
+
+SELECT p.value AS __color__,
+   owner AS __group__,
+   id AS ticket, summary, component, milestone, t.type AS type, severity, time AS created,
+   changetime AS _changetime, description AS _description,
+   reporter AS _reporter
+FROM ticket t,enum p
+WHERE status = 'assigned'
+  AND p.name = t.priority AND p.type = 'priority'
+ORDER BY __group__, p.value, severity, time
+}}}
+
+The automatic rewrite will be the following (4 rows per page, page 2, sorted by `component`):
+{{{#!sql
+SELECT p.value AS __color__,
+   owner AS __group__,
+   id AS ticket, summary, component, milestone, t.type AS type, severity, time AS created,
+   changetime AS _changetime, description AS _description,
+   reporter AS _reporter
+FROM ticket t,enum p
+WHERE status = 'assigned'
+  AND p.name = t.priority AND p.type = 'priority'
+ORDER BY __group__ ASC, `component` ASC,  __group__, p.value, severity, time
+LIMIT 4 OFFSET 4
+}}}
+
+The equivalent SQL query with the rewrite tokens would have been:
+{{{#!sql
+SELECT p.value AS __color__,
+   owner AS __group__,
+   id AS ticket, summary, component, milestone, t.type AS type, severity, time AS created,
+   changetime AS _changetime, description AS _description,
+   reporter AS _reporter
+FROM ticket t,enum p
+WHERE status = 'assigned'
+  AND p.name = t.priority AND p.type = 'priority'
+ORDER BY __group__, @SORT_COLUMN@, p.value, severity, time
+@LIMIT_OFFSET@
+}}}
+
+If you want to always sort first by priority and only then by the user selected sort column, simply use the following `ORDER BY` clause:
+{{{#!sql
+ORDER BY __group__, p.value, @SORT_COLUMN@, severity, time
+}}}
+
+== Changing Report Numbering
+
+There may be instances where you need to change the ID of the report, perhaps to organize the reports better. At present this requires changes to the trac database. The ''report'' table has the following schema:
+ * id integer PRIMARY KEY
+ * author text
+ * title text
+ * query text
+ * description text
+Changing the ID changes the shown order and number in the ''Available Reports'' list and the report's perma-link. This is done by running something like:
+{{{#!sql
+UPDATE report SET id = 5 WHERE id = 3;
+}}}
+Keep in mind that the integrity has to be maintained, i.e. ID has to be unique, and you don't want to exceed the max for your database.
+
+You may also need to update or remove the report number stored in the report or query.
+
+----
+See also: TracTickets, TracQuery, [https://www.sqlite.org/lang_expr.html Query Language Understood by SQLite]

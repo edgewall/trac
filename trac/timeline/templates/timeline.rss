@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+##
+## Timeline view - RSS flavor
+##
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>${project.name}</title>
+    <link>${abs_href.timeline()}</link>
+    <description>Trac Timeline</description>
+    <language>${to_unicode(locale).replace('_', '-') if locale else 'en-US'}</language>
+    <generator>Trac ${trac.version}</generator>
+    # if chrome.logo.src_abs:
+    <image>
+      <title>${project.name}</title>
+      <url>${chrome.logo.src_abs}</url>
+      <link>${abs_href.timeline()}</link>
+    </image>
+    # endif
+
+    # for event in events:
+    <item>
+      # set abs_url = event.render('url', context)
+      # set title = event.render('summary', context) or event.render('title', context)
+      <title>${
+        title if title is string else plaintext(title, keeplinebreaks=False)
+      }</title>
+      # with author = event.author
+      #   include 'author_or_creator.rss'
+      # endwith
+      <pubDate>${http_date(event.datetime)}</pubDate>
+      <link>${abs_url}</link>
+      <guid isPermaLink="false">${abs_url}/${event.datetime_uid}</guid>
+      <description>${
+      event.render('description', context)|forceescape
+      }</description>
+      <category>${event.kind}</category>
+    </item>
+    # endfor
+
+   </channel>
+</rss>

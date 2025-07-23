@@ -1,0 +1,52 @@
+# This rst2pdf stylesheet, written in RSON format (http://code.google.com/p/rson/)
+#
+# Some guidelines:
+#  - the base styles are defined in conf.py in pdf_stylesheets, the main one
+#    being the 'sphinx' stylesheet, look at it to see what can be adapted (see
+#    http://rst2pdf.googlecode.com/svn/tags/0.16/rst2pdf/styles/sphinx.style)
+#  - the numerical color specifications need to have 6 hex digits
+#    (i.e. #A00 won't work)
+
+fontsAlias:
+ stdFont: Helvetica
+ stdBold: Helvetica-Bold
+ stdItalic: Helvetica-Oblique
+ stdBoldItalic: Helvetica-BoldOblique
+ stdSans: Helvetica
+ stdSansBold: Helvetica-Bold
+ stdSansItalic: Helvetica-Oblique
+ stdSansBoldItalic: Helvetica-BoldOblique
+ stdMono: Courier
+ stdMonoItalic: Courier-Oblique
+ stdMonoBold: Courier-Bold
+ stdMonoBoldItalic: Courier-BoldOblique
+ stdSerif: Times-Roman
+# Note: not using a predefined font results in extremely slow runtime on Windows
+#       so please stick with Helvetica, Courier and the like for now
+
+linkColor: #B00000
+# The "standard" Trac color for links
+
+styles:
+ admonition-heading: {fontSize: 80%, textColor: #A00000}
+ code:
+  backColor: #F5F5DC
+  borderColor: #D5D5CC
+  borderPadding: [6, 0, 6, 4]
+  spaceBefore: 2
+ heading:
+  backColor: #F2F2F2
+  borderColor: #CCCCCC
+  borderPadding: [6, 0, 2, 10]
+  borderWidth: 0.3
+  fontName: stdSansBold
+  fontSize: 10
+  leading: 10
+  leftIndent: 0
+  spaceBefore: 16
+  textColor: #303050
+# Some styles missing in sphinx.style:
+ file:
+  fontName: stdMono
+ function:
+  fontName: stdMonoItalic

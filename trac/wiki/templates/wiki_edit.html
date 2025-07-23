@@ -1,0 +1,271 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+
+{# Note: the wiki edit page can be presented according to several modes:
+
+  - "standard" or "side-by-side" edit mode (`sidebyside` is true in
+    the second mode) In standard mode, the edit area is on top of the
+    preview, in side-by-side mode there are next to each other.
+
+  - "edit" or "edit+preview" mode (`action == 'preview'` is true in
+    the second mode) In edit mode, only the textarea is visible, but
+    not the preview.  In sidebyside mode, we always have a preview.
+    In this category, we also have the "collision mode" (`action ==
+    'collision'`), which happens when a concurrent edit has been
+    detected.
+
+  - "wiki preview" or "diff preview" (`diff` is true in the second
+    mode) When the preview is shown, it can be either an actual
+    preview of the rendered wiki text, or it can be a diff view on the
+    changes that have been made (a.k.a. "review mode").  In the latter
+    case, `changes[0].diffs` contains the data for the diffs, if any.
+    See `preview_or_review` below.
+#}
+  <head>
+    <title>
+      # block title
+      ${title}
+      ${ super() }
+      # endblock title
+    </title>
+
+    # block head
+
+    ${ super() }
+
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <script>
+      jQuery(function($) {
+        $("#text").blur(function() {
+          $("#scroll_bar_pos").val(this.scrollTop);
+        }).get(0).scrollTop = $("#scroll_bar_pos").val();
+        $("#editrows").change(function() {
+          resizeTextArea("text", this.options[this.selectedIndex].value);
+        });
+        $("#sidebyside").change(function() {
+          $("#edit input[type=submit][name=preview]").click();
+        });
+        # if sidebyside:
+          function editorHeight() {
+            return $("#text").closest("fieldset").innerHeight();
+          }
+          function previewHeight() {
+            return $("#preview").innerHeight();
+          }
+          var preview_pad = previewHeight() - $("#preview").height();
+          var editor_pad = editorHeight() - $("#text").height();
+          function autoResizeText() {
+            $("#preview").height(0); // neutralize preview
+            $("#text").height("auto"); // adapt textarea to its content
+            var text_height = $("#text").prop("scrollHeight");
+            var wikipage_height = $("#preview").height();
+            if (wikipage_height > text_height) {
+              // expand #text to its natural height and adapt #preview to it
+              $("#text").height(text_height).css("overflow-y", "hidden");
+              $("#preview").height(Math.max(16, editorHeight() - preview_pad));
+            } else {
+              // expand .trac-content to its natural height and adapt #text to it
+              $("#preview").height("auto");
+              $("#text").height(Math.max(16, previewHeight() - editor_pad))
+                .css("overflow-y", "auto");
+            }
+          }
+          autoResizeText();
+          $(window).resize(autoResizeText);
+        # endif
+        # if sidebyside and not diff:
+          $("#text").autoPreview("${href.wiki_render()}", {
+              realm: "${page.resource.realm}",
+              id: ${to_json(page.resource.id)|safe}
+            }, function(textarea, text, rendered) {
+              var window_scroll_top = $(window).scrollTop();
+              var editor_scroll_top = $("#text").scrollTop();
+              $("#preview .trac-content").html(rendered);
+              autoResizeText();
+              $(window).scrollTop(window_scroll_top);
+              $("#text").scrollTop(editor_scroll_top);
+          });
+        # endif
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="wiki">
+      # set preview_or_review = action == 'preview' and (not diff or changes[0].diffs)
+      # if not sidebyside and preview_or_review:
+      <div class="trac-topnav">
+        # if diff:
+        <a href="#info" title="${_('See the diffs')}">${_("Review")}</a>
+        # else:
+        <a href="#info" title="${_('See the preview')}">${_("Preview")}</a>
+        # endif
+        &darr;
+      </div>
+      # endif
+
+      <h1>${_("Editing %(name)s", name=name_of(page.resource))}</h1>
+
+      {#
+
+      Normal preview mode, edit form followed by preview:
+
+      | [include "wiki_edit_form.html"                     ]
+      |
+      | == Preview ==
+      |
+      | [.Revision #info...................................]
+      |
+      | [.....#preview.....................................]
+
+
+      Side-by-side edit/preview mode:
+
+      | [.Revision #info...................................]
+      |
+      | == Preview ==
+      |                               [......#preview......]
+      | [include "wiki_edit_form.html"]
+
+      (the  #preview will float at the right of the edit form's textarea)
+
+      #}
+
+      # if action == 'collision':
+      <div class="system-message">
+        # trans
+
+        Sorry, this page has been modified by somebody else since you
+        started editing. Your changes cannot be saved.
+
+        # endtrans
+      </div>
+      # endif
+
+      # if not sidebyside:
+      #   include 'wiki_edit_form.html'
+      # endif
+
+      # if merge:
+      <div class="system-message">
+        <p>
+          # trans
+
+          Someone else has modified that page since you started your
+          edits.
+
+          # endtrans
+        </p><br />
+        <p>
+          # trans
+
+          <strong>If you save right away, you risk to revert those changes</strong>
+          (highlighted below as deletions).
+
+          # endtrans
+        </p><br />
+        <p>
+          # trans
+
+          Please review all those changes and manually merge them with
+          your own changes. <br /> If you're unsure about what you're
+          doing, please press <code>Cancel</code> (losing your changes)
+          and start editing the latest version of the page again.
+
+          # endtrans
+        </p>
+      </div>
+      # endif
+
+      # if action == 'preview':
+      <table id="info" ${{'class': 'trac-scroll' if not sidebyside}|htmlattr}>
+        <tr><th scope="col">
+            # trans version = page.version + 1, author
+
+            Change information for future version ${version} (modified
+            by ${author}):
+
+            # endtrans
+        </th></tr>
+        <tr><td class="message">
+            ${wiki_to_html(context.child(page.resource(version=none)), comment)}
+        </td></tr>
+      </table>
+
+      <div ${{'class': sidebyside and 'sidebyside preview-right'}|htmlattr}>
+        # if not sidebyside and preview_or_review:
+        <div class="trac-nav">
+          <a href="#content" title="${_('Go to the editor')}">${_("Edit")}</a>
+          &uarr;
+        </div>
+        <h2>
+          # if diff:
+          ${_("Review Changes")}
+          # else:
+          ${_("Preview")}
+          # endif
+        </h2>
+        # endif
+        # if not preview_or_review:
+        <h2>
+          ${_("No changes")}
+        </h2>
+        # endif
+        <div id="preview" class="wikipage">
+          # if diff:
+          <div class="diff">
+            # with no_id = true
+            #   include 'diff_div.html'
+            # endwith
+          </div>
+          # else:
+          <div class="trac-content trac-draft">
+            ${wiki_to_html(context, page.text)}
+          </div>
+          # endif
+        </div>
+        # if not sidebyside and page.text:
+        <div class="trac-nav">
+          <a href="#changeinfo"
+             title="${_('Go to Save, Preview, Review or Cancel buttons')}">${
+            _("Actions")}</a> &uarr;
+        </div>
+        # endif
+      </div>
+      # endif
+
+      # if sidebyside:
+      #   include 'wiki_edit_form.html'
+      # endif
+
+      # with alist = attachments, compact = true, foldable = true
+      #   include 'list_of_attachments.html'
+      # endwith
+
+      # call(note, page) jmacros.wikihelp('TracWiki'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using the wiki.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

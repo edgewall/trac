@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+##
+## Timeline view - RSS flavor
+##
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>${project.name}: ${title}</title>
+    <link>${abs_href.report(report.id)}</link>
+    <description>Trac Report - ${description}</description>
+    <language>en-us</language>
+    # if chrome.logo.src_abs:
+    <image>
+      <title>${project.name}</title>
+      <url>${chrome.logo.src_abs}</url>
+      <link>${abs_href.report(report.id if report.id != -1 else '')}</link>
+    </image>
+    # endif
+    <generator>Trac v${trac.version}</generator>
+
+    # for _, row_group in row_groups:
+    #   for row in row_group:
+    <item>
+      #   for cell_group in row.cell_groups:
+      #     for cell in cell_group:
+      #       set col = cell.header.col.strip('_')
+      #       if col == 'reporter':
+      #         with author = cell.value
+      #           include 'author_or_creator.rss'
+      #         endwith
+      #       elif col in ('time', 'changetime', 'created', 'modified'):
+      ##        # FIXME: we end up with multiple pubDate
+      #         if cell.value is not none:
+      <pubDate>${http_date(from_utimestamp(as_int(cell.value, 0)))}</pubDate>
+      #         endif
+      #       elif col == 'summary':
+      <title>#${row.id}: ${cell.value}</title>
+      #     elif col == 'description':
+      <description>${
+      wiki_to_html(context.child(row.resource), cell.value)|forceescape
+      }</description>
+      #     endif
+      #   endfor
+      # endfor
+      # if row.id:
+      <link>${abs_url_of(row.resource)}</link>
+      <guid isPermaLink="false">${abs_url_of(row.resource)}</guid>
+      # endif
+      <category>Report</category>
+    </item>
+    #   endfor
+    # endfor
+
+  </channel>
+</rss>

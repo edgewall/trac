@@ -1,0 +1,198 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      # block title
+      ${title}
+      ${ super() }
+      # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    #   set current_href = href.wiki(page.name)
+    <div id="content" class="wiki">
+      <h1>
+        # set name
+        <a href="${current_href}">${page.name}</a>
+        # endset
+        # if what == 'multiple':
+        #   trans from = old_version + 1, to = new_version, name
+
+        Delete versions ${from} to ${to} of ${name}
+
+        #   endtrans
+        # elif what == 'single':
+        #   trans version = new_version, name
+
+        Delete version ${version} of ${name}
+
+        #   endtrans
+        # else:
+        #   trans name
+
+        Delete ${name}
+
+        #   endtrans
+        # endif
+      </h1>
+
+      # set history_href = href.wiki(page.name, action='history',
+                                     version=page.version)
+      # set diff_href = href.wiki(page.name, action='diff', version=new_version,
+                                  old_version=old_version+1 if what == 'multiple'
+                                                            else None)
+
+      # set first_modified = pretty_dateinfo(old_date)
+      # set last_modified = pretty_dateinfo(new_date)
+
+      <form id="delete-confirm" action="${current_href}" method="post">
+        ${jmacros.form_token_input()}
+
+        # if what == 'multiple':
+        <p>
+          <strong>
+            # set version
+            <a href="${diff_href}">
+              ${_("versions %(from)s to %(to)s", from=old_version+1, to=new_version)}
+            </a>
+            # endset
+            # trans version
+
+            Are you sure you want to delete ${version} of this page?
+
+            # endtrans
+          </strong>
+          <br />
+          # set num_versions
+          <a href="${history_href}">${
+            ngettext("%(num)d version", "%(num)d versions", num=num_versions)
+          }</a>
+          # endset
+          # trans num_versions, first_modified, last_modified
+
+          Removing ${num_versions} of the page, which was first
+          modified ${first_modified} and last modified ${last_modified}.
+
+          # endtrans
+        </p>
+        # elif what == 'single':
+        <p>
+          <strong>
+            # set version
+            <a href="${diff_href}">${_("version %(number)s", number=new_version)}</a>
+            # endset
+
+            # trans version
+
+            Are you sure you want to delete ${version} of this page?
+
+            # endtrans
+          </strong>
+          <br />
+          # if num_versions == 1:
+          #   trans created = last_modified
+
+          Created ${created}.
+
+          #   endtrans
+          <br />
+          #   trans
+          This is the only version of the page,
+          so the page will be removed completely!
+          #   endtrans
+
+          # else:
+          #   trans modified = last_modified
+
+          Modified ${modified}.
+
+          #   endtrans
+          # endif
+        </p>
+        # else:
+        <p>
+          <strong>
+            ${_("Are you sure you want to completely delete this page?")}
+          </strong>
+          <br />
+          # if num_versions == 1:
+          #   set version
+          <a href="${diff_href}">${_("version")}</a>
+          #   endset
+          #   trans version, created = last_modified
+
+          Removing the one and only ${version} of the page, which was
+          created ${created}.
+
+          #   endtrans
+          # else:
+          #   set num_versions
+          <a href="${history_href}">${
+            ngettext("%(num)d version", "%(num)d versions", num=num_versions)
+            }</a>
+          #   endset
+          #   trans num_versions, created = first_modified, modified = last_modified
+
+          Removing all ${num_versions} of the page, which was created
+          ${created} and last modified ${modified}.
+
+          #   endtrans
+          # endif
+        </p>
+        # endif
+        # if (what == 'page' or num_versions == 1) and attachments:
+          <p>${_("The following attachments will also be deleted:")}</p>
+          <ul>
+            # for attachment in attachments:
+            <li>
+              <a href="${url_of(attachment.resource)}"
+                 title="${_('View attachment')}">${attachment.filename}</a>
+            </li>
+            # endfor
+          </ul>
+          # endif
+        <p><strong>${_("This is an irreversible operation.")}</strong></p>
+        <div class="buttons">
+          <input type="hidden" name="action" value="delete" />
+          # if new_version:
+          <input type="hidden" name="version" value="${new_version}" />
+          # endif
+          # if old_version:
+          <input type="hidden" name="old_version" value="${old_version}" />
+          # endif
+          <input type="submit" id="delete" class="trac-disable-on-submit"
+                 value="${what == 'multiple' and _('Delete those versions')
+                          or what == 'single' and _('Delete this version')
+                          or _('Delete page')}" />
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
+        </div>
+      </form>
+
+      # call(note, page) jmacros.wikihelp('WikiDeletePage'):
+      #   trans note, page
+
+      ${note} See ${page} for help on deleting wiki pages.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

@@ -1,0 +1,107 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'admin.html'
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      # block admintitle
+      ${_("Logging")}
+      # endblock admintitle
+    </title>
+
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        $("#log_type").change(function() {
+          var type = $(this).val();
+          $("#log_level").enable(type !== 'none');
+          $("#log_file").enable(type === 'file');
+        }).change();
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block adminpanel
+    <h2>${_("Logging")}</h2>
+
+    <div>
+      <form class="mod" id="modlog" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Configuration")}</legend>
+          <div class="field">
+            <label>${_("Type:")}<br />
+              <select id="log_type" name="log_type">
+                # for type in log.types:
+                <option${{'value': type.name,
+                          'selected': type.selected,
+                          'disabled': type.disabled
+                         }|htmlattr}>${type.label}</option>
+                # endfor
+              </select>
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Log level:")}<br />
+              <select id="log_level" name="log_level">
+                # for level in log.levels:
+                <option${{'selected': level==log.level}|htmlattr}>${
+                  level}</option>
+                # endfor
+              </select>
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Log file:")}<br />
+              <input type="text" id="log_file" name="log_file" value="${log.file}"
+                     size="48"/>
+            </label>
+            <p class="help">
+              # set code_log
+              <code>log</code>
+              # endset
+              # set code_dir
+              <code>${log.dir}</code>
+              # endset
+              # trans code_log, code_dir
+
+              If you specify a relative path, the log file will be
+              stored inside the ${code_log} directory of the project
+              environment (${code_dir}).
+
+              # endtrans
+            </p>
+          </div>
+        </fieldset>
+        <div class="buttons">
+          <input type="submit" value="${_('Apply changes')}" />
+        </div>
+      </form>
+
+      # call(note, page) jmacros.wikihelp('TracLogging'):
+      #   trans note, page
+
+      ${note} See ${page} for help on configuring logging.
+
+      #   endtrans
+      # endcall
+    </div>
+    # endblock adminpanel
+  </body>
+
+</html>

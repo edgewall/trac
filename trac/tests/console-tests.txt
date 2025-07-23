@@ -1,0 +1,693 @@
+===== test_config_get =====
+Test project
+===== test_config_set =====
+===== test_config_remove_option =====
+===== test_config_remove_mising_option_raises_error =====
+Error: Option 'no_exists' doesn't exist in section 'section1'
+===== test_config_remove_all_options_for_section =====
+===== test_config_remove_section =====
+===== test_config_remove_mising_section_raises_error =====
+Error: Section 'section1' doesn't exist
+===== test_permission_list_ok =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_list_includes_undefined_actions =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY, TICKET_CHGPROP,
+ TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_add_one_action_ok =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+test_user      WIKI_VIEW
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_add_multiple_actions_ok =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+test_user      FILE_VIEW
+test_user      LOG_VIEW
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_add_already_exists =====
+The user anonymous already has permission WIKI_VIEW.
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_CREATE
+anonymous      WIKI_MODIFY
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_add_subject_already_in_group =====
+The user user1 is already in the group group2.
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+user1          group1
+user1          group2
+user1          group3
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_add_differs_from_action_by_casing =====
+Error: Permission Trac_Admin differs from a defined action by casing only, which is not allowed.
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_add_unknown_action =====
+Error: NOT_A_PERM is not a valid action.
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_remove_one_action_ok =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_remove_multiple_actions_ok =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_remove_all_actions_for_user =====
+
+User           Action
+----------------------------
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_remove_action_for_all_users =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_remove_unknown_user =====
+Error: Cannot remove permission TICKET_VIEW for user joe. The user has not been granted the permission.
+===== test_permission_remove_action_not_granted =====
+Error: Cannot remove permission TICKET_CREATE for user anonymous. The user has not been granted the permission.
+===== test_permission_remove_action_granted_through_meta_permission =====
+Error: Cannot remove permission WIKI_VIEW for user joe. The permission is granted through a meta-permission or group.
+===== test_permission_remove_unknown_action =====
+Error: NOT_A_PERM is not a valid action.
+===== test_permission_remove_unknown_action_granted =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_permission_export_ok =====
+anonymous,BROWSER_VIEW,CHANGESET_VIEW,FILE_VIEW,LOG_VIEW,MILESTONE_VIEW,REPORT_SQL_VIEW,REPORT_VIEW,ROADMAP_VIEW,SEARCH_VIEW,TICKET_VIEW,TIMELINE_VIEW,WIKI_VIEW
+authenticated,TICKET_CREATE,TICKET_MODIFY,WIKI_CREATE,WIKI_MODIFY
+===== test_permission_import_ok =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+test_userɐ     TICKET_VIEW
+test_userɐ     WIKI_VIEW
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_deploy =====
+Copying resources from:
+  trac.web.chrome.Chrome
+    [...]
+Creating scripts.
+===== test_deploy_to_invalid_target_raises_error =====
+Error: Resources cannot be deployed to a target directory that is equal to or below the source directory [...].
+===== test_default_values =====
+Creating a new Trac environment at %(env_path)s
+
+Project environment for 'project1' created.
+
+You may configure the environment by editing the file:
+
+  %(tracini_path)s
+
+You can run the Trac standalone web server `tracd` and point
+your browser to http://localhost:8000/trac.
+
+  tracd --port 8000 %(env_path)s
+
+Navigate to "Help/Guide" to browse the documentation for Trac,
+including information on further setup (such as deploying Trac
+to a real web server).
+
+The latest documentation can also be found on the project
+website:
+
+  https://trac.edgewall.org/
+
+===== test_default_values_component_list =====
+
+Name        Owner
+--------------------
+component1  somebody
+component2  somebody
+
+===== test_default_values_milestone_list =====
+
+Name        Due  Completed
+--------------------------
+milestone1
+milestone2
+milestone3
+milestone4
+
+===== test_default_values_version_list =====
+
+Name  Time
+----------
+2.0
+1.0
+
+===== test_default_values_resolution_list =====
+
+Possible Values
+---------------
+fixed
+invalid
+wontfix
+duplicate
+worksforme
+
+===== test_default_values_priority_list =====
+
+Possible Values
+---------------
+blocker
+critical
+major
+minor
+trivial
+
+===== test_default_values_ticket_type_list =====
+
+Possible Values
+---------------
+defect
+enhancement
+task
+
+===== test_default_values_permission_list =====
+
+User           Action
+------------------------------
+anonymous      BROWSER_VIEW
+anonymous      CHANGESET_VIEW
+anonymous      FILE_VIEW
+anonymous      LOG_VIEW
+anonymous      MILESTONE_VIEW
+anonymous      REPORT_SQL_VIEW
+anonymous      REPORT_VIEW
+anonymous      ROADMAP_VIEW
+anonymous      SEARCH_VIEW
+anonymous      TICKET_VIEW
+anonymous      TIMELINE_VIEW
+anonymous      WIKI_VIEW
+authenticated  TICKET_CREATE
+authenticated  TICKET_MODIFY
+authenticated  WIKI_CREATE
+authenticated  WIKI_MODIFY
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_no_default_data_argument =====
+Creating a new Trac environment at %(env_path)s
+
+Project environment for 'project1' created.
+
+You may configure the environment by editing the file:
+
+  %(tracini_path)s
+
+You can run the Trac standalone web server `tracd` and point
+your browser to http://localhost:8000/trac.
+
+  tracd --port 8000 %(env_path)s
+
+Navigate to "Help/Guide" to browse the documentation for Trac,
+including information on further setup (such as deploying Trac
+to a real web server).
+
+The latest documentation can also be found on the project
+website:
+
+  https://trac.edgewall.org/
+
+===== test_no_default_data_argument_component_list =====
+
+Name  Owner
+-----------
+
+===== test_no_default_data_argument_milestone_list =====
+
+Name  Due  Completed
+--------------------
+
+===== test_no_default_data_argument_version_list =====
+
+Name  Time
+----------
+
+===== test_no_default_data_argument_resolution_list =====
+
+Possible Values
+---------------
+
+===== test_no_default_data_argument_priority_list =====
+
+Possible Values
+---------------
+
+===== test_no_default_data_argument_ticket_type_list =====
+
+Possible Values
+---------------
+
+===== test_no_default_data_argument_permission_list =====
+
+User  Action
+------------
+
+
+Available actions:
+ BROWSER_VIEW, CHANGESET_VIEW, CONFIG_VIEW, EMAIL_VIEW, FILE_VIEW,
+ LOG_VIEW, MILESTONE_ADMIN, MILESTONE_CREATE, MILESTONE_DELETE,
+ MILESTONE_MODIFY, MILESTONE_VIEW, PERMISSION_ADMIN, PERMISSION_GRANT,
+ PERMISSION_REVOKE, REPORT_ADMIN, REPORT_CREATE, REPORT_DELETE,
+ REPORT_MODIFY, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_ADMIN, ROADMAP_VIEW,
+ SEARCH_VIEW, TICKET_ADMIN, TICKET_APPEND, TICKET_BATCH_MODIFY,
+ TICKET_CHGPROP, TICKET_CREATE, TICKET_EDIT_CC, TICKET_EDIT_COMMENT,
+ TICKET_EDIT_DESCRIPTION, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW,
+ TRAC_ADMIN, VERSIONCONTROL_ADMIN, WIKI_ADMIN, WIKI_CREATE, WIKI_DELETE,
+ WIKI_MODIFY, WIKI_RENAME, WIKI_VIEW
+
+===== test_config_argument_has_invalid_path =====
+Creating a new Trac environment at %(env_path)s
+Initenv for '%(env_path)s' failed.
+The file specified in the --config argument does not exist: %(config_file)s.
+===== test_config_argument_has_invalid_value =====
+Creating a new Trac environment at %(env_path)s
+Initenv for '%(env_path)s' failed.
+Source contains parsing errors: '%(config_file)s'
+	[line  3]: '[components\n'

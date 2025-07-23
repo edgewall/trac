@@ -1,0 +1,166 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends (chrome.theme)
+# import "macros.html" as jmacros with context
+<!DOCTYPE html>
+<html>
+  <head>
+    # block head
+    <!-- # block head (content inherited from layout.html) -->
+    <title>
+    #  block title
+    – ${project.name or 'Trac'}
+    #  endblock title
+    </title>
+
+    #   if chrome.content_type == 'text/html':
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    #   endif
+
+    #   for meta in chrome.metas:
+    <meta ${meta|htmlattr} />
+    ## jinjacheck: "attribute content" OK
+    #   endfor
+
+    #   if chrome.links:
+    #     for rel, links in chrome.links.items():
+    #       for link in links:
+    <link rel="${rel}" ${link|htmlattr} />
+    #       endfor
+    #     endfor
+    #   endif
+
+    <noscript>
+      <style>
+        .trac-noscript { display: none !important }
+      </style> {# jinjacheck: "got (style )" OK #}
+    </noscript>
+    #   if trac_error_rendering is undefined and 'SEARCH_VIEW' in perm:
+    <link type="application/opensearchdescription+xml" rel="search"
+          href="${href.search('opensearch')}"
+          title="${_('Search %(project)s', project=project.name)}"/>
+    #   endif
+
+    #   if chrome.script_data:
+    <script>
+      #   for key, value in chrome.script_data.items():
+      var ${key}=${to_json(value)|safe};
+      #   endfor
+    </script>
+    #   endif
+
+    #   for script in chrome.scripts:
+    <script${script.attrs|htmlattr}></script>
+    #   endfor
+
+    <script>
+      jQuery(function($) {
+        # if chrome.warnings or chrome.notices:
+        $(".trac-close-msg").show().click(function () {
+          $(this).closest(".system-message").hide();
+          return false;
+        });
+        # endif
+        $(".trac-autofocus").focus();
+        $(".trac-target-new").attr("target", "_blank");
+        if ($.ui) { /* is jquery-ui added? */
+          $(".trac-datepicker:not([readonly])")
+            .prop("autocomplete", "off").datepicker();
+          // Input current date when today is pressed.
+          var _goToToday = $.datepicker._gotoToday;
+          $.datepicker._gotoToday = function(id) {
+            _goToToday.call(this, id);
+            this._selectDate(id)
+          };
+          $(".trac-datetimepicker:not([readonly])")
+            .prop("autocomplete", "off").datetimepicker();
+        }
+        $(".trac-disable").disableSubmit(".trac-disable-determinant");
+        setTimeout(function() { $(".trac-scroll").scrollToTop() }, 1);
+        $(".trac-disable-on-submit").disableOnSubmit();
+      });
+    </script>
+    <!--   # include 'site_head.html' (layout.html) -->
+    #   include 'site_head.html' ignore missing
+    <!--   end of site_head.html -->
+    <!-- # endblock head (content inherited from layout.html) -->
+    # endblock head
+    ## jinjacheck: "got (title meta meta meta link noscript link script script script )" OK
+  </head>
+
+  <body>
+    # block content
+    <!-- # block content (content inherited from layout.html) -->
+    {# ------------------------------------------------------------------
+
+    Note: write the extending template like this:
+
+    ## ------------------
+    # block content
+
+    <div id="content">
+    (your content)
+    </div>
+
+    ${ super() }
+
+    # endblock content
+    ## ------------------
+
+    The user content should typically go first, as evaluating the
+    expressions it contains may modify the chrome.late_links, which
+    are used afterwards in the default content. This default content
+    should be output via the call to super(), placed after the user
+    content.
+
+    ------------------------------------------------------------------ #}
+    <script type="text/javascript">
+      jQuery("body").addClass("trac-has-js");
+    </script>
+    #   if chrome.late_links:
+    <script>
+      #   for link in chrome.late_links.get('stylesheet', []):
+      jQuery.loadStyleSheet("${link.href}", "${link.type}");
+      #   endfor
+    </script>
+    #   endif
+    #   if chrome.late_script_data:
+    <script>
+      #   for key, value in chrome.late_script_data.items():
+      var ${key}=${to_json(value)|safe};
+      #   endfor
+    </script>
+    #   endif
+    #   for script in chrome.late_scripts:
+    <script>
+      jQuery.loadScript("${script.attrs.src}", "${script.attrs.type}");
+    </script>
+    #   endfor
+
+    #   if 'alternate' in chrome.links:
+    <div id="altlinks">
+      <h3>${_("Download in other formats:")}</h3>
+      <ul>
+        # for link in chrome.links.alternate:
+        <li class="${first_last(loop.index0, chrome.links.alternate)}">
+          <a rel="nofollow" href="${link.href}"
+             ${{'class': classes(link.class)}|htmlattr}>
+            ${link.title}</a>
+        </li>
+        # endfor
+      </ul>
+    </div>
+    #   endif
+    <!-- # endblock content (content inherited from layout.html) -->
+    # endblock content
+  </body>
+</html>

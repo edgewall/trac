@@ -1,0 +1,144 @@
+{# Copyright (C) 2012-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'prefs.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block preftitle
+      ${_("User Interface")}
+      # endblock preftitle
+    </title>
+  </head>
+  <body>
+    # block prefpanel
+    <div class="field">
+      <input type="hidden" name="accesskeys_cb" value="" />
+      <label>
+        <input type="checkbox" name="accesskeys" value="1"${
+             {'checked': session.get('accesskeys')}|htmlattr}/>
+        ${_("Enable access keys")}
+      </label>
+      <p class="hint">
+        # set trac_accessibility
+        <a href="${href.wiki('TracAccessibility')}">TracAccessibility</a>
+        # endset
+        # trans trac_accessibility
+
+        This site provides keyboard shortcuts for faster access to
+        certain functions of this site. As these shortcuts can cause
+        conflicts with shortcuts provided by the desktop system or web
+        browser, they are disabled by default. See
+        ${trac_accessibility} for more information on access keys.
+
+        # endtrans
+      </p>
+    </div>
+
+    <div class="field">
+      <input type="hidden" name="wiki_fullwidth_cb" value="" />
+      <label>
+        <input type="checkbox" name="wiki_fullwidth" value="1"${
+             {'checked': session.get('wiki_fullwidth')}|htmlattr}/>
+        ${_("Show wiki pages in full-width by default.")}
+      </label>
+      <p class="hint">
+        # trans
+
+        Use all the available browser width to display the wiki page
+        content, instead of the fixed-width central column aimed at
+        improving readability.
+
+        # endtrans
+      </p>
+    </div>
+
+    <div class="field">
+      <input type="hidden" name="ui.use_symbols_cb" value="" />
+      <label>
+        <input type="checkbox" name="ui.use_symbols" value="1"${
+             {'checked': session.get('ui.use_symbols')}|htmlattr}/>
+        ${_("Use only symbols for buttons.")}
+      </label>
+      <p class="hint">
+        # trans
+
+        Display only the icon or symbol for short inline buttons, and
+        hide the text caption.
+
+        # endtrans
+      </p>
+    </div>
+
+    <div class="field">
+      <input type="hidden" name="ui.hide_help_cb" value="" />
+      <label>
+        <input type="checkbox" name="ui.hide_help" value="1"${
+             {'checked': session.get('ui.hide_help')}|htmlattr}/>
+        ${_("Hide help links.")}
+      </label>
+      <p class="hint">
+        # trans
+
+        Don't show the various help links.  This reduces the verbosity
+        of the pages.
+
+        # endtrans
+      </p>
+    </div>
+
+    <div class="field">
+      <label>
+        ${_("Auto preview timeout:")}
+        <input type="text" name="ui.auto_preview_timeout" size="1"
+               value="${session.get('ui.auto_preview_timeout')}"/>
+      </label>
+      <span class="hint">seconds</span>
+      <p class="hint">
+        # trans default_auto_preview_timeout
+
+        Defaults to the site-configured value
+        (${default_auto_preview_timeout} seconds) when empty.
+        Set to 0 to disable autopreview.
+
+        # endtrans
+      </p>
+    </div>
+    <div class="field">
+      # set session_default_handler = session.get('default_handler')
+      # set default_handler = session_default_handler or project_default_handler
+      <label for="default_handler">${_("Default handler:")}</label>
+      <select id="default_handler" name="default_handler">
+        <option value="">
+          ${_("Default: %(default)s", default=project_default_handler)}</option>
+        # if session_default_handler and session_default_handler not in valid_default_handlers:
+        <option selected="selected" value="${session_default_handler}">${
+          session_default_handler}</option>
+        # endif
+        # for handler in valid_default_handlers:
+        <option${{'value': handler,
+                  'selected': handler == session_default_handler
+                 }|htmlattr}>${handler}</option>
+        # endfor
+      </select>
+      # if default_handler not in valid_default_handlers:
+      <span class="hint">
+        # trans handler = default_handler
+
+        ${handler} is not a valid IRequestHandler or is not enabled.
+
+        # endtrans
+      </span>
+      # endif
+    </div>
+    # endblock prefpanel
+  </body>
+</html>

@@ -1,0 +1,52 @@
+{# Copyright (C) 2008-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+{# Displays a sequence of path components.
+
+  Each component is a link to the corresponding location in the browser.
+
+  We expect the following variables to be available in the calling
+  context:
+
+   * `path_links`, a list of dicts each having the following keys:
+     * `name`, the path component name
+     * `href`, a link pointing to this path
+   * `stickyrev`, the optional revision information to show
+   * `reponame`, the optional repository name
+#}
+# if path_links:
+## the realm:
+<a class="pathentry first" href="${path_links[0].href}"
+   title="${_('Go to repository index') if reponame else
+            _("Go to repository root")}">${path_links[0].name}</a>
+{# the/path/.../...
+
+  Note: in the `for` loop below, we take great care of not introducing
+        any space characters, so that one can easily copy the path to
+        the clipboard.
+
+#}
+#-   for part in path_links[1:]:
+<a class="pathentry" href="${part.href}"
+   title="${_('View %(name)s', name=part.name)}">${part.name}</a>{%
+if not loop.last %}<span class="pathentry sep">/</span>{% endif %}
+#-   endfor
+#- endif
+
+# if stickyrev:
+#   with drev = display_rev(stickyrev)
+<span class="pathentry sep">@</span>
+<a class="pathentry" href="${href.changeset(stickyrev, reponame)}"
+   title="${_('View changeset %(rev)s', rev=drev)}">${drev}</a>
+#   endwith
+# endif
+<br style="clear: both" />
+## jinjacheck: "(a a span span a br )" OK
