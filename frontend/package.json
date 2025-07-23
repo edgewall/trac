@@ -59,6 +59,20 @@
     },
     "@eslint/eslintrc": {
       "ajv": "^8.17.1"
+    },
+    "fork-ts-checker-webpack-plugin": {
+      "schema-utils": {
+        "ajv": "^8.17.1",
+        "ajv-keywords": "^5.1.0"
+      }
+    },
+    "react-scripts": {
+      "fork-ts-checker-webpack-plugin": {
+        "schema-utils": {
+          "ajv": "^8.17.1",
+          "ajv-keywords": "^5.1.0"
+        }
+      }
     }
   },
   "proxy": "http://localhost:8000"
