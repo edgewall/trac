@@ -1,0 +1,77 @@
+Index: build/generator/gen_base.py
+===================================================================
+--- build/generator/gen_base.py	(revision 1900881)
++++ build/generator/gen_base.py	(revision 1900882)
+@@ -76,7 +76,7 @@
+ 
+     # Now read and parse build.conf
+     parser = configparser.ConfigParser()
+-    parser.readfp(open(fname))
++    parser.read_file(open(fname))
+ 
+     self.conf = build_path(os.path.abspath(fname))
+ 
+Index: build/generator/gen_win_dependencies.py
+===================================================================
+--- build/generator/gen_win_dependencies.py	(revision 1910097)
++++ build/generator/gen_win_dependencies.py	(revision 1910098)
+@@ -1045,12 +1045,13 @@
+     "Find the appropriate options for creating SWIG-based Python modules"
+ 
+     try:
+-      from distutils import sysconfig
+-
+-      inc_dir = sysconfig.get_python_inc()
+-      lib_dir = os.path.join(sysconfig.PREFIX, "libs")
++      import sysconfig
+     except ImportError:
+       return
++    config_vars = sysconfig.get_config_vars()
++    inc_dir = config_vars['INCLUDEPY']
++    base_dir = config_vars.get('installed_base') or config_vars.get('base')
++    lib_dir = os.path.join(base_dir, 'libs')
+ 
+     if sys.version_info[0] >= 3:
+       if self.swig_version < (3, 0, 10):
+Index: build/get-py-info.py
+===================================================================
+--- build/get-py-info.py	(revision 1910097)
++++ build/get-py-info.py	(revision 1910098)
+@@ -44,7 +44,16 @@
+   usage()
+ 
+ try:
+-  from distutils import sysconfig
++  if sys.version_info[0] == 2:
++    from distutils import sysconfig
++    get_include = lambda: sysconfig.get_python_inc()
++    get_platinclude = lambda: sysconfig.get_python_inc(plat_specific=1)
++    get_purelib = lambda: sysconfig.get_python_lib()
++  else:
++    import sysconfig
++    get_include = lambda: sysconfig.get_path('include')
++    get_platinclude = lambda: sysconfig.get_path('platinclude')
++    get_purelib = lambda: sysconfig.get_path('purelib')
+ except ImportError:
+   # No information available
+   print("none")
+@@ -51,8 +60,8 @@
+   sys.exit(1)
+ 
+ if sys.argv[1] == '--includes':
+-  inc = sysconfig.get_python_inc()
+-  plat = sysconfig.get_python_inc(plat_specific=1)
++  inc = get_include()
++  plat = get_platinclude()
+   if inc == plat:
+     print("-I" + inc)
+   else:
+@@ -140,7 +149,7 @@
+   sys.exit(0)
+ 
+ if sys.argv[1] == '--site':
+-  print(sysconfig.get_python_lib())
++  print(get_purelib())
+   sys.exit(0)
+ 
+ usage()

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+##
+## Ticket view - RSS flavor
+##
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  ## jinjacheck: "no DTD" OK
+  <channel>
+    <title>${project.name}: Ticket #${ticket.id}: ${ticket.summary}</title>
+    <link>${abs_href.ticket(ticket.id)}</link>
+    <description>${
+    wiki_to_html(context, ticket.description)|forceescape
+    }</description>
+    <language>en-us</language>
+    # if chrome.logo.src_abs:
+    <image>
+      <title>${project.name}</title>
+      <url>${chrome.logo.src_abs}</url>
+      <link>${abs_href.ticket(ticket.id)}</link>
+    </image>
+    # endif
+    <generator>Trac ${trac.version}</generator>
+
+    # for change in changes:
+    <item>
+      # with  author = change.author
+      #   include 'author_or_creator.rss'
+      # endwith
+      <pubDate>${http_date(change.date)}</pubDate>
+      <title>${change.title}</title>
+      <link>${abs_href.ticket(ticket.id)}{% if change.cnum:
+      %}#comment:${change.cnum}{% endif %}
+      </link>
+      <guid isPermaLink="false">${abs_href.ticket(ticket.id)}{% if change.cnum
+      %}#comment:${change.cnum}{% endif %}</guid>
+      <description>
+        # if change.fields:
+        ${'<ul>'|e}
+        #   for field, value in change.fields.items():
+        ${'  <li><strong>'|e}${field}${'</strong>'|e}
+        #     if value.rendered:
+        ${value.rendered|forceescape}
+        #     elif not value.old:
+        ${_("set to %(value)s", value='<em>%s</em>'|format(value.new))}
+        #     elif value.new:
+        ${_("changed from %(old)s to %(new)s",
+            old='<em>%s</em>'|format(value.old),
+            new='<em>%s</em>'|format(value.new))}
+        #     else:
+        ${_("%(value)s deleted", value='<em>%s</em>'|format(value.old))}
+        #     endif
+        ${'  </li>'|e}
+        #   endfor
+        ${'</ul>'|e}
+        # endif
+        ${wiki_to_html(context, change.comment)|forceescape}
+      </description>
+      <category>${_("Ticket")}</category>
+    </item>
+    # endfor
+ </channel>
+</rss>

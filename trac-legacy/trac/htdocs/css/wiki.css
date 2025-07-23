@@ -1,0 +1,302 @@
+@charset "UTF-8"; /* -*- coding: utf-8 -*- */
+@import url(code.css);
+
+#info { margin: 0 0 1em 0 }
+
+#wikipage {
+ clear: both;
+}
+
+/* Wide wiki page */
+#content #wikipage {
+ max-width: none;
+}
+#content #trac-wiki-expander {
+ cursor: pointer;
+}
+#content #trac-wiki-expander:before {
+ content: "↹";
+}
+
+/* Narrow wiki page */
+#trac-wiki-expander {
+ float: right;
+ margin-top: -.5em;
+ margin-right: -.5em;
+}
+
+#content.narrow #wikipage {
+ max-width: 53em;
+}
+#content.narrow #trac-wiki-expander:before {
+ content: "↔";
+}
+
+
+/* Wiki page headings -- h1 to h6 (h2 and h3 have a special underline) */
+
+h1.section {
+ font-size: 1.8em;
+ color: #822;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+h2.section {
+ font-size: 1.6em;
+ color: #822;
+ margin-top: 1.4em;
+ padding: .2em .3em 1em .5rem; /* wiki_h_underline_padding _ _ wiki_h_left_padding */
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
+  rgba(215, 215, 215, .4) .79em,
+  #822 .8em, /* wiki_h_underline_color wiki_h_underline_shadow */
+  #822 .9em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  rgba(255, 255, 255, 0) .9em,
+  rgba(255, 255, 255, 0) 100%
+ )
+ /* wiki_h2_underline_background */
+}
+h3.section {
+ font-size: 1.3em;
+ font-weight: 600;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: 1em;
+ padding: .2em .3em 1em .5rem; /* _ _ (wiki_h_underline_padding + wiki_h_underline_shadow) wiki_h_left_padding */
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
+  rgba(215, 215, 215, .4) .8em,
+  #822 .8em,  /* _ wiki_h_underline_shadow */
+  #822 .85em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  rgba(255, 255, 255, 0) .9em,
+  rgba(255, 255, 255, 0) 100%
+ ) /* wiki_h3_underline_background */
+}
+
+h2.section + *, h3.section + * {
+ margin-top: -1em !important;
+}
+h2.section :link, .section h2 :visited,
+h3.section :link, .section h3 :visited { border-bottom: none }
+
+
+h2.section:target {
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
+  rgba(215, 215, 215, .4) .79em,
+  #822 .8em, /* wiki_h_underline_color wiki_h_underline_shadow */
+  #822 .9em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  #fbffb6 .9em, /* trac_hl_color */
+  #fbffb6 100%	/* trac_hl_color */
+ );
+ box-shadow: none;
+}
+h3.section:target {
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0) 0,
+  rgba(239, 239, 239, .4) .4em,
+  rgba(215, 215, 215, .4) .8em,
+  #822 .8em,  /* _ wiki_h_underline_shadow */
+  #822 .85em, /* wiki_h_underline_shadow + wiki_h3_underline_height */
+  #fbffb6 .9em, /* trac_hl_color */
+  #fbffb6 100%  /* trac_hl_color */
+ );
+ box-shadow: none;
+}
+
+
+@media screen {
+ #content.narrow .trac-wiki-center {
+  background: #fff;
+  opacity: 0.8;
+ }
+}
+@media print {
+ #content.narrow #wikipage { max-width: none }
+ #content.narrow .trac-wiki-center { margin-left: unset !important }
+ #content #trac-wiki-expander { display: none }
+ h2.section:target {
+  background: linear-gradient(to top,
+   #fff 0,
+   #fff .79em,
+   #822 .8em,
+   #822 .9em,
+   #fff .9em,
+   #fff 100%
+  )
+ }
+ h3.section:target {
+  background: linear-gradient(to top,
+   #fff 0,
+   #fff .8em,
+   #822 .8em,
+   #822 .85em,
+   #fff .9em,
+   #fff 100%
+  )
+ }
+}
+
+h4.section {
+ font-size: 1.15em;
+ font-weight: 600;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: 1em;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+h5.section {
+ font-size: 1.1em;
+ font-weight: normal;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: .9em;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+h6.section {
+ font-size: 1em;
+ font-style: italic;
+ font-weight: normal;
+ color: #822;
+ margin-top: 1.4em;
+ margin-bottom: .8em;
+ padding-left: .5rem; /* wiki_h_left_padding */
+}
+
+/* Wiki page margins and padding:
+
+ |----------------------------------------------| <div class="wikipage">
+        |--------------------------------|           <div class="trac-content">
+        |++++++++++++++++++++++++++++++++|
+        |+++                           ++|           (+) = .5rem
+        |+++                           ++|
+        |+++                           ++| .wikipage .trac-content
+        |+++                           ++|               padding-left: 1.5rem
+        |+++                           ++|
+        |+h2 Section                   ++| .wikipage h2  margin-left: -1.5rem
+        |+++                           ++|               padding-left: .5rem
+*/
+.wikipage .trac-content {
+ margin: .3em auto;
+ padding-left: 1.5rem;  /* wikipage_content_padding_left */
+}
+.wikipage .trac-content .wikipage { /* not perfect... should also work for tickets! */
+ margin-left: -1.5rem;
+ padding-left: 1.5rem;
+}
+table.wiki {
+ background-color: inherit;
+}
+
+/* Styles for the path of hierarchical pages */
+#pagepath {
+ font-size: .9em; /* ctxtnav_font_size */
+ float: left;
+ padding: .4em 0; /* mainnav_padding */
+}
+#pagepath :link, #pagepath :visited { margin: 0 .2em }
+#pagepath .first:link, #pagepath .first:visited { color: #998 }
+#pagepath .sep { color: #666; padding: 0 .1em }
+#pagepath .pathentry { float: left }
+
+/* Styles for the page creation form */
+.create #modifypage input { margin: 2px /* trac.css' input {} */ }
+
+/* Styles for the page editing form */
+.wikipage h2.editor { margin-left: 0 }
+.preview-right {
+ float: right;
+ width: 50%;
+ display: block;
+ margin: 0 0 0 1em;
+}
+.sidebyside > h2 { margin: .4em 0 }
+.sidebyside #preview {
+ margin: 0;
+}
+.sidebyside #text { overflow: hidden }
+
+#edit { margin-top: .5em }
+#edit #rows {
+ float: right;
+ font-size: 80%;
+ margin: .4em 0 0 0;
+}
+#edit #rows select { font-size: 90% }
+#edit fieldset { margin-left: 1px; margin-right: 1px }
+#edit #text {
+ clear: both;
+ min-height: 10em;
+ resize: vertical;
+}
+#edit .wikitoolbar { float: left }
+#edit div.trac-resizable { clear: both }
+#edit + #info { margin-top: 1em }
+#edit + #attachments { margin-top: 1.5em }
+#delete, #rename, #save { margin-left: 3em }
+#preview .trac-content {
+ margin: 0;
+ overflow: auto;
+}
+
+/* Diff view */
+#overview .multi { color: #999 }
+#overview .comment { padding: 1em 0 0 }
+
+@media print {
+ th.diff, td.diff { display: none }
+}
+
+/* Styles for the TracGuideToc wikimacro */
+.wiki-toc {
+ padding: .5em 1em;
+ margin: 0 0 2em 1em;
+ float: right;
+ clear: right;
+ border: 1px solid #ddc;
+ border-radius: .4em; /* main_border_radius */
+ box-shadow: .1em .3em .5em 0 #d4d4d4; /* aside_box_shadow */
+ background: #ffd;
+ font-size: 85%;
+ position: relative;
+}
+.wiki-toc h4 {
+ font-size: 1.2em;
+ margin: 0 0 .5em;
+ padding: 0;
+}
+.wiki-toc ul, .wiki-toc ol { list-style: none; padding: 0; margin: 0 }
+.wiki-toc ul ul, .wiki-toc ol ol { padding-left: 1.2em }
+.wiki-toc li { margin: 0; padding: 0 }
+.wiki-toc .active { background: #ff9; position: relative; }
+.wiki-toc-un ul, .wiki-toc-un ol { list-style: none; }
+.wiki-toc ol li { font-weight: normal }
+.wiki-toc > ol > li { font-weight: 500 }
+
+div.trac-modifiedby {
+ margin: .3em .5em;
+ color: #888;
+ font-size: 80%;
+ font-style: italic;
+ text-align: right;
+ float: right;
+}
+div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
+div.trac-modifiedby span.trac-print { display: none; }
+@media print {
+ div.trac-modifiedby span { display: none; }
+ div.trac-modifiedby span.trac-print { display: block; }
+}
+
+/* TracIni default value */
+div.tracini td.default { font-size: 90% }
+div.tracini td.nodefault {
+ color: #777;
+ font-size: 85%;
+ font-style: italic;
+ white-space: nowrap;
+}
+div.tracini td > p:first-child { margin-top: 0 }
+div.tracini td > p:last-child { margin-bottom: 0 }

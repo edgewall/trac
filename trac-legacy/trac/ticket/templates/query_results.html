@@ -1,0 +1,207 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+{# Generate table containing ticket query results.
+
+ Arguments:
+
+ - groups    - a dict, where:
+                key       - is the value shared by all results in this group
+                value     - is the list of corresponding tickets
+
+ - headers   - a sequence of header structure:
+                .name     - field name for this header
+                .label    - what to display for this header
+
+ - fields    - dict of field name to field structure:
+                .label    - field label
+
+ - query     - the actual Query instance used to perform the query
+#}
+
+<div>
+  # if paginator.has_more_pages:
+  #   set numresults
+  <span class="numresults">(${paginator.displayed_items()})</span>
+  #   endset
+  <h2 class="report-result">${tag_("Results %(num)s", num=numresults)}</h2>
+  # endif
+  # if paginator.show_index:
+  #   include 'page_index.html'
+  # endif
+
+  # macro group_heading(groupname, results)
+  #   if groupname is not none:
+  <h2 class="report-result" >
+    #   with
+    #     set grouplabel = fields[query.group].label
+    #     set groupname =  (authorinfo(groupname) if
+                            query.group in ('owner', 'reporter')
+                            else (groupname or _('None')))
+    #     set count
+    <span class="numrows">
+      (${ngettext('%(num)s match', '%(num)s matches', len(results))})
+    </span>
+    #     endset
+    #     trans grouplabel, groupname, count
+
+    ${grouplabel}: ${groupname} ${count}
+
+    #     endtrans
+    #  endwith
+    </h2>
+  #   endif
+  # endmacro
+
+  <table class="listing tickets">
+    # if len(groups) > 0 and groups[0][0] is not none:
+    <caption class="trac-group">
+      ${group_heading(*groups[0])}
+    </caption>
+    # endif
+    <thead class="trac-query-heading">
+      # macro column_headers()
+      <tr class="trac-columns">
+        # for header in headers:
+        <th class="${header.name + ((' desc' if query.desc else ' asc') if
+                   query.order == header.name else '')}">
+          # with asc = _('(ascending)'), desc = _('(descending)')
+          <a title="${_('Sort by %(col)s %(direction)s', col=header.label,
+                        direction=(desc if query.order == header.name and not query.desc else asc))}"
+             href="${header.href}">${header.label}</a>
+          # endwith
+        </th>
+        # endfor
+      </tr>
+      # endmacro
+
+      ${column_headers()}
+    </thead>
+
+    # with num_cols = len(headers)
+    #   for groupname, results in groups:
+    #     if not loop.first:
+    <tbody class="trac-query-heading">
+      #     if groupname is not none:
+      <tr class="trac-group">
+        <td class="trac-colspan" colspan="${num_cols}">
+          ${group_heading(groupname, results)}
+        </td>
+      </tr>
+      #     endif
+      ${column_headers()}
+    </tbody>
+    #     endif
+    <tbody class="trac-query-results">
+      #   if not results:
+      <tr class="even">
+        <td class="trac-colspan" colspan="${num_cols}">${_("No tickets found")}</td>
+      </tr>
+      #   endif
+      #   for result in results:
+      #     set ticket_context = context.child('ticket', result.id)
+      #     if 'TICKET_VIEW' in perm(ticket_context.resource):
+      <tr class="${classes(
+                 loop.cycle('odd', 'even'),
+                 'prio' + (result._priority_value or ''),
+                 added='_added' in result,
+                 changed='_changed' in result,
+                 removed='_removed' in result)}">
+        #     for header in headers:
+        #       set name = header.name
+        #       set value = result[name]
+        #       set wikitext = (header.field.type == 'text' and
+                                header.field.format == 'wiki')
+        #       set wikitextarea = (header.field.type == 'textarea' and
+                                    header.field.format == 'wiki')
+        #       if name == 'id':
+        <td class="id"><a href="${result.href}" title="${_('View ticket')}"${
+                          {'class': 'closed' if result.status == 'closed'}
+                          |htmlattr}>#${result.id}</a></td>
+        #       else:
+        <td class="${name}">
+          #       if name == 'summary':
+          <a href="${result.href}" title="${_('View ticket')}">${value}</a>
+          #       elif header.field.type == 'time':
+          ${pretty_dateinfo(value, header.field.format, dateonly=True)}
+          #       elif header.field.type == 'checkbox':
+          ${_("yes") if value else _("no")}
+          #       elif name == 'reporter':
+          ${authorinfo(value)}
+          #       elif name == 'cc':
+          ${format_emails(ticket_context, value)}
+          #       elif name == 'owner' and value:
+          ${authorinfo(value)}
+          #       elif name == 'milestone' and value:
+          ${resource_link(context, Resource('milestone', value), 'compact')}
+          #       elif wikitext:
+          ${wiki_to_oneliner(ticket_context, value)}
+          #       elif wikitextarea:
+          ${wiki_to_html(ticket_context, value)}
+          #       elif header.field.type == 'textarea':
+          #         for line in (value.splitlines() if value else []):
+          #           if loop.index > 1:
+          <br />
+          #           endif
+          ${line}
+          #         endfor
+          #       else:
+          ${value}
+          #       endif
+        </td>
+        #       endif
+        #     endfor
+      </tr>
+      #       if ticket_context.resource in context:
+      <tr class="fullrow">
+        <td class="trac-colspan" colspan="${num_cols}">
+          <p class="meta"><em>${_("(this ticket)")}</em></p>
+        </td>
+      </tr>
+      #       else:
+      #         for r in row if result[r]:
+      #           set field = fields.get(r)
+      #           set value = result[r]
+      <tr class="fullrow">
+        <th class="meta">${field.label if field else (r or 'none')}</th>
+        <td class="trac-colspan" colspan="${num_cols - 1}">
+          #         if field.format == 'wiki':
+          ## FIXME what to do with xml:space="preserve"?
+          ${wiki_to_html(ticket_context, value)}
+          #         else:
+          #           for line in (value.splitlines() if value else []):
+          #             if loop.index > 1:
+          <br />
+          #             endif
+          ${line}
+          #           endfor
+          #         endif
+        </td>
+      </tr>
+      #         endfor
+      #       endif
+      #     endif
+      #   endfor
+      #   if loop.last and last_group_is_partial:
+      <tr>
+        <td class="trac-colspan" colspan="${num_cols}">
+          <i>${_("(more results for this group on next page)")}</i>
+        </td>
+      </tr>
+      #   endif
+      </tbody>
+    #   endfor
+  </table>
+  #   endwith
+  #   if paginator.show_index:
+  #     include 'page_index.html'
+  #   endif
+</div>

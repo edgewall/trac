@@ -1,0 +1,334 @@
+# Ukrainian translations for Trac.
+# Copyright (C) 2012-2023 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+#
+# Translators:
+# Remy Blank <remy.blank@pobox.com>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 1.5.4\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2022-12-14 22:34-0500\n"
+"PO-Revision-Date: 2022-12-20 02:59+0000\n"
+"Last-Translator: Sergii Galashyn <trovich@gmail.com>\n"
+"Language: uk\n"
+"Language-Team: uk <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: tracopt/ticket/htdocs/ticketclone.js:22
+msgid "Clone"
+msgstr "Клонувати"
+
+#: tracopt/ticket/htdocs/ticketclone.js:34
+msgid "Create a new ticket from this comment"
+msgstr "Створити з цього коментаря новий квиток"
+
+#: tracopt/ticket/htdocs/ticketclone.js:41
+#, python-format
+msgid "(part of #%(ticketid)s) %(summary)s"
+msgstr "(частина з №%(ticketid)s) %(summary)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:47
+#, python-format
+msgid ""
+"Copied from [%(source)s]:\n"
+"%(description)s"
+msgstr ""
+"Скопійовано з [%(source)s]:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:59
+msgid "Create a copy of this ticket"
+msgstr "Створити копію цього квитка"
+
+#: tracopt/ticket/htdocs/ticketclone.js:60
+#, python-format
+msgid "%(summary)s (cloned)"
+msgstr "%(summary)s (клоновано)"
+
+#: tracopt/ticket/htdocs/ticketclone.js:65
+#, python-format
+msgid ""
+"Cloned from #%(id)s:\n"
+"%(description)s"
+msgstr ""
+"Клоновано з №%(id)s:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+msgid "Delete"
+msgstr "Видалити"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+msgid "Delete ticket"
+msgstr "Видалити квиток"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "Видалити коментар %(num)s"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr "Перемкнути усі"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(немає даних про набір змін)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Закрити"
+
+#: trac/htdocs/js/diff.js:117
+msgid "Tabular"
+msgstr "Табличний"
+
+#: trac/htdocs/js/diff.js:123
+msgid "Unified"
+msgstr "Уніфікований"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Розгорнути підтеку на місці"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Знову розгорнути теку"
+
+#: trac/htdocs/js/expand_dir.js:122
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Відкриття %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:150
+msgid "(empty)"
+msgstr "(порожньо)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "(error)"
+msgstr "(помилка)"
+
+#: trac/htdocs/js/expand_dir.js:165
+msgid "Fold directory"
+msgstr "Згорнути теку"
+
+#: trac/htdocs/js/folding.js:61
+#, python-format
+msgid "Show %(title)s"
+msgstr "Показати %(title)s"
+
+#: trac/htdocs/js/folding.js:73
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (натисніть, щоб сховати стовпчик)"
+
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr ""
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
+msgid "Done"
+msgstr "Готово"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "Попередній"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "Наступний"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "Нині"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "Тж"
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:31
+msgid "Choose Time"
+msgstr "Обрати час"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:33
+msgid "Time"
+msgstr "Час"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Hour"
+msgstr "Година"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Minute"
+msgstr "Хвилина"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Second"
+msgstr "Секунда"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:36
+msgid "Time Zone"
+msgstr "Часовий пояс"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:38
+msgid "Now"
+msgstr "Зараз"
+
+#: trac/htdocs/js/query.js:160
+msgid "A filter already exists for that property"
+msgstr "Фільтр для цієї властивості вже існує"
+
+#: trac/htdocs/js/query.js:187
+msgid "or"
+msgstr "або"
+
+#: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
+msgid "yes"
+msgstr "так"
+
+#: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
+msgid "no"
+msgstr "ні"
+
+#: trac/htdocs/js/query.js:218
+#, python-format
+msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
+msgstr "<label>між %(start)s</label> <label>та %(end)s</label>"
+
+#: trac/htdocs/js/query.js:381
+msgid " remove:"
+msgstr " вилучити:"
+
+#: trac/htdocs/js/query.js:391
+msgid " add:"
+msgstr " додати:"
+
+#: trac/htdocs/js/query.js:425
+#, python-format
+msgid "Select ticket #%(id)s for modification"
+msgstr "Обрати киток №%(id)s для зміни"
+
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr ""
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
+msgstr ""
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Посилання сюди"
+
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
+msgstr ""
+
+#: trac/htdocs/js/trac.js:96
+msgid "At least one item must be selected"
+msgstr "Потрібно обрати хоча б один елемент"
+
+#: trac/htdocs/js/trac.js:243
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+"Є незбережені зміни. Якщо Ви не збережете зміни та покинете цю сторінку, "
+"то зміни будуть втрачені."
+
+#: trac/htdocs/js/wiki.js:75
+#: trac/notification/templates/prefs_notification.html:16
+#: trac/ticket/templates/ticket.html:4
+msgid "Link to this section"
+msgstr "Посилання на цю секцію"
+
+#: trac/htdocs/js/wiki.js:77
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Посилання на #%(id)s"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Bold text: **Example**"
+msgstr "Жирний текст: **Зразок**"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Italic text: ''Example''"
+msgstr "Курсивний текст: ''Зразок''"
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Heading: == Example"
+msgstr "Заголовний: == Example"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Посилання: [http://www.example.com/ Зразок]"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Code block: {{{ example }}}"
+msgstr "Блок коду: {{{ зразок }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "Horizontal rule: ----"
+msgstr "Горизонтальна лінія: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "New paragraph"
+msgstr "Новий абзац"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Line break: \\\\"
+msgstr "Розрив рядка: \\\\"
+
+#: trac/htdocs/js/wikitoolbar.js:83
+msgid "Image: [[Image()]]"
+msgstr "Зображення: [[Image()]]"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:8
+msgid "Link to this diff"
+msgstr "Посилання на цей diff"
+
+#~ msgid "between"
+#~ msgstr "між"
+
+#~ msgid "and"
+#~ msgstr "та"
+
+#~ msgid "Select ticket %(id)s for modification"
+#~ msgstr ""
+
+#~ msgid "Toggle selection of all tickets shown in this group"
+#~ msgstr ""
+
+#~ msgid "Bold text: '''Example'''"
+#~ msgstr "Жирний текст: '''Зразок'''"
+
+#~ msgid "Heading: == Example =="
+#~ msgstr "Заголовок: == Зразок =="
+
+#~ msgid "Line break: [[BR]]"
+#~ msgstr "Розрив рядка: [[BR]]"
+

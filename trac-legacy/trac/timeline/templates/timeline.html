@@ -1,0 +1,116 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      # block title
+      ${_("Timeline")}
+      ${ super() }
+      # endblock title
+    </title>
+
+    ## Note: no need to reimplement head block if no changes needed there
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="timeline">
+
+      <h1>${_("Timeline")}</h1>
+
+      <form id="prefs" method="get" action="${req.request_path}">
+        <div>
+          # set fromdate_input
+          <input type="text" id="fromdate" class="trac-datepicker" size="10"
+                 name="from" value="${format_date(fromdate)}" />
+          # endset
+          # set daysback_input
+          <input type="text" size="3" name="daysback" value="${daysback}" />
+          # endset
+          # set authors_input
+          <input type="text" size="16" name="authors" value="${authors}" />
+          # endset
+          # trans fromdate=fromdate_input, daysback=daysback_input, authors=authors_input
+
+          <label>View changes from ${fromdate}</label>
+          <br />
+          <label>going back ${daysback} days</label>
+          <br />
+          <label>by author ${authors}</label>
+
+          # endtrans
+        </div>
+        <fieldset>
+          # for filter in filters:
+          <label>
+            <input type="checkbox" name="${filter.name}"
+                   ${{'checked': filter.enabled}|htmlattr}/> ${filter.label}
+          </label>
+          # endfor
+        </fieldset>
+        <div class="buttons">
+          <input type="submit" name="update" value="${_('Update')}" />
+        </div>
+      </form>
+
+      # for date, events in events|groupby('date')|sort(reverse=true):
+      <h2>${format_date(date)}: ${_("Today") if date == today else
+                                  _("Yesterday") if date == yesterday}</h2>
+      # for unread, events in events|groupby('unread')|sort(reverse=true):
+      <dl ${{'class': 'unread' if events[0].unread}|htmlattr}>
+        # for event in events:
+        #   set event_delta = precisedate and (event.datetime - precisedate)
+        #   set highlight = precision and precisedate and timedelta(0) is lessthanorequal(event_delta) and event_delta is lessthan(precision)
+        <dt class="${classes(event.kind, highlight=highlight, unread=unread)}">
+          <a href="${event.render('url', context)}">
+            # set time
+            <span class="time">${format_time(event.datetime, 'short')}</span>
+            # endset
+            # set title = event.render('title', context)
+            # if event.author:
+            #   trans time, title, author = authorinfo(event.author)
+
+            ${time} ${title} by ${author}
+
+            #   endtrans
+            # else:
+            ${time} ${title}
+            # endif
+          </a>
+        </dt>
+        #   set rendered = event.render('description', context)
+        #   if rendered:
+        <dd class="${classes(event.kind, highlight=highlight)}">
+          ${rendered}
+        </dd>
+        #   endif
+        # endfor
+      </dl>
+      # endfor
+      # endfor
+
+      # call(note, page) jmacros.wikihelp('TracTimeline'):
+      #   trans note, page
+
+      ${note} See ${page} for information about the timeline view.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

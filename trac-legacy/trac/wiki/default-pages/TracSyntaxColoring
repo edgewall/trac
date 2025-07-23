@@ -1,0 +1,35 @@
+= Syntax Coloring of Source Code
+Trac supports language-specific syntax highlighting of source code within wiki formatted text in [WikiProcessors#CodeHighlightingSupport wiki processors] blocks and in the [TracBrowser repository browser]. Syntax coloring is provided using [http://pygments.org/ Pygments], which covers a wide range of programming languages and other structured texts, and is actively supported. If Pygments is not available, Trac will display the content as plain text.
+
+== About Pygments
+
+[http://pygments.org/ Pygments] is a highlighting library implemented in pure python, very fast, easy to extend and [http://pygments.org/docs/ well documented].
+
+The Pygments default style can specified in the [TracIni#mimeviewer-section mime-viewer] section of trac.ini. The default style can be overridden by setting a //Style// preference on the [/prefs/pygments preferences page].
+
+[http://pygments.org/docs/lexers/ Pygments lexer] options can be specified as [WikiProcessors WikiProcessor] arguments and defaults can be set in the [TracIni#pygments-lexer-section environment configuration].
+
+== Syntax Coloring Support
+
+=== Supported languages
+
+The list of currently supported languages can be found on the [http://pygments.org/languages/ supported languages] page. The list represents the languages supported in the most recent version of Pygments, so the languages actually supported in your installation could differ if you have an older version installed. The listing of [http://pygments.org/docs/lexers/ supported lexers] provides additional information about the default mime type to keyword mappings.
+
+Explicit control of the mime type associated with a [WikiProcessors WikiProcessor] and file extension is available through the `mime_map` setting. For example, by default `.m` files are considered Objective-C files. In order to treat `.m` files as MATLAB files, add `text/matlab:m` to the [wiki:TracIni#mimeviewer-mime_map-option "[mimeviewer] mime_map"] option.
+
+If a mimetype property such as `svn:mime-type` is set to `text/plain`, there is no coloring even if file is known type like `java`.
+
+=== Direct Rendering
+
+Rich content may be directly //rendered// instead of syntax highlighted. This usually depends on which auxiliary packages are installed and which components are activated in your setup. For example, a `text/x-rst` document will be rendered via `docutils` if it is installed and the `trac.mimeview.rst.ReStructuredTextRenderer` is not disabled. It will be syntax highlighted otherwise.
+
+Similarly, a document with the mimetype `text/x-trac-wiki` is rendered using the Trac wiki formatter, unless the `trac.mimeview.api.WikiTextRenderer` component is disabled. If you want to ensure that an HTML document gets syntax highlighted and not rendered, use the `text/xml` mimetype.
+
+HTML documents are directly rendered only if the `render_unsafe_html` settings are enabled in your TracIni file. See [TracIni#attachment-render_unsafe_content-option "[attachment] render_unsafe_content"], [TracIni#browser-render_unsafe_content-option "[browser] render_unsafe_content"] and [TracIni#wiki-render_unsafe_content-option "[wiki] render_unsafe_content"]. The setting is present in multiple sections because there are different security concerns depending on where the document comes from.
+
+=== Known MIME types
+
+[[KnownMimeTypes]]
+
+----
+See also: WikiProcessors, WikiFormatting, TracWiki, TracBrowser

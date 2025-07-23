@@ -1,0 +1,18 @@
+[main]
+host = https://www.transifex.com
+
+[o:cboos:p:trac:r:trunk-messages-js-pot]
+file_filter = trac/locale/<lang>/LC_MESSAGES/messages-js.po
+source_file = trac/locale/messages-js.pot
+source_lang = en
+
+[o:cboos:p:trac:r:trunk-messages-pot]
+file_filter = trac/locale/<lang>/LC_MESSAGES/messages.po
+source_file = trac/locale/messages.pot
+source_lang = en
+
+[o:cboos:p:trac:r:trunk-tracini-pot]
+file_filter = trac/locale/<lang>/LC_MESSAGES/tracini.po
+source_file = trac/locale/tracini.pot
+source_lang = en
+

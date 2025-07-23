@@ -1,0 +1,46 @@
+{# Copyright (C) 2011-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+## Display a table of progress bars for ticket groups
+{#
+Arguments:
+ - groups: a list of group data dicts
+ - grouped_by: ticket field by which tickets are grouped
+#}
+  <table>
+    # for group in groups:
+    #   set obfuscated = is_obfuscated(format_author(group.name))
+    <tr>
+      <th scope="row">
+        # if not group.name:
+        <i><a href="${group.stats_href}">(none)</a></i>
+        # elif grouped_by in ('owner', 'reporter'):
+        #   if obfuscated:
+        ${authorinfo(group.name)}
+        #   else:
+        <a href="${group.stats_href}">${authorinfo(group.name)}</a>
+        #   endif
+        # else:
+        <a href="${group.stats_href}">${group.name}</a>
+        # endif
+      </th>
+      <td>
+        # with
+        #   set stats = group.stats
+        #   set interval_hrefs = group.interval_hrefs if not (grouped_by in ('owner', 'reporter') and group.name and obfuscated)
+        #   set percent = '%d / %d' % (group.stats.done_count, group.stats.count)
+        #   set legend = false
+        #   set style = 'width: %d%%' % (group.percent_of_max_total * 0.8)
+        #   include 'progress_bar.html'
+        # endwith
+      </td>
+    </tr>
+    # endfor
+  </table>

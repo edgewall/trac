@@ -1,0 +1,172 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+## This is Trac's default theme
+<!DOCTYPE html>
+<html lang="${trac_lang}"> {# jinjacheck: "attribute lang" OK #}
+  <head>
+    <!-- # block head (placeholder in theme.html) -->
+    # block head
+    # endblock head
+    <!-- # endblock head (placeholder in theme.html) -->
+  </head> {# jinjacheck: "()" OK #}
+
+  <body>
+    # block body
+    <!-- # block body (content inherited from theme.html) -->
+    <!--   # include 'site_header.html' (theme.html) -->
+    #   include 'site_header.html' ignore missing
+    <!--   end of site_header.html -->
+    {# ------------------------------------------------------------------
+
+    Note: here we produce the main structure of the body element:
+
+      div id="banner"
+        div id="header"
+        ... logo + metanav ...
+        /div
+        ... mainnav ...
+      /div
+      div id="main"
+        ... ctxtnav [+ warnings][+ notices] ...
+
+        # block content
+
+        (here goes the content block produced by the end user page,
+        typically a "content" div, which could (should!) be followed
+        by the parent content produced by the layout.html page)
+
+        # endblock content
+      /div
+      div id="footer"
+        ...
+      /div
+
+    It's entirely possible for the end user page to prepend to, append
+    to, or replace this default structure by redefining the body
+    block, but it should be seldom needed.
+
+    ------------------------------------------------------------------ #}
+
+    #   macro navigation(category)
+    <div id="${category}" class="nav">
+      #   if chrome.nav[category]:
+      <ul>{%
+        for item in chrome.nav[category]
+        %}<li ${{'class': {
+              'first': loop.first, 'last': loop.last, 'active': item.active
+              }}|htmlattr}>${item.label}</li>{%
+        endfor
+      %}</ul>
+      #   endif
+    </div>
+    #   endmacro
+
+    <div id="banner">
+      <div id="header">
+        # if chrome.logo.src:
+        <a id="logo"
+           href="${chrome.logo.link or
+                 href.wiki('TracIni') + '#header_logo-section'}">
+          <img ${{
+               'src': chrome.logo.src,
+               'alt': chrome.logo.alt,
+               'height': chrome.logo.height,
+               'width': chrome.logo.width,
+               }|htmlattr} /></a>
+        ## jinjacheck: "attribute alt" OK
+        ## jinjacheck: "attribute src" OK
+        # else:
+        <h1><a href="${chrome.logo.link}">${project.name}</a></h1>
+        # endif
+      </div>
+      <form id="search" action="${href.search()}" method="get">
+        # if trac_error_rendering is undefined and 'SEARCH_VIEW' in perm:
+        <div>
+          <label for="proj-search">${_("Search:")}</label>
+          <input type="text" id="proj-search" name="q" size="18"
+                 ${accesskey("f")} value="" />
+          <input type="submit" value="${_('Search')}" />
+        </div>
+        # endif
+      </form>
+      ${navigation('metanav')}
+    </div>
+    ${navigation('mainnav')}
+
+    <div id="main"
+         ${{'class': {
+         'uisymbols': req.session.get('ui.use_symbols'),
+         'uinohelp': req.session.get('ui.hide_help'),
+         }}|htmlattr}>
+      # if resourcepath_template:
+      #   include resourcepath_template ignore missing
+      # endif
+      <div id="ctxtnav" class="nav">
+        <h2>${_("Context Navigation")}</h2>
+        # if chrome.ctxtnav:
+        <ul>
+          # for elm in chrome.ctxtnav:
+          <li ${{'class': {'first': loop.first, 'last': loop.last}}|htmlattr}>${
+            elm}</li>
+          # endfor
+        </ul>
+        # endif
+        <hr />
+      </div>
+
+      ${jmacros.warnings(chrome.warnings)}
+
+      ${jmacros.notices(chrome.notices)}
+
+      <!-- # block content (placeholder in theme.html) -->
+      # block content
+
+      {# ------------------------------------------------------------------
+
+      Note: here should go the content defined by the end user page.
+
+      See layout.html which defines an useful default content for this
+      block and has more detailed usage notes.
+
+      ------------------------------------------------------------------ #}
+
+      # endblock content
+      <!-- # endblock content (placeholder in theme.html) -->
+    </div>
+
+    <div id="footer"><hr/>
+      <a id="tracpowered" href="https://trac.edgewall.org/"
+         ><img src="${chrome.htdocs_location}trac_logo_mini.png" height="30"
+               width="107" alt="${_('Trac Powered')}"/></a>
+      <p class="left">
+        # set trac_version
+        <a href="${href.about()}"><strong>Trac ${trac.version}</strong></a>
+        <br />
+        # endset
+        # set eo
+        <a href="http://www.edgewall.org/">Edgewall Software</a>
+        # endset
+        # trans trac_version, eo
+
+        Powered by ${trac_version}
+        By ${eo}.
+
+        # endtrans
+      </p>
+      <p class="right">${chrome.footer}</p>
+    </div>
+    <!--   # include 'site_footer.html' (theme.html) -->
+    # include 'site_footer.html' ignore missing
+    <!--   end of site_footer.html -->
+    <!-- # endblock body (content inherited from theme.html) -->
+    # endblock body
+  </body> {# jinjacheck: "got (html)" OK #}
+</html>

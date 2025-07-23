@@ -1,0 +1,210 @@
+/* Trac specific styling */
+
+@import url("sphinxdoc.css");
+
+/* Structure */
+
+div.footer {
+    background-color: #4b4d4d;
+    text-align: center;
+}
+
+div.bodywrapper {
+    border-right: none;
+}
+
+div.document {
+    background-image: none;
+}
+
+/* Sidebar */
+
+div.sphinxsidebarwrapper {
+    box-shadow: .2em .2em .5em 0 #dcdcdc;
+    border: 1px solid #ccc;
+    border-radius: .3em;
+    padding: .4em;
+}
+
+div.sphinxsidebar h3 a,
+div.sphinxsidebar h4 a {
+    color: #b00;
+}
+
+div.sphinxsidebar h3,
+div.sphinxsidebar h4 {
+    padding: 0;
+    color: black;
+}
+
+div.sphinxsidebar h3, div.sphinxsidebar h4 {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
+div.sphinxsidebar input {
+    border: 1px solid #d7d7d7;
+}
+
+p.searchtip {
+    font-size: 90%;
+    color: #999;
+}
+
+/* Navigation */
+
+div.related ul li a { color: #b00 }
+div.related ul li a:hover {
+    color: #b00;
+}
+
+/* Content */
+
+body {
+    font: normal 1em Roboto,Segoe UI,Verdana,'Bitstream Vera Sans',Helvetica,sans-serif; /* trac_sans_serif */
+    background-color: #4b4d4d;
+    border: none;
+    border-top: 1px solid #aaa;
+}
+h1, h2, h3, h4 {
+    color: #822;
+    font-weight: bold;
+    page-break-after: avoid;
+}
+
+h1 { color: #555 }
+h2 { border-bottom: .1em solid #822 }
+
+div.body a { text-decoration: none }
+a { color: #b00 }
+a code, a tt { color: #900 }
+a:visited { color: #a00 }
+a:visited code, a:visited tt { color: #800 }
+
+:link:hover, :visited:hover {
+    background-color: #eee;
+    color: #400;
+    border-radius: .2em;
+}
+a code:hover, a:visited code:hover,
+a tt:hover, a:visited tt:hover {
+    background-color: #eee;
+    color: #600;
+    border-radius: .2em;
+}
+
+a.headerlink, a.headerlink:hover {
+    color: #d7d7d7 !important;
+    font-size: .8em;
+    font-weight: normal;
+    vertical-align: text-top;
+    margin: 0;
+    padding: .5em;
+}
+a.headerlink:hover {
+    background: none;
+}
+
+div.body h1 a, div.body h2 a, div.body h3 a,
+div.body h4 a, div.body h5 a, div.body h6 a {
+    color: #d7d7d7 !important;
+}
+
+div.section > dl {
+    margin: 1em;
+}
+dl.class {
+    box-shadow: .2em .2em .5em 0 #eaeaea;
+    border: 1px solid #ccc;
+    border-radius: .3em;
+    padding: .5em;
+}
+dl.function {
+    border-left: .2em solid #eee;
+    padding-left: .4em;
+    margin-bottom: 1.5em;
+}
+dl.exception {
+    border-left: .2em solid #ebb;
+    padding-left: .4em;
+    margin-bottom: 1.5em;
+}
+dl.method {
+    border-left: .2em solid #eaeaea;
+    padding-left: .4em;
+}
+dl.classmethod, dl.staticmethod {
+    border-left: .2em solid #ccc;
+    padding-left: .2em;
+}
+dl.attribute, dl.data {
+    border-left: .2em dotted #eaeaea;
+    padding-left: .4em;
+}
+dl.class > dt {
+    border-bottom: .5em solid #eee;
+    padding-bottom: .3em;
+    margin-bottom: .5em;
+}
+dl.function > dt {
+    border-bottom: .2em solid #eee;
+    padding-bottom: .1em;
+    margin-bottom: .2em;
+}
+div.section > dl > dt {
+    font-size: 110%;
+}
+code.descname {
+    font-size: 110%;
+}
+dd > p {
+    font-size: 95%;
+}
+
+th.field-name {
+    white-space: nowrap;
+    font-size: 90%;
+    color: #555;
+}
+
+td.field-body > ul {
+    list-style-type: square;
+}
+
+td.field-body > ul > li > strong {
+    font-weight: normal;
+    font-style: italic;
+}
+
+pre {
+    box-shadow: .2em .2em .5em 0 #ccc;
+    border: 1px solid #ccc;
+    border-radius: .3em;
+    margin: 1em 2em;
+}
+
+/* Admonitions */
+
+div.admonition p.admonition-title, div.warning p.admonition-title {
+    background: none;
+    color: #555;
+    border: none;
+}
+
+div.admonition {
+    background: none;
+    border: none;
+    border-left: .5em solid #e3f3f3;
+}
+
+div.warning {
+    background: none;
+    border: none;
+    border-left: .5em solid #c33;
+}
+
+/* Search */
+
+dl:target, dt:target, .highlighted { background-color: #ffa }
+

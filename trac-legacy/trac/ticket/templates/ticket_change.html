@@ -1,0 +1,250 @@
+{# Copyright (C) 2010-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Renders a ticket comment.
+
+{# Arguments:
+ - change: the change data
+ - hide_buttons=False: hide all buttons (Edit, Reply)
+ - cnum_edit=None: the comment number being edited
+ - edited_comment: the current value of the comment editor
+ - cnum_hist=None: the comment number for which to show a historical content
+ - can_append=False: True if the user is allowed to append to tickets
+ - preview=False: True if rendering a change preview
+#}
+
+# import 'macros.html' as jmacros with context
+
+# with
+#   set cnum = to_unicode(change.get('cnum'))
+#   set hide_buttons = hide_buttons|default(false)
+#   set cnum_edit = cnum_edit|default('')
+#   set cnum_hist = cnum_hist|default('')
+#   set can_append = can_append|default(false)
+#   set comment_resource = Resource('comment', cnum, parent=ticket.resource)
+#   set can_edit_comment = 'TICKET_EDIT_COMMENT' in perm(comment_resource)
+#   set preview = preview|default(false)
+#   set show_editor = can_edit_comment and cnum == cnum_edit
+#   set show_history = cnum is equalto(cnum_hist)
+#   set max_version = change.comment_history|max(0)
+#   set comment_version = (as_int(cversion, max_version, 0, max_version) if
+                           show_history else max_version)
+#   set show_buttons = (not hide_buttons and not show_editor and
+                        comment_version == max_version)
+
+#   macro commentref(prefix, cnum, cls=none)
+<a href="#comment:${cnum}" class="${cls}">${prefix}${cnum}</a>
+#   endmacro
+## jinjacheck: "(a h3 div form div div div div )" OK
+
+<h3 class="change"${{'id': 'comment:%s' % cnum if 'cnum' in change}|htmlattr}>
+  <span class="threading">
+    # set change_replies = replies.get(cnum, []) if 'cnum' in change else []
+    # if 'replyto' in change:
+    <span class="trac-in-reply-to">
+      # set refs = commentref('&nbsp;'|safe, change.replyto, 'in-reply-to')
+      # trans refs
+
+      in reply to: ${refs}
+
+      # endtrans
+      {% if change_replies: %}${_(";")}{% endif %}
+      ## don't forget french typographic rules!
+      ## (note that there's space anyway around the ';' for now)
+    </span>
+    # endif
+    # if change_replies:
+    <span class="trac-follow-ups">
+      <span>${
+        ngettext("follow-up:", "follow-ups:", change_replies|length)}</span>
+      # for reply in change_replies:
+      ${commentref('&nbsp;'|safe, reply, 'follow-up')}
+      # endfor
+    </span>
+    # endif
+  </span>
+  # if 'cnum' in change:
+  <span class="cnum">${commentref('comment:', cnum)}</span>
+  # endif
+  # if 'date' in change:
+
+  ${tag_("by %(author)s, %(date)s",
+         date = pretty_dateinfo(change.date),
+         author = authorinfo(change.author))}
+
+  # else:
+
+  ${tag_("by %(author)s", author = authorinfo(change.author))}
+
+  # endif
+  # if preview or show_editor:
+  <span class="trac-loading"></span>
+  # endif
+</h3>
+
+<div class="trac-change-panel">
+
+  ## Per-change controls
+
+  # if show_buttons:
+  <div class="trac-ticket-buttons">
+    # if 'cnum' in change and can_append:
+    <form id="reply-to-comment-${cnum}" method="get" action="#comment">
+      <div class="inlinebuttons">
+        <input type="hidden" name="replyto" value="${cnum}"/>
+        <input type="submit" value="${captioned_button('↳', _('Reply'))}"
+               title="${_('Reply to comment %(cnum)s', cnum=cnum)}" />
+      </div>
+    </form>
+    # endif
+    # if 'cnum' in change and can_edit_comment:
+    <form id="edit-comment-${cnum}" method="get" action="#comment:${cnum}">
+      <div class="inlinebuttons">
+        <input type="hidden" name="cnum_edit" value="${cnum}"/>
+        <input type="submit" value="${captioned_button('✎', _('Edit'))}"
+               title="${_('Edit comment %(cnum)s', cnum=cnum)}" />
+      </div>
+    </form>
+    # endif
+  </div>
+  # endif
+
+  ## Property changes
+
+  # if change.fields:
+  <table class="changes">
+    ## for field_name, field in sorted(change.fields.items(), key=lambda item: item[1].label.lower()):
+    # for field_name, field in change.fields.items()|sort(attribute='1.label'):
+    ## FIXME attribute='1.label|lower'
+    <tr class="${classes(
+               'trac-field-' + field_name,
+               'trac-conflict' if preview and field_name in conflicts)}">
+      <th class="trac-field-${field_name}">${
+        _("%(label)s:", label=field.label)}</th>
+      <td>
+        # if field_name == 'attachment':
+        #   set attachment_link
+        <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${
+            field.new}</em></a><a href="${href('raw-attachment', 'ticket',
+                                        ticket.id, field.new)}"
+                                  title="${_('Download')}"
+                                  class="trac-rawlink">&#8203;</a>
+        #   endset
+        #   trans attachment_link
+
+        ${attachment_link} added
+
+        #   endtrans
+        # else:
+        ${field.rendered}
+        # endif
+
+        # if preview and field.by == 'user':
+        #   set old = (ticket.get_default(field_name)
+                       if field.old is sameas(empty) else field.old)
+        (<button type="submit" name="revert_${field_name}" class="trac-revert"
+                 title="${_('Revert this change')}">${
+          _("revert")}<div id="revert-${field_name}">${
+            '0' if 'cc_update' in field else old}</div></button>)
+        # endif
+      </td>
+    </tr>
+    # endfor
+  </table>
+  # endif
+</div>
+
+## Comment editor
+
+#   if show_editor:
+<form id="trac-comment-editor" method="post"
+      action="${href.ticket(ticket.id) + '#comment:' + cnum}">
+  ${jmacros.form_token_input()}
+
+  <div>
+    <textarea name="edited_comment"
+              class="wikitext trac-fullwidth trac-resizable trac-autofocus"
+              rows="10" cols="78">
+${edited_comment if edited_comment is not none else change.comment
+      }</textarea>
+    <input type="hidden" name="cnum_edit" value="${cnum}"/>
+  </div>
+  <div class="buttons">
+    <input type="submit" name="preview_comment" value="${_('Preview')}"
+           title="${_('Preview changes to comment %(cnum)s', cnum=cnum)}"/>
+    <input type="submit" name="edit_comment" value="${_('Submit changes')}"
+           title="${_('Submit changes to comment %(cnum)s', cnum=cnum)}"
+           class="trac-disable-on-submit" />
+    <input type="submit" name="cancel_comment" value="${_('Cancel')}"
+           title="${_('Cancel comment edit')}"/>
+  </div>
+</form>
+${jmacros.warnings(chrome.warnings, 'trac-preview-warning')}
+#   endif
+
+## Comment display
+
+#   if cnum == cnum_edit:
+<div class="comment searchable ticketdraft"${
+   {'style': 'display: none' if not text}|htmlattr}>
+  #   set text = edited_comment if edited_comment is not none else change.comment
+  ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
+</div>
+#   elif show_history:
+<div class="comment searchable">
+  ${wiki_to_html(context, change.comment_history[comment_version].comment,
+  escape_newlines=preserve_newlines)}
+</div>
+#   elif change.comment:
+<div class="comment searchable">
+  ${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}
+</div>
+#   endif
+#   if not show_editor and len(change.comment_history) is greaterthan(1):
+<div${{'class': {
+       'trac-lastedit': true,
+       'trac-shade': comment_version != max_version}}|htmlattr}>
+  #   with
+  #     set date = pretty_dateinfo(change.comment_history[comment_version].date)
+  #     set author = authorinfo(change.comment_history[comment_version].author)
+  #     if comment_version != max_version:
+  #       trans version = comment_version, date, author
+
+  Version ${version}, edited ${date} by ${author}
+
+  #       endtrans
+  #     else:
+  #       trans date, author
+
+  Last edited ${date} by ${author}
+
+  #       endtrans
+  #     endif
+  #   endwith
+
+  #   if comment_version is greaterthan(0):
+  (<a href="${href.ticket(ticket.id, cnum_hist=cnum,
+                          cversion=comment_version - 1)}#comment:${cnum}">${
+    _("previous")}</a>)
+  #   endif
+  #   if comment_version is lessthan(max_version):
+  (<a href="${href.ticket(ticket.id, cnum_hist=cnum,
+                          cversion=comment_version + 1)}#comment:${cnum}">${
+    _("next")}</a>)
+  #   endif
+  #   if comment_version is greaterthan(0):
+  (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=cnum,
+                          version=comment_version)}">${
+    _("diff")}</a>)
+  #   endif
+</div>
+#   endif
+# endwith

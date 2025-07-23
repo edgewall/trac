@@ -1,0 +1,57 @@
+{# Copyright (C) 2011-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Render data relevant to automatic ticket preview.
+
+# import 'macros.html' as jmacros with context
+
+# with
+#  set can_append = 'TICKET_APPEND' in perm(ticket.resource)
+#  with
+#    set chrome_info_script = none
+#    include 'ticket_box.html'
+#  endwith
+<div id="changelog">
+  # for change in changes:
+  #   set latest = change['comment_history'] | max
+  #   set change_date = change['comment_history'][latest]['date']
+  <div${{'class': [
+           'change',
+           'trac-new' if change_date is greaterthan(start_time) and
+                         'attachment' not in change.fields],
+           'id': 'trac-change-%d-%d' % (
+                  change.cnum, to_utimestamp(change.date)) if 'cnum' in change
+        }|htmlattr}>
+    # with
+    #   set edited_comment = none
+    #   set cnum_edit = 0
+    #   include 'ticket_change.html'
+    # endwith
+  </div>
+  # endfor
+</div>
+<input type="hidden" name="view_time"
+       value="${to_utimestamp(ticket['changetime'])}"/>
+<div id="preview">
+  # if change_preview.fields or change_preview.comment:
+  #   with
+  #     set change = change_preview
+  #     set preview = true
+  #     include 'ticket_change.html'
+  #   endwith
+  # endif
+</div>
+${jmacros.warnings(chrome.warnings, 'trac-preview-warning', close_message=False)}
+#   if chrome_info_script:
+${chrome_info_script(req)}
+#   endif
+# endwith
+## jinjacheck: "div input div" OK

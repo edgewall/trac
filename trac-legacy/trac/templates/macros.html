@@ -1,0 +1,101 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Macros and constants
+
+{# Usage:
+
+     # import 'macros.html' as jmacros with context
+
+   Note that this import is not necessary in templates that extend the
+   "layout.html" template, as the latter contains that import.
+   However, in secondary templates included from a template extending
+   "layout.html", jmacros is no longer accessible and the import
+   statement has to be written again.
+
+#}
+
+
+{# Creates an <input> form field containing the CSRF protection token.
+
+   All form with method POST should include this field.
+
+   Example:
+
+     <form id="query" method="post" action="${href.query()}">
+     ${jmacros.form_token_input()}
+     ...
+     </form>
+#}
+# macro form_token_input()
+<input type="hidden" name="__FORM_TOKEN" value="${form_token}" />
+# endmacro
+## jinjacheck: "input" OK
+
+{# Utilities for the repetitive help divs #}
+
+# macro note()
+<strong>${_("Note:")}</strong>
+# endmacro
+
+# macro wikihelp(page, anchor='')
+<div class="trac-help">
+  # set trac_page
+  <a href="${href.wiki(page) + anchor}">${page}</a>
+  # endset
+  ${caller(note(), trac_page)}
+</div>
+#endmacro
+
+# macro wikiformatting_link()
+<a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
+# endmacro
+
+# macro warnings(messages, id='warning', close_message=True)
+  # if messages:
+  <div id="${id}" class="warning system-message">
+    # if close_message:
+      <a class="trac-close-msg" href="#"
+         title="${_('Hide this warning')}"><span>${_("close")}</span></a>
+    # endif
+    <strong>${_("Warning:")}</strong>
+    # if len(messages) == 1:
+    ${messages[0]}
+    # else:
+    <ul>
+      # for message in messages:
+      <li>${message}</li>
+      # endfor
+    </ul>
+    # endif
+  </div>
+  # endif
+# endmacro
+
+# macro notices(messages, id='notice', close_message=True)
+  # if messages:
+  <div id="${id}" class="notice system-message">
+    # if close_message:
+      <a class="trac-close-msg" href="#"
+         title="${_('Hide this notice')}"><span>${_("close")}</span></a>
+    # endif
+    # if len(messages) == 1:
+    ${messages[0]}
+    # else:
+    <ul>
+      # for message in messages:
+      <li>${message}</li>
+      # endfor
+    </ul>
+    # endif
+  </div>
+  # endif
+# endmacro

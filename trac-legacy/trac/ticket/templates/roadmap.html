@@ -1,0 +1,133 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${_("Roadmap")}
+      ${ super() }
+      # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="roadmap">
+
+      <form id="prefs" method="get" action="${req.request_path}">
+        <div>
+          <input type="checkbox" id="showcompleted" name="show"
+                 value="completed"${
+               {'checked': 'completed' in show}|htmlattr}/>
+          <label for="showcompleted">${
+            _("Show completed milestones")}</label>
+        </div>
+        <div>
+          <input type="checkbox" id="hidenoduedate" name="show"
+                 value="noduedate"${
+               {'checked': 'noduedate' in show}|htmlattr}/>
+          <label for="hidenoduedate">${
+            _("Hide milestones with no due date")}</label>
+        </div>
+        <div class="buttons">
+          <input type="submit" value="${_('Update')}"/>
+        </div>
+      </form>
+
+      <h1>${_("Roadmap")}</h1>
+
+      <div class="milestones">
+        # for milestone in milestones:
+        <div class="milestone">
+          # set mstats = milestone_stats[loop.index0]
+          <div class="info trac-progress">
+            <h2><a href="${href.milestone(milestone.name)}">
+                # set name
+                <em>${milestone.name}</em>
+                # endset
+                # trans name
+
+                Milestone: ${name}
+
+                # endtrans
+            </a></h2>
+            <p class="date">
+              # if milestone.completed:
+              #   set duration = dateinfo(milestone.completed)
+              #   set date = format_datetime(milestone.completed)
+              #   trans duration, date
+
+              Completed ${duration} ago (${date})
+
+              #   endtrans
+              # elif milestone.is_late:
+              <strong>
+                ${tag_("%(duration)s late", duration=dateinfo(milestone.due))}
+              </strong> (${format_datetime(milestone.due)})
+              # elif milestone.due:
+              #   set duration = dateinfo(milestone.due)
+              #   set date = format_datetime(milestone.due)
+              #   trans duration, date
+
+              Due in ${duration} (${date})
+
+              #   endtrans
+              # else:
+              #   trans
+
+              No date set
+
+              #   endtrans
+              # endif
+            </p>
+            # with
+            #   set stats = mstats.stats
+            #   set interval_hrefs = mstats.interval_hrefs
+            #   set stats_href = mstats.stats_href
+            #   if stats.count:
+            #     include 'progress_bar.html' ignore missing
+            #   endif
+            # endwith
+          </div>
+
+          <div class="description">
+
+            ${wiki_to_html(context.child(milestone.resource),
+                           milestone.description)}
+          </div>
+
+        </div>
+        # endfor
+      </div>
+
+      # if 'MILESTONE_CREATE' in perm:
+      <div class="buttons">
+        <form id="add" method="get" action="${href.milestone()}"><div>
+          <input type="hidden" name="action" value="new" />
+          <input type="submit" value="${_('Add new milestone')}" />
+        </div></form>
+      </div>
+      # endif
+
+      # call(note, page) jmacros.wikihelp('TracRoadmap'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using the roadmap.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock
+  </body>
+</html>

@@ -1,0 +1,49 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'diff_view.html'
+
+<!DOCTYPE html>
+<html>
+  # set resource = page.resource
+
+  ## Note: using 'set' is the only way to "propagate" a value from the
+  ##       extending template to the extended template. Using 'with'
+  ##       wouldn't work.
+
+  <head><title>Wiki Diff</title></head>
+
+  <body>
+    # block content
+    ${ super() }
+
+    #   if ('WIKI_DELETE' in perm(page.resource) and (not changes[0].diffs or new_version == latest_version)):
+    <form method="get" action="${href.wiki(page.name)}">
+      <div>
+        <input type="hidden" name="action" value="delete" />
+        <input type="hidden" name="version" value="${new_version}" />
+        <input type="hidden" name="old_version" value="${old_version}" />
+        # if (new_version - old_version) is greaterthan(1):
+        <input type="submit" name="delete_version"
+               value="${_('Delete version %(old_version)d to version %(version)d',
+                          old_version=(old_version + 1),
+                          version=new_version)}" />
+        # else:
+        <input type="submit" name="delete_version"
+               value="${_('Delete version %(version)d',
+                          version=new_version)}" />
+        # endif
+      </div>
+    </form>
+    #   endif
+    # endblock content
+  </body>
+</html>

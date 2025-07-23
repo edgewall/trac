@@ -1,0 +1,337 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>
+      # block title
+      #   if len(path_links) == 1:
+      /
+      #   elif len(path_links) == 2:
+      ${path_links[-1].name}
+      #   else:
+      #     trans basename = path_links[-1].name, dirname = path_links[1:-1]|map(attribute='name')|join('/')
+      ${basename} in ${dirname}
+      #     endtrans
+      #   endif
+      ${ super() }
+      # endblock title
+    </title>
+
+
+    # block head
+
+    ${ super() }
+
+    #   if file and file.annotate:
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    #   elif dir:
+    <meta name="ROBOTS" content="NOINDEX" />
+    #   endif
+
+    <script>
+      jQuery(function($) {
+        $(".trac-toggledeleted").show().click(function() {
+                  $(this).siblings().find(".trac-deleted").toggle();
+                  return false;
+        }).click();
+        $("#jumploc input").hide();
+        $("#jumploc select").change(function () {
+          this.parentNode.parentNode.submit();
+        });
+
+      # if dir or repo:
+          /* browsers using old WebKits have issues with expandDir... */
+          var webkit_rev = /AppleWebKit\/(\d+)/.exec(navigator.userAgent);
+          if ( !webkit_rev || (521 - webkit_rev[1]).toString()[0] == "-" )
+            enableExpandDir(null, $("table.dirlist tr"), {
+                action: 'inplace',
+                range_min_secs: '${dir.range_min_secs}',
+                range_max_secs: '${dir.range_max_secs}'
+            });
+      # elif file:
+      #   if file.annotate == 'blame':
+            enableBlame(${to_json(href.changeset() + '/')|safe}, ${to_json(reponame)|safe}, ${to_json(path)|safe});
+      #   endif
+          $('#preview table.code').enableCollapsibleColumns(
+             $('#preview table.code thead th.content'));
+      # endif
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+
+    # block content
+    <div id="content" class="browser">
+
+      # if dir or file:
+      #   with
+      #     set repo_index = repo and repo.repositories
+      #     set path_links = none if repo_index else path_links
+      <h1>
+        #   if repo_index:
+        <span class="pathentry">${_("Default Repository")}</span>
+        #   endif
+        #   include 'path_links.html'
+      </h1>
+
+      <div id="diffrev">
+        <form action="${href.changeset()}" method="get">
+          <div>
+            #   with full_path = (reponame, path)|reject('none')|map('trim', '/')|join('/')
+            <label title="${_('Show the diff against a specific revision')}">
+              ${_("View diff against:")}
+              <input type="text" name="old" size="6"/>
+              <input type="hidden" name="old_path" value="${full_path}"/>
+              <input type="hidden" name="new" value="${stickyrev}"/>
+              <input type="hidden" name="new_path" value="${full_path}"/>
+            </label>
+            #   endwith
+          </div>
+        </form>
+      </div>
+
+      <div id="jumprev">
+        <form action="${req.request_path}" method="get">
+          <div>
+            <label for="rev"
+                   title="${_('Hint: clear the field to view latest revision'
+                             ) if stickyrev}">
+              ${_("View revision:")}</label>
+            <input type="text" id="rev" name="rev" value="${stickyrev}"
+                   size="6" />
+          </div>
+        </form>
+      </div>
+
+      #     if quickjump_entries:
+      <div id="jumploc">
+        <form action="${req.request_path}" method="get">
+          <div class="buttons">
+            <label for="preselected">${_("Visit:")}</label>
+            <select id="preselected" name="preselected">
+              <option selected="selected"></option>
+              #   for category, locations in quickjump_entries|groupby('0'):
+              <optgroup label="${category}">
+                #   for _a, name, lpath, rev in locations:
+                <option value="${href.browser(reponame, lpath, rev=rev)}">${
+                  name}</option>
+                #   endfor
+              </optgroup>
+              #   endfor
+            </select>
+            <input type="submit" value="${_('Go!')}"
+                   title="${_('Jump to the chosen preselected path')}" />
+          </div>
+        </form>
+      </div>
+      #     endif
+
+      #     if changeset:
+      <div class="trac-tags">
+        #     for branch, head in changeset.get_branches() if branch not in ('default', 'master'):
+        <span ${{'class': classes('branch', head=head)}|htmlattr}
+              title="${_('Branch head') if head else _("Branch")}">${
+          branch}</span>
+        #     endfor
+        #     for tag in changeset.get_tags():
+        <span class="tag" title="${_('Tag')}">${tag}</span>
+        #     endfor
+        #     for bookmark in changeset.get_bookmarks():
+        <span class="trac-bookmark" title="${_('Bookmark')}">${bookmark}</span>
+        #     endfor
+      </div>
+      #     endif
+
+      #     if dir:
+      <table class="listing dirlist" id="dirlist">
+        #     include 'dirlist_thead.html'
+        <tbody>
+          #     if 'up' in chrome.links:
+          <tr class="even">
+            <td class="name" colspan="6">
+              <a class="parent" title="${_('Parent Directory')}"
+                 href="${chrome.links.up[0].href}">../</a>
+            </td>
+          </tr>
+          #     endif
+          #     include 'dir_entries.html'
+          #     if 'up' not in chrome.links and not dir.entries:
+          <tr class="even">
+            <td class="name" colspan="6">
+              ${_("No files found")}
+            </td>
+          </tr>
+          #     endif
+        </tbody>
+      </table>
+      #     endif
+
+      #     if properties or file:
+      <table id="info">
+        #     if file:
+        <tr>
+          <th>
+            # with cset, rcset, drev, author, age = (
+            href.changeset(created_rev, reponame),
+            href.changeset(created_rev, reponame, created_path),
+            display_rev(created_rev),
+            authorinfo(file.changeset.author),
+            pretty_dateinfo(file.changeset.date))
+            #     set last_change_link
+            <a href="${rcset}"
+               title="${_('View differences')}">${_("Last change")}</a>
+            #     endset
+            #     set rev_link
+            <a href="${cset}"
+               title="${_('View changeset %(rev)s', rev=drev)}">${drev}</a>
+            #-    endset
+            #     if stickyrev:
+            #       trans last_change = last_change_link, stickyrev = display_rev(stickyrev), rev = rev_link, author, age
+
+            ${last_change} on this file since ${stickyrev} was ${rev},
+            checked in by ${author}, ${age}
+
+            #       endtrans
+            #     else:
+            #       trans last_change = last_change_link, rev = rev_link, author, age
+
+            ${last_change} on this file was ${rev},
+            checked in by ${author}, ${age}
+
+            #       endtrans
+            #     endif
+            # endwith
+          </th>
+        </tr>
+        <tr>
+          <td class="message searchable">
+            #   if wiki_format_messages:
+            ${wiki_to_html(context.child('changeset', file.changeset.rev,
+                                         parent=repos.resource),
+                           file.changeset.message, escape_newlines=True)}
+            #   else:
+            ${file.changeset.message}
+            #   endif
+          </td>
+        </tr>
+        #     endif
+        #     if properties:
+        <tr>
+          <td colspan="2">
+            <ul class="props">
+              #   for prop in properties:
+              <li>
+                #   macro prop_value(prop)
+                #     if prop.value is text:
+                <em><code>${prop.value}</code></em>
+                #     else:
+                ${prop.value}
+                #     endif
+                #   endmacro
+
+                #   if prop.rendered:
+                #     if prop.rendered.name:
+                <span ${prop.rendered.name_attributes|htmlattr}>${
+                  prop.rendered.name}</span>
+                #     endif
+                <div ${prop.rendered.content_attributes|htmlattr}>${
+                  prop.rendered.content}</div>
+                #   else:
+                #     set name
+                <strong>${prop.name}</strong>
+                #     endset
+                #     trans name, value = prop_value(prop)
+
+                Property ${name} set to ${value}
+
+                #     endtrans
+                #   endif
+              </li>
+              #   endfor
+            </ul>
+          </td>
+        </tr>
+        #     endif
+        #     if file:
+        <tr>
+          <td colspan="2">
+            <strong>${_("File size:")}</strong>
+            <span title="${ngettext('%(num)d byte', '%(num)d bytes',
+                                    num=file.size)}">${
+              pretty_size(file.size)}</span>
+          </td>
+        </tr>
+        #     endif
+      </table>
+      #     endif
+      #   endwith
+      # endif
+
+      # if dir and path == '/':
+      <div class="description">
+        ${wiki_to_html(context.child('source', '/', parent=repos.resource),
+                       repoinfo.description)}
+      </div>
+      # endif
+
+      # if repo and repo.repositories:
+      <h1 class="repoindex">${_("Repository Index")}</h1>
+      #   with repoindex = 'repoindex'
+      #     include 'repository_index.html'
+      #   endwith
+      # endif
+
+      # if file and file.preview:
+      <div id="preview" class="searchable">
+        # with preview = file.preview
+        #   include 'preview_file.html'
+        # endwith
+      </div>
+      # endif
+
+      <div id="anydiff">
+        <form action="${href.diff()}" method="get">
+          <div class="buttons">
+            <input type="hidden" name="new_path"
+                   value="${'/' + pathjoin(reponame, path)}" />
+
+            <input type="hidden" name="old_path"
+                   value="${'/' + pathjoin(reponame, path)}" />
+
+            <input type="hidden" name="new_rev"
+                   value="${stickyrev|d('', true)}" />
+            <input type="hidden" name="old_rev"
+                   value="${stickyrev|d('', true)}" />
+            <input type="submit" value="${_('View changes...')}"
+                   title="${_('Select paths and revs for Diff')}" />
+          </div>
+        </form>
+      </div>
+
+      # call(note, page) jmacros.wikihelp('TracBrowser'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using the repository browser.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

@@ -1,0 +1,69 @@
+{# Copyright (C) 2007-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Template for generating rows corresponding to directory entries
+
+# for entry in dir.entries:
+#   set change = dir.changes[entry.created_rev]
+#   set chgset_context = context.child('changeset', change.rev, parent=repos.resource) if change
+#   set chgset_view = change and change.is_viewable(perm)
+#   set isdir = entry.kind == 'dir'
+<tr class="${loop.cycle('odd', 'even')}">
+  <td class="name">
+    <a class="${entry.kind}"
+       title="${_('View Directory') if isdir else _("View File")}"
+       href="${href.browser(reponame, entry.path, rev=stickyrev,
+                            order=order if order != 'name' else none,
+                            desc=desc)}">${entry.name}</a>
+  </td>
+  <td class="size">
+    # if entry.content_length is not none:
+    <span title="${ngettext('%(num)d byte', '%(num)d bytes',
+                            num=entry.content_length)}">${
+      pretty_size(entry.content_length)}</span>
+    # endif
+    # if entry.raw_href:
+    <a href="${entry.raw_href}"
+       class="${'trac-ziplink' if isdir else 'trac-rawlink'}"
+       title="${_('Download as Zip archive') if isdir else
+              _("Download")}">&#8203;</a>
+    # endif
+  </td>
+  <td class="rev">
+    <a title="${_('View Revision Log')}"
+       href="${href.log(reponame, entry.path, rev=rev)}">${
+      display_rev(entry.created_rev)}</a>
+    <a title="${_('View Changeset')}" class="chgset"
+       href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
+  </td>
+  <td class="age"
+      ${{'style': 'border-color: rgb(%s,%s,%s)' %
+      dir.colorize_age(dir.timerange.relative(change.date)) if
+      (chgset_view and dir.timerange)}|htmlattr}>
+    ${pretty_dateinfo(change.date, dateonly=True) if chgset_view else
+    '&ndash;'|safe}
+  </td>
+  <td class="author">${
+    authorinfo_short(change.author) if chgset_view else '&ndash;'|safe}</td>
+  <td class="change">
+    # if chgset_view:
+    #   if wiki_format_messages:
+    ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
+    #   else:
+    ${shorten_line(change.message)}
+    #   endif
+    # else:
+    &ndash;
+    # endif
+  </td>
+</tr>
+# endfor
+## jinjacheck: "(tr )" OK

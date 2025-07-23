@@ -1,0 +1,10 @@
+/usr/lib/python.*/.*.py
+/usr/local/lib/python.*/.*.py
+/var/lib/python-support/.*
+/System/Library/*
+/Library/*
+/opt/subversion/*
+genshi/
+pygments/
+.*.html
+\\lib\\

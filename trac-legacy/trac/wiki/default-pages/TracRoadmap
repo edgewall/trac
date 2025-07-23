@@ -1,0 +1,37 @@
+= The Trac Roadmap
+[[TracGuideToc]]
+
+The roadmap provides a view on the [wiki:TracTickets ticket system] that helps planning and managing the future development of a project.
+
+== The Roadmap View
+
+A roadmap is a list of future milestones. The roadmap can be filtered to show or hide ''completed milestones'' and ''milestones with no due date''. In the case that both ''show completed milestones'' and ''hide milestones with no due date'' are selected, ''completed'' milestones with no due date will be shown.
+
+== The Milestone View
+
+A milestone is a future timeframe in which tickets are expected to be solved. You can add a description to milestones (using WikiFormatting) describing main objectives, for example. In addition, tickets targeted for a milestone are aggregated, and the ratio between active and resolved tickets is displayed as a milestone progress bar. It is possible to further [trac:TracRoadmapCustomGroups customise the ticket grouping] and have multiple ticket statuses shown on the progress bar.
+
+It is possible to drill down into this simple statistic by viewing the individual milestone pages. By default, the active/resolved ratio will be grouped and displayed by component. You can also regroup the status by other criteria, such as ticket owner or severity. Ticket numbers are linked to [wiki:TracQuery custom queries] listing corresponding tickets.
+
+== Roadmap Administration
+
+With appropriate permissions it is possible to add, modify and remove milestones using either the web interface (roadmap and milestone pages), web administration interface or by using `trac-admin`.
+
+== iCalendar Support
+
+The Roadmap supports the [https://www.ietf.org/rfc/rfc2445.txt iCalendar] format to keep track of planned milestones and related tickets from your favorite calendar software. Many calendar applications support the iCalendar specification including:
+ * [https://www.apple.com/ical/ Apple iCal] for Mac OS X.
+ * [https://www.mozilla.org/projects/calendar/ Mozilla Calendar], cross-platform.
+ * [https://www.kde.org/applications/office/korganizer/ Korganizer], the calendar application of the [http://www.kde.org/ KDE] project.
+ * [https://wiki.gnome.org/Apps/Evolution Evolution], a contact manager, address manager and calendar for Gnome.
+ * [https://office.microsoft.com/en-us/outlook/ Microsoft Outlook] can also read iCalendar files and appears as a new static calendar in Outlook.
+ * [https://www.google.com/calendar/ Google Calendar].
+ * [http://chandlerproject.org Chandler], a personal and small-group task management and calendaring tool, Apache licensed and orphaned since 2009.
+
+To subscribe to the roadmap, copy the iCalendar link from the roadmap (found at the bottom of the page) and choose the "Subscribe to remote calendar" action (or similar) of your calendar application, and insert the URL just copied.
+
+For tickets to be included in the calendar as tasks, you need to be logged in when copying the link. You will only see tickets assigned to yourself and associated with a milestone.
+
+More information about iCalendar can be found at [https://en.wikipedia.org/wiki/ICalendar Wikipedia].
+----
+See also: TracTickets, TracReports, TracQuery, [trac:TracRoadmapCustomGroups]

@@ -1,0 +1,17 @@
+Undocumented Python objects
+===========================
+trac.ticket.roadmap
+-------------------
+Classes:
+ * MilestoneModule -- missing methods:
+
+   - resource_exists
+
+trac.wiki.api
+-------------
+Classes:
+ * WikiSystem -- missing methods:
+
+   - get_resource_description
+   - resource_exists
+

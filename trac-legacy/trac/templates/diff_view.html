@@ -1,0 +1,144 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      # block title
+      ${title}
+      ${ super() }
+      # endblock
+    </title>
+
+    # block head
+    ${ super() }
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="${resource.realm}">
+      <h1>
+        # set old_url = old_url or url_of(resource, version=old_version)
+        # set new_url = new_url or url_of(resource, version=new_version)
+        # set url = url or url_of(resource, version=none)
+        # set new_link
+        <a href="${new_url}">${
+          _("Version %(version)s", version=new_version)}</a>
+        # endset
+        # set src_link
+        <a href="${url}">${name or name_of(resource)}</a>
+        # endset
+
+        # if old_version:
+        #   set old_link
+        <a href="${old_url}">${
+          _("Version %(version)s", version=old_version)}</a>
+        #   endset
+        # elif old_version == 0:
+        #   set old_link
+        <a href="${old_url}">${_("Initial Version")}</a>
+        #   endset
+        # else:
+        #   set old_link = ''
+        # endif
+
+        # if old_link:
+        #   trans old_link, new_link, src_link
+
+        Changes between ${old_link} and ${new_link} of ${src_link}
+
+        #   endtrans
+        # else:
+        #   trans new_link, src_link
+
+        Changes from ${new_link} of ${src_link}
+
+        #   endtrans
+        # endif
+      </h1>
+
+      <form method="post" id="prefs" action="${diff_url or url_of(resource)}">
+        <div>
+          ${jmacros.form_token_input()}
+          <input type="hidden" name="action" value="${diff_action or 'diff'}" />
+          # for k, v in diff_args or []:
+          <input type="hidden" name="${k}" value="${v}"/>
+          # endfor
+          <input type="hidden" name="version" value="${new_version}" />
+          <input type="hidden" name="old_version" value="${old_version}" />
+          # include 'diff_options.html'
+        </div>
+      </form>
+      # set multi = num_changes is greaterthan(1)
+      <dl id="overview">
+        <dt class="property time">${_("Timestamp:")}</dt>
+        <dd class="time">
+          # if multi:
+          <em class="multi">${_("(multiple changes)")}</em>
+          # elif change.date:
+          ${tag_("%(date)s (%(duration)s ago)",
+                 date=format_datetime(change.date),
+                 duration=dateinfo(change.date))}
+          # else:
+          --
+          # endif
+        </dd>
+        <dt class="property author">${_("Author:")}</dt>
+        <dd class="author">
+          # if multi:
+          <em class="multi">${_("(multiple changes)")}</em>
+          # else:
+          ${authorinfo(change.author)}
+          # endif
+        </dd>
+        # if change.comment is not none:
+        <dt class="property message">${_("Comment:")}</dt>
+        <dd class="message">
+          # if multi:
+          <em class="multi">${_("(multiple changes)")}</em>
+          # else:
+          #   if can_edit_comment:
+          <span class="inlinebuttons">
+            <a href="${url_of(resource, action='edit_comment',
+                       version=resource.version, redirect_to='diff')}">${
+              captioned_button("✎", _("Edit"))}</a>
+          </span>
+          #   endif
+          ${wiki_to_html(context.child(resource), change.comment)}
+          # endif
+        </dd>
+        # endif
+      </dl>
+      <div class="diff">
+        <div class="legend" id="diff-legend">
+          <h3>${_("Legend:")}</h3>
+          <dl>
+            <dt class="unmod"></dt><dd>${_("Unmodified")}</dd>
+            <dt class="add"></dt><dd>${_("Added")}</dd>
+            <dt class="rem"></dt><dd>${_("Removed")}</dd>
+            <dt class="mod"></dt><dd>${_("Modified")}</dd>
+          </dl>
+        </div>
+        # with no_id = false
+        #   include 'diff_div.html'
+        # endwith
+      </div>
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

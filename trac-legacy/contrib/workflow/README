@@ -1,0 +1,3 @@
+There are two more workflows available, original-workflow and basic-workflow.
+Look in trac/ticket/workflows for them.  (They are used internally by Trac, so
+they aren't here in the contrib tree.)

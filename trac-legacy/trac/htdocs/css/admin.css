@@ -1,0 +1,124 @@
+#content.admin > h1 { float: left; margin-top: 0; }
+
+/* Navigation panel */
+#tabs {
+ background: #f7f7f0;
+ border: 1px solid #d4d4d4;
+ clear: left;
+ margin: 1em 0 2em;
+ padding: .5em 0 0;
+ float: left;
+ width: 12em;
+ border-radius: .4em; /* main_border_radius */
+ box-shadow: .1em .3em .5em 0 #eee; /* aside_box_shadow */
+}
+#tabs ul { list-style: none; margin: 0 0 .5em; padding: 0; }
+#tabs li {
+ color: #999;
+ /* font-size: 90%; */
+ font-weight: bold;
+ margin: 0;
+ padding: 0.1em 5px;
+}
+#tabs li a { font-size: 90% }
+#tabs li li { color: #000; font-size: 110%; font-weight: normal;
+  margin: 0 -3px; padding: 1px 0 1px 10px;
+}
+#tabs li li.active {
+ background: linear-gradient(to top, #dbdbdb 0%, #eee 30%, #fbfbfb 100%); /* select_gradient_darker */
+ border: 1px solid #aaa;
+ border-color: #d4d4d4 #bbb #bbb #d4d4d4;
+ border-radius: .2em; /* content_border_radius */
+ box-shadow: .1em .3em .5em #eee; /* aside_box_shadow */
+ padding: 0 0 .2em .5em;
+}
+#tabs :link, #tabs :visited { border: none; display: block }
+
+#tabcontent { padding: 0.4em 0 0.4em 2em; margin-left: 12em; min-height: 300px; }
+#tabcontent > h2 { color: #333; margin-top: 0; }
+
+#enumlist tbody td { vertical-align: middle; }
+
+form.addnew,
+form.addnew + form.addnew { margin: 1em 0; }
+form.addnew + * { margin-top: 2em; }
+form.addnew fieldset { padding: 0.5em 1em; }
+form.addnew div { margin: 0; }
+form.addnew div.field,
+form.addnew div.buttons,
+form.addnew p.help {
+ display: inline-block;
+}
+form.addnew div.field,
+form.addnew div.buttons {
+ padding: 0.2em 0;
+ white-space: nowrap;
+}
+form.addnew div.field { padding-right: 1em; }
+form.addnew div.buttons input { margin: 0 1em 0 0; }
+form.addnew p.hint,
+form.addnew span.hint {
+ padding-left: 0.25em;
+}
+form.addnew p.help { margin-top: 0.5em; }
+form.addnew br { display: none; }
+
+table.listing { clear: none; }
+table.listing .default { text-align: center; width: 1% }
+table.listing .num { text-align: right; width: 1% }
+
+/* Plugins panel */
+.plugin {
+ background: #f7f7f7;
+ margin: 2em 0 0;
+ border: 1px solid #d7d7d7;
+ border-radius: 0.4em 0.4em 0.4em 0.4em;
+ box-shadow: 0.1em 0.1em 1em 0 #E7E7E7 inset;
+ padding: 2px .5em;
+ text-align: left;
+}
+.plugin > .foldable { margin: .5em 0; color: #bb0000; }
+.plugin .foldable > :link, .plugin .foldable > :visited {
+ border-radius: 0;
+ border: none;
+ box-shadow: none;
+ text-shadow: none;
+}
+.plugin .buttons { margin-top: 0; text-align: right; }
+.plugin .uninstall { margin-top: -2.6em; padding: 0; }
+.plugin .summary, .plugin .info { padding-left: 20px; color: #999; font-size: 80%; }
+.plugin .summary { margin: 1.2em 0 .5em; }
+.plugin .info { margin: 1em 0 .5em; }
+.plugin .info dt { float: left; width: 7em; }
+.plugin .info dd { padding: 0; margin: 0; }
+.plugin .listing { width: 100%; }
+.plugin .listing th.sel input { margin-right: 0.5em; vertical-align: bottom; }
+.plugin .listing td.trac-module { background: #fcfcfc; }
+.plugin .listing td { background: #fff; }
+.trac-heading { margin: 0; }
+.trac-name { font-family: monospace; }
+.trac-toggler { color: #000; font-weight: normal; }
+.trac-toggler :link, .trac-toggler :visited,
+.trac-toggler :link:hover, .trac-toggler :visited:hover { border: none; padding: 0; }
+.trac-module .trac-heading { padding-left: 20px; color: #888; }
+.trac-module .trac-heading.foldable { text-indent: -20px }
+.trac-module .trac-heading.foldable :link,
+.trac-module .trac-heading.foldable :visited { color: #888; }
+.trac-module > div { margin-left: 1em; }
+.trac-component .trac-heading { margin-left: 2em; padding-left: 20px }
+.trac-component .trac-heading.foldable { text-indent: -20px }
+.trac-component > div { margin-left: 3em; }
+.trac-summary { color: #888 }
+.trac-heading :link { padding: .1em .5em 0 20px }
+table.trac-pluglist td { padding-left: 1em; }
+
+/* Perm Panel */
+#permlist { margin-bottom: 2em; }
+#permlist label, #grouplist label {
+ float: left;
+ width: 13em;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ padding: 0;
+ white-space: nowrap;
+}

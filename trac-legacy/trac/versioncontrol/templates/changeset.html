@@ -1,0 +1,48 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title>
+    # block title
+    ${title}
+    ${ super() }
+    # endblock title
+    </title>
+
+    # block head
+
+    ${ super() }
+
+    <script>
+      jQuery(function($) {
+        $(".trac-toggledeleted").show().click(function() {
+                  $(this).siblings().find(".trac-deleted").toggle();
+                  return false;
+        }).click();
+        $("#content").find("li.entry h2 a").parent()
+          .addAnchor(_("Link to this diff"));
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    #   include 'changeset_content.html'
+    ${ super() }
+    # endblock
+  </body>
+</html>

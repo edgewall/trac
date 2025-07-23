@@ -1,0 +1,42 @@
+= Trac Backup
+
+[[TracGuideToc]]
+
+Trac backups are a copied snapshot of the entire [TracEnvironment project environment] directory, including the database. Backups can be created using the `hotcopy` command of [TracAdmin trac-admin].
+
+'''Note''': Trac uses the `hotcopy` nomenclature to match that of [https://subversion.apache.org/ Subversion].
+
+== Creating a Backup
+
+Create a backup of a live TracEnvironment by running:
+{{{#!sh
+$ trac-admin /path/to/projenv hotcopy /path/to/backupdir
+}}}
+
+The database will be locked while hotcopy is running.
+
+The resulting backup directory is safe to handle using standard file-based backup tools like `tar` or `dump`/`restore`.
+
+Please note, the `hotcopy` command will not overwrite a target directory. When the target exists the operation will end with an error: `Command failed: [Errno 17] File exists:` This is discussed in [trac:#3198 #3198].
+
+== Restoring a Backup
+
+To restore an environment from a backup, stop the process running Trac, ie the web server or [TracStandalone tracd], restore the contents of your backup to your [TracEnvironment project environment] directory and restart the process.
+
+If you are using a database other than SQLite, you'll need to restore the database from the dump file. The dump file is saved in the environment `db` directory.
+
+To restore a PostgreSQL database backup, use the command:
+{{{#!sh
+$ psql -U <user> -d <database> -f /path/to/postgresql.dump
+}}}
+
+The `<database>` option is the same as the [TracEnvironment#DatabaseConnectionStrings database connection string] in the [TracIni#trac-database-option "[trac] database"] option of the project's `trac.ini` file.
+
+Similarly, for MySQL:
+
+{{{#!sh
+$ mysql -u <user> -p <database> < /path/to/mysql.dump
+}}}
+
+----
+See also: TracAdmin, TracEnvironment, [trac:TracMigrate TracMigrate]

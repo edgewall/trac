@@ -1,0 +1,52 @@
+= The Trac Configuration File
+
+[[TracGuideToc]]
+[[PageOutline(2-5,Contents,pullout)]]
+
+Trac is configured through the **`trac.ini`** file, located in the `<projectenv>/conf` directory. The `trac.ini` configuration file and its parent directory should be writable by the web server.
+
+Trac monitors the timestamp of the file to trigger an environment reload when the timestamp changes. Most changes to the configuration will be reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a [#GlobalConfiguration global configuration] file when none was previously present.
+
+== Global Configuration
+
+Configuration can be shared among environments using one or more global configuration files. Options in the global configuration will be merged with the environment-specific options, with local options overriding global options. The global configuration file is specified as follows:
+{{{#!ini
+[inherit]
+file = /path/to/global/trac.ini
+}}}
+Multiple files can be specified using a comma-separated list. Non-absolute paths are relative to the Environment `conf` directory.
+
+Note that you can also specify a global option file when creating a new project, by adding the option `--inherit=/path/to/global/trac.ini` to [TracAdmin#initenv trac-admin]'s `initenv` command. If you specify `--inherit` but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated `conf/trac.ini` file and delete the entries that will otherwise override those in the global file.
+
+There are three more options in the [#inherit-section "[inherit]"] section, [#inherit-templates_dir-option templates_dir] for sharing global templates, [#inherit-htdocs_dir-option htdocs_dir] for sharing global htdocs and [TracIni#inherit-plugins_dir-option plugins_dir], for sharing plugins. Those options can be specified in the shared configuration file, and in fact, configuration files can even be chained if you specify another `[inherit] file` there.
+
+Note that the templates found in the `templates/` directory of the TracEnvironment have precedence over those found in `[inherit] templates_dir`. In turn, the latter have precedence over the installed templates, so be careful about what you put there. Notably, if you override a default template, refresh your modifications when you upgrade to a new version of Trac. The preferred way to perform TracInterfaceCustomization is to write a custom plugin doing an appropriate `ITemplateStreamFilter` transformation.
+
+== Reference for settings
+
+This is a reference of available configuration options, and their default settings.
+
+Documentation improvements should be discussed on the [trac:MailingList#Trac-dev trac-dev mailing list] or described in a [trac:NewTicket ticket]. Even better, [trac:TracDev/SubmittingPatches submit a patch] against the docstrings in the code.
+
+[[TracIni]]
+
+== Configure Error Reporting
+
+The error reporting page has a //Create// button for reporting
+issues. The site to which issues are reported depends on the
+configuration of the Trac site and the user’s permissions.
+
+If the user doesn’t possess TRAC_ADMIN, the site to which a user is directed to create a ticket is determined by the [[#project-admin_trac_url-option|"[trac] admin_trac_url"]] setting:
+
+* If empty, there will be no //Create// button.
+* If set to the default value (`.`), the ticket will be
+  created on the site which the error occurred.
+* Otherwise the ticket will be created at the site pointed
+  to by `admin_trac_url`.
+
+If [[#project-admin-option|"[project] admin"]] is not empty, the administrator's email address will be rendered on the error page.
+
+If the user possesses TRAC_ADMIN, the //Create// button will direct the user to report the issue on trac.edgewall.org. If the error was generated in a plugin, the error will be reported to the project URL provided that the plugin author has included the project URL in the plugin installation data. The user possessing TRAC_ADMIN also sees a traceback and system information on the error page.
+
+----
+See also: TracAdmin, TracEnvironment

@@ -1,0 +1,61 @@
+#content.prefs #tabs {
+ list-style: none;
+ margin: 2em 1em 0;
+ padding: 1px;
+}
+#content.prefs #tabs li {
+ background: #e6e6e6;
+ border: 1px solid;
+ border-color: #ccc #666 #ccc #ccc;
+ border-top-left-radius: .5em;
+ border-top-right-radius: .5em;
+ color: #666;
+ position: relative;
+ bottom: -1px;
+ float: left;
+ font-size: 90%;
+ margin: 0 .3em;
+ padding: .2em 1em .3em;
+}
+#content.prefs #tabs :link, #content.prefs #tabs :visited {
+ border: none;
+ color: #999;
+}
+#content.prefs #tabs :link:hover, #content.prefs #tabs :visited:hover {
+ background: transparent;
+ color: #333;
+}
+#content.prefs #tabs li.active {
+ background: #fff;
+ border-bottom: 1px solid #fff;
+}
+#content.prefs #tabs #tab_advanced { float: right; }
+#content.prefs #tabcontent {
+ background: url(../vgradient.png) 0 1px repeat-x;
+ border-top: 1px solid #ccc;
+ clear: left;
+ padding: 20px 5px;
+}
+* html #content.prefs #tabcontent { padding-top: 0; }
+
+#content.prefs div.field { margin-bottom: 1em; }
+#content.prefs tr.field th {
+ text-align: right;
+ vertical-align: middle;
+ white-space: nowrap;
+}
+#content.prefs tr.field { height: 30px; }
+
+#content.prefs div.prefs_child {
+ margin-bottom: 4em;
+ margin-top: 4em;
+}
+#content.prefs div.prefs_child  h2 {
+ border-bottom: 1px solid #ddd;
+ box-shadow: .1em .4em .7em 0 #f2f2f2;
+ padding: 0.2em .3em .1em;
+}
+
+table.subscription-rules { border-collapse: collapse }
+table.subscription-rules .ui-sortable .rule-label { cursor: move }
+table.subscription-rules .ui-sortable-helper { opacity: 0.2; alpha(opacity=20) }

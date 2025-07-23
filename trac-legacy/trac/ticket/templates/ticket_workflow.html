@@ -1,0 +1,52 @@
+{# Copyright (C) 2015-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+{#
+Arguments:
+ - hidden: render hidden input elements
+#}
+<script>
+  jQuery(function($) {
+    /* only enable control elements for the currently selected action */
+    var actions = $("#action input[name='action']");
+    function updateActionFields() {
+      actions.each(function () {
+        $(this).siblings().find("*[id]").enable($(this).checked());
+        $(this).siblings().filter("*[id]").enable($(this).checked());
+      });
+    }
+    actions.click(updateActionFields);
+    updateActionFields();
+  });
+</script>
+# if hidden:
+#   for key, label, controls, hints in action_controls if key == action:
+<input type="hidden" name="action" value="${action}" />
+#   endfor
+# elif action_controls:
+<fieldset id="action">
+  <legend>${_("Action")}</legend>
+  # for key, label, controls, hints in action_controls:
+  <div>
+    <input type="radio" id="action_${key}" name="action"${
+         {'value': key,
+          'checked': key == action
+         }|htmlattr}/>
+    <label for="action_${key}">${label}</label>
+    ${controls}
+    # for hint in hints:
+    <span class="hint">${hint}</span>
+    # endfor
+  </div>
+  # endfor
+</fieldset>
+# endif
+## jinjacheck: "script input fieldset" OK

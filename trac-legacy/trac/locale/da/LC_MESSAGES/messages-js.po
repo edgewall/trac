@@ -1,0 +1,333 @@
+# Danish translations for Trac.
+# Copyright (C) 2013-2023 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+#
+# Translators:
+# Jens Hyllegaard <jens.hyllegaard@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 1.5.4\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2022-12-14 22:34-0500\n"
+"PO-Revision-Date: 2022-12-20 02:53+0000\n"
+"Last-Translator: Jens Hyllegaard <jens.hyllegaard@gmail.com>\n"
+"Language: da\n"
+"Language-Team: da <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: tracopt/ticket/htdocs/ticketclone.js:22
+msgid "Clone"
+msgstr "Klon"
+
+#: tracopt/ticket/htdocs/ticketclone.js:34
+msgid "Create a new ticket from this comment"
+msgstr "Opret en ny sag fra denne kommentar"
+
+#: tracopt/ticket/htdocs/ticketclone.js:41
+#, python-format
+msgid "(part of #%(ticketid)s) %(summary)s"
+msgstr "(part af #%(ticketid)s) %(summary)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:47
+#, python-format
+msgid ""
+"Copied from [%(source)s]:\n"
+"%(description)s"
+msgstr ""
+"Kopieret fra [%(source)s]:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:59
+msgid "Create a copy of this ticket"
+msgstr "Opret en kopi af denne sag"
+
+#: tracopt/ticket/htdocs/ticketclone.js:60
+#, python-format
+msgid "%(summary)s (cloned)"
+msgstr "%(summary)s (klonet)"
+
+#: tracopt/ticket/htdocs/ticketclone.js:65
+#, python-format
+msgid ""
+"Cloned from #%(id)s:\n"
+"%(description)s"
+msgstr ""
+"Klonet fra #%(id)s:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+msgid "Delete"
+msgstr "Slet"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+msgid "Delete ticket"
+msgstr "Slet sag"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "Slet kommentar %(num)s"
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr "Skift alle"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(ingen rettesæt information)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Luk"
+
+#: trac/htdocs/js/diff.js:117
+msgid "Tabular"
+msgstr "Tabel"
+
+#: trac/htdocs/js/diff.js:123
+msgid "Unified"
+msgstr "Samlet"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Udvid undermappe på stedet"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Gen-udvid mappe"
+
+#: trac/htdocs/js/expand_dir.js:122
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Indlæser %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:150
+msgid "(empty)"
+msgstr "(tom)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "(error)"
+msgstr "(fejl)"
+
+#: trac/htdocs/js/expand_dir.js:165
+msgid "Fold directory"
+msgstr "Sammenklap mappe"
+
+#: trac/htdocs/js/folding.js:61
+#, python-format
+msgid "Show %(title)s"
+msgstr "Vis %(title)s"
+
+#: trac/htdocs/js/folding.js:73
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (klik for at skjule kolonne)"
+
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr "$month$year"
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
+msgid "Done"
+msgstr "Færdig"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "For"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "Næste"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "I dag"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "Uge"
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:31
+msgid "Choose Time"
+msgstr "Vælg tid"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:33
+msgid "Time"
+msgstr "Tid"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Hour"
+msgstr "Time"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Minute"
+msgstr "Minut"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Second"
+msgstr "Sekund"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:36
+msgid "Time Zone"
+msgstr "Tidszone"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:38
+msgid "Now"
+msgstr "Nu"
+
+#: trac/htdocs/js/query.js:160
+msgid "A filter already exists for that property"
+msgstr "Der eksistere allerede et filter for den egenskab"
+
+#: trac/htdocs/js/query.js:187
+msgid "or"
+msgstr "eller"
+
+#: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
+msgid "yes"
+msgstr "ja"
+
+#: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
+msgid "no"
+msgstr "nej"
+
+#: trac/htdocs/js/query.js:218
+#, python-format
+msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
+msgstr "<label>mellem %(start)s</label> <label>og %(end)s</label>"
+
+#: trac/htdocs/js/query.js:381
+msgid " remove:"
+msgstr "fjern:"
+
+#: trac/htdocs/js/query.js:391
+msgid " add:"
+msgstr "tilføj:"
+
+#: trac/htdocs/js/query.js:425
+#, python-format
+msgid "Select ticket #%(id)s for modification"
+msgstr "Vælg sag %(id)s der skal ændres"
+
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr ""
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
+msgstr ""
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Link hertil"
+
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
+msgstr "Skift gruppe"
+
+#: trac/htdocs/js/trac.js:96
+msgid "At least one item must be selected"
+msgstr "Mindst en ting skal vælges"
+
+#: trac/htdocs/js/trac.js:243
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+"Dine ændringer er ikke gemt. Dine ændringer vil blive tabt hvis du "
+"forlader denne side før du gemmer dine ændringer."
+
+#: trac/htdocs/js/wiki.js:75
+#: trac/notification/templates/prefs_notification.html:16
+#: trac/ticket/templates/ticket.html:4
+msgid "Link to this section"
+msgstr "Link til denne sektion"
+
+#: trac/htdocs/js/wiki.js:77
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Link til #%(id)s"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Bold text: **Example**"
+msgstr "Fed tekst: **Eksempel**"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Italic text: ''Example''"
+msgstr "Kursiv tekst: ''Eksempel''"
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Heading: == Example"
+msgstr "Overskrift: == Eksempel"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Link: [http://www.example.com/ Eksempel]"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Code block: {{{ example }}}"
+msgstr "Kode blok: {{{ eksempel }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "Horizontal rule: ----"
+msgstr "Horisontal linje: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "New paragraph"
+msgstr "Nyt afsnit"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Line break: \\\\"
+msgstr "Linjeskift: \\\\"
+
+#: trac/htdocs/js/wikitoolbar.js:83
+msgid "Image: [[Image()]]"
+msgstr "Billede: [[Image()]]"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:8
+msgid "Link to this diff"
+msgstr "Link til denne diff"
+
+#~ msgid "between"
+#~ msgstr "mellem"
+
+#~ msgid "and"
+#~ msgstr "og"
+
+#~ msgid "Select ticket %(id)s for modification"
+#~ msgstr "Vælg sag %(id)s der skal ændres"
+
+#~ msgid "Toggle selection of all tickets shown in this group"
+#~ msgstr "Skift markering af alle sager der er vist i denne gruppe"
+
+#~ msgid "Bold text: '''Example'''"
+#~ msgstr "Fed tekst: ''Eksempel''"
+
+#~ msgid "Heading: == Example =="
+#~ msgstr "Overskrift: == Eksempel =="
+
+#~ msgid "Line break: [[BR]]"
+#~ msgstr "Linjeskift: [[BR]]"
+

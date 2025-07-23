@@ -1,0 +1,33 @@
+= The Trac Timeline =
+[[TracGuideToc]]
+
+Trac's timeline feature provides a historic view of the project.
+
+Trac events are listed in chronological order, comprised of a brief description of each event and, if applicable, the person responsible for the change.
+
+The timeline lists these kinds of events:
+ * '''Wiki page events''' — Pages created and edited
+ * '''Ticket events''' — Tickets open/closed and updated
+ * '''Source code changes ''' — Repository check-ins
+ * '''Milestone events''' — Milestones completed
+
+Each event entry provides a hyperlink to the event, the author of the change, as well as a brief excerpt of the actual comment or text, if available. Plugins may provide additional events for the timeline.
+
+The displayed events can be filtered using the filters in the preferences panel:
+ * ''View changes from'' — the date from which to start displaying events (current date if empty). Events that occurred after this date will not be shown, only those that occurred before the date.
+ * ''and X days back'' — how many days backwards in time to get events.
+ * ''done by'' — the author of an event. It accepts a space-separated list of authors for which events should be included. Alternatively, if the author names are prefixed by a `-` character, then the events having those authors will be excluded, and all the others included. Single or double quotes can be used for specifying author names containing space characters.
+ * ''Changesets in all repositories'' — if you have more than one repository connected to your Trac project, you can also filter events from specific repositories.
+ * ''Milestones completed'' — display or hide milestones reached.
+ * ''Tickets opened and closed'' — display or hide ticket open or close events.
+ * ''Ticket updates'' - display or hide ticket update events (if enabled by [TracIni#timeline-ticket_show_details-option "[timeline] ticket_show_details"]).
+ * ''Wiki changes'' — display or hide Wiki change events.
+
+See !TracIni's [wiki:TracIni#timeline-section "[timeline] section"] for timeline configuration options. Plugins may provide additional filters for the timeline.
+
+== RSS Support ==
+
+The Timeline module supports subscription using RSS 2.0 syndication. To subscribe to project events, click the orange '''XML''' icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
+
+----
+See also: TracWiki, WikiFormatting, TracRss

@@ -1,0 +1,49 @@
+= Using RSS with Trac
+[[TracGuideToc]]
+
+Several of the Trac modules support content syndication using the RSS ([https://en.wikipedia.org/wiki/RSS Really Simple Syndication]) XML format. RSS pushes out Trac updates whenever they occur and to whoever has subscribed to it. Using the RSS subscription feature in Trac, you can easily monitor progress of the project, a set of issues or even changes to a single file.
+
+Trac supports RSS feeds in:
+
+ * TracTimeline — Use the RSS feed to '''subscribe to project events'''. Monitor overall project progress in your favorite RSS reader.
+ * TracTickets, TracReports, and TracQuery — Allows syndication of report and ticket query results. Be notified about important and relevant tickets.
+ * TracBrowser and TracRevisionLog — Syndication of file changes. Stay up to date with changes to a specific file or directory.
+
+== How to access RSS data
+
+Where RSS is available in Trac you should find a small orange '''RSS''' icon, typically at the bottom of the page:
+{{{#!html
+<a rel="nofollow" style="padding-left: 20px; background: url(../../chrome/common/feed.png) left center no-repeat;  border: none;"><span style="color: #666;padding: 0 0 2px; font-size: 11px;">RSS feed</span></a>
+}}}
+Clicking the icon will access the RSS feed for that specific resource.
+
+Different modules provide different data in their RSS feeds. Usually the syndicated information corresponds to the current view. For example, if you click the RSS link on a report page, the feed will be based on that report. It might be explained by thinking of the RSS feeds as an ''alternate view of the data currently displayed''.
+
+Since Trac 1.0 an RSS feed can be retrieved from a Trac site that requires authentication. Hover over the RSS icon, right click and //copy link address//.
+
+== Links
+
+* Specifications:
+ * https://cyber.harvard.edu/rss/rss.html — RSS 2.0 Specification.
+
+* Multi-platform RSS readers:
+ * http://www.rssowl.org/ — Open source, Eclipse-based, RSS reader for Linux, Mac and Windows systems that supports https and authenticated feeds.
+
+* Linux/BSD/*n*x systems:
+ * http://liferea.sourceforge.net/ — Open source GTK2 RSS Reader for Linux.
+ * [https://kde.org/applications/internet/org.kde.akregator Akregator] — Open source KDE RSS Reader, part of KDE-PIM.
+
+* Mac OS X systems:
+ * https://ranchero.com/netnewswire/ — An excellent RSS reader for Mac OS X, has both free and paid versions.
+ * https://www.utsire.com/shrook/ — An RSS reader for Max OS X that supports https, even with self signed certificates, and authenticated feeds. Discontinued.
+ * http://vienna-rss.sourceforge.net/ — Open source Feed Reader for Mac OS X with smart folders support.
+
+* Windows systems:
+ * http://www.rssreader.com/ — Free and powerful RSS Reader for MS Windows.
+ * https://www.sharpreader.net/ — A free RSS Reader written in .NET for MS Windows.
+
+* Firefox:
+ * https://www.mozilla.org/products/firefox/ — Mozilla Firefox features plenty [https://addons.mozilla.org/en-US/firefox/search/?q=rss&appver=&platform= add-ons] for supporting RSS.
+
+----
+See also: TracTimeline, TracQuery, TracReports, TracTickets, TracBrowser, TracRevisionLog

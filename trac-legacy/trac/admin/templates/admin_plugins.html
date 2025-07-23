@@ -1,0 +1,264 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'admin.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block admintitle
+      ${_("Plugins")}
+      # endblock admintitle
+    </title>
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        // Sets state of group toggler when component checkboxes are clicked
+        function setGroupTogglerState() {
+          var table = $(this).closest("table.listing");
+          var checkboxes = $("td.sel input:checkbox:enabled", table);
+          var num_selected = checkboxes.filter(":checked").length;
+          var none_selected = num_selected === 0;
+          var all_selected = num_selected === checkboxes.length;
+          $("th.sel input:checkbox", table)
+            .prop({"checked": all_selected,
+                   "indeterminate": !(none_selected || all_selected)});
+        }
+        // Add group event behavior for controlling state of toggler
+        $("table.listing td.sel input:checkbox:enabled")
+          .click(setGroupTogglerState);
+        // Add click behavior for the group toggler and initialize its state
+        $("table.listing th.sel").wrapInner('<label></label>').children()
+          .each(function() {
+            $('<input type="checkbox"/>').click(function() {
+              $("td.sel input:checkbox:enabled",
+                $(this).closest("table.listing")).prop("checked", this.checked);
+            }).prependTo(this).each(setGroupTogglerState);
+          });
+        $("h3.foldable").enableFolding(true, true);
+        $("p.foldable").enableFolding(true, false);
+        $("thead .trac-toggler a").each(function() {
+          $(this).attr("href", "").click(function() {
+            var td = $(this).closest("table").find("tbody td");
+            var a = td.find(".trac-toggler a");
+            if ($(this).text() == "+") {
+              td.removeClass("collapsed");
+              a.text("&ndash;");
+            } else {
+              td.addClass("collapsed");
+              a.text("+");
+            }
+            return false;
+          });
+        });
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block adminpanel
+    <h2>
+      # set nb_plugins
+      <span class="trac-count">(${len(plugins)})</span>
+      # endset
+      # trans nb_plugins
+
+      Manage Plugins ${nb_plugins}
+
+      # endtrans
+    </h2>
+
+    <div>
+      <form id="addplug" class="addnew" method="post" enctype="multipart/form-data" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Install Plugin:")}</legend>
+          <div class="field">
+            <label>
+              ${_("File:")} <input type="file" name="plugin_file" class="trac-disable-determinant"
+                               ${{'disabled': readonly}|htmlattr} />
+            </label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="install" class="trac-disable trac-disable-on-submit"
+                   value="${_('Install')}"${{'disabled': readonly}|htmlattr} />
+          </div>
+          <p class="help">
+            # if readonly:
+            #   trans
+
+            The web server does not have sufficient permissions to
+            store files in the environment plugins directory.
+
+            #   endtrans
+            # else:
+            #   trans
+
+            Upload a plugin packaged as Python egg.
+
+            #   endtrans
+            # endif
+          </p>
+        </fieldset>
+      </form>
+
+      #   for plugin in plugins:
+      <form id="edit-plugin-${plugin.name.lower()}" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <div class="plugin" id="trac-plugin-${plugin.name}">
+          <h3 class="foldable">${plugin.name} ${plugin.version}</h3>
+          <!--! FIXME: Plugin uninstall disabled as it is unreliable (#3545)
+          <div class="uninstall buttons">
+            <input type="hidden" name="plugin_filename"
+                   value="${plugin.plugin_filename}" />
+            <input type="submit" name="uninstall" value="${_('Uninstall')}"
+                   ${{'disabled': readonly}|htmlattr} />
+          </div> -->
+          # if plugin.info:
+          <p class="summary">${plugin.info.get('summary')}</p>
+          #   if 'home_page' in plugin.info or 'author' in plugin.info or 'author_email' in plugin.info:
+          <dl class="info">
+            #   if 'author' in plugin.info or 'author_email' in plugin.info:
+            <dt>${_("Author:")}</dt>
+            <dd>
+              #   if plugin.info.get('author_email'):
+              <a href="mailto:${plugin.info.author_email}">
+                ${plugin.info.author or plugin.info.author_email}
+              </a>
+              #   else:
+              ${plugin.info.author or plugin.info.author_email}
+              #   endif
+            </dd>
+            #   endif
+            #   if 'maintainer' in plugin.info or 'maintainer_email' in plugin.info:
+            <dt>${_("Maintainer:")}</dt>
+            <dd>
+              #   if plugin.info.get('maintainer_email'):
+              <a href="mailto:${plugin.info.maintainer_email}">
+                ${plugin.info.maintainer or plugin.info.maintainer_email}
+              </a>
+              #   else:
+              ${plugin.info.maintainer or plugin.info.maintainer_email}
+              #   endif
+            </dd>
+            #   endif
+            #   if plugin.info.get('home_page'):
+            <dt>${_("Home page:")}</dt>
+            <dd>
+              <a onclick="window.open(this.href); return false"
+                 href="${plugin.info.home_page}">${plugin.info.home_page}</a>
+            </dd>
+            #   endif
+            #   if plugin.info.get('license'):
+            <dt>${_("License:")}</dt>
+            <dd>${plugin.info.license}</dd>
+            #   endif
+          </dl>
+          #   endif
+          # endif
+          <table class="listing">
+            <thead>
+              <tr>
+                <th>
+                  ${_("Component")}
+                  <span class="trac-toggler">
+                    [<a title="${_('Show all descriptions')}"
+                        href="${href.admin('general', 'plugin', show=plugin.name)
+                                + '#trac-plugin-' + plugin.name}">+</a>]
+                    [<a title="${_('Hide all descriptions')}"
+                        href="${href.admin('general', 'plugin')
+                                + '#trac-plugin-' + plugin.name}">&ndash;</a>]
+                  </span>
+                </th>
+                <th class="sel">${_("Enabled")}</th>
+              </tr>
+            </thead>
+            # for module_name, module in plugin.modules|dictsort:
+            <tbody>
+              <tr>
+                # set show_doc = show == plugin.name or show == module_name
+                <td id="trac-mod-${module_name}"
+                    class="trac-module${' collapsed' if not show_doc and module.description}">
+                  <p class="trac-heading${' foldable' if module.description}">
+                    # if module.description:
+                    <a class="trac-name"
+                       href="${href.admin('general', 'plugin', show=module_name if not show_doc else none)
+                             + '#trac-mod-' + module_name}">${module_name}.*</a>
+                    # else:
+                    <span class="trac-name">${module_name}.*</span>
+                    # endif
+                    # if module.summary:
+                    <span class="trac-summary"> &mdash; ${module.summary}</span>
+                    # endif
+                  </p>
+                  # if module.description:
+                  <div>${safe_wiki_to_html(context, module.description)}</div>
+                  # endif
+                </td>
+                <td class="sel trac-module"></td>
+              </tr>
+              # for component_name, component in module.components|dictsort:
+              <tr>
+                # set show_doc = show == plugin.name or show == component.full_name
+                <td id="trac-comp-${component.full_name}"
+                    class="trac-component${' collapsed' if not show_doc}">
+                  <p class="trac-heading${' foldable' if component.description}">
+                    # if component.description:
+                    <a class="trac-name"
+                       href="${href.admin('general', 'plugin', show=component.full_name if not show_doc else none)
+                             + '#trac-comp-' + component.full_name}">${component_name}</a>
+                    # else:
+                    <span class="trac-name">${component_name}</span>
+                    # endif
+                    # if component.summary:
+                    <span class="trac-summary"> &mdash; ${component.summary}</span>
+                    # endif
+                  </p>
+                  # if component.description:
+                  <div>${safe_wiki_to_html(context, component.description)}</div>
+                  # endif
+                </td>
+                <td class="sel trac-component">
+                  # if not component.required:
+                  <input type="hidden" name="component"
+                         value="${module_name}.${component_name}" />
+                  # endif
+                  <input type="checkbox" name="enable"
+                         value="${module_name}.${component_name}"
+                     ${{'checked': component.enabled,
+                        'disabled': component.required}|htmlattr} />
+                </td>
+              </tr>
+              # endfor
+            </tbody>
+            # endfor
+          </table>
+          <div class="buttons">
+            <input type="hidden" name="plugin" value="${loop.index0}" />
+            <input type="submit" name="update" value="${_('Apply changes')}" />
+          </div>
+        </div>
+      </form>
+      #   endfor
+
+      #   call(note, page) jmacros.wikihelp('TracPlugins'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using plugins.
+
+      #     endtrans
+      #   endcall
+    </div>
+    # endblock adminpanel
+  </body>
+
+</html>

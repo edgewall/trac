@@ -1,0 +1,26 @@
+syntax: glob
+*~
+.*.sw[op]
+*.orig
+.svn
+.git
+build
+dist
+Trac.egg-info
+*.py[co]
+testenv
+testing.log
+functional-testing.log
+trac/test.db
+geckodriver.log
+html
+htmlcov
+.coverage
+Makefile.cfg
+doc/.build
+*.mo
+trac/htdocs/js/messages/*.js
+.idea
+.project
+.pydevproject
+.settings

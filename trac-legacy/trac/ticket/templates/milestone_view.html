@@ -1,0 +1,140 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${_("Milestone %(name)s", name=milestone.name)}
+      ${ super() }
+      # endblock title
+    </title>
+    # block head
+    ${ super() }
+    #   if 'MILESTONE_MODIFY' in perm(milestone.resource):
+    <link rel="alternate" type="application/x-wiki"
+          title="${_('Edit this milestone')}"
+          href="${href.milestone(milestone.name, action='edit')}" />
+    #   endif
+    <script>
+      jQuery(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="milestone">
+      <h1>${_("Milestone %(name)s", name=milestone.name)}</h1>
+      <div class="info trac-progress">
+        <p class="date">
+          # if milestone.completed:
+          ${tag_("Completed %(duration)s ago (%(date)s)",
+                 duration=dateinfo(milestone.completed),
+                 date=format_datetime(milestone.completed))}
+          # elif milestone.is_late:
+          <strong>
+            ${tag_("%(duration)s late", duration=dateinfo(milestone.due))}
+          </strong>
+          (${format_datetime(milestone.due)})
+          # elif milestone.due:
+          ${tag_("Due in %(duration)s (%(date)s)",
+                 duration=dateinfo(milestone.due),
+                 date=format_datetime(milestone.due))}
+          # else:
+          ${_("No date set")}
+          # endif
+          </p>
+        # if stats.count:
+        #   include 'progress_bar.html' ignore missing
+        # endif
+      </div>
+
+      # if available_groups and stats.count:
+      <form id="stats" class="trac-groupprogress" action="${req.request_path}">
+        <fieldset>
+          <legend>
+            <label for="by">${_("%(stat_title)s by",
+                                stat_title=stats.title.capitalize())}</label>
+            <select id="by" name="by" onchange="this.form.submit()">
+              # for group in available_groups:
+              <option${{'value': group.name,
+                        'selected': grouped_by == group.name
+                       }|htmlattr}>${group.label}</option>
+              # endfor
+            </select>
+            <input type="submit" value="${_('Update')}" class="noscript"/>
+            <script>
+              jQuery(function($) {
+                $(".noscript").attr("style", "display: none");
+              });
+            </script>
+          </legend>
+          # if groups:
+          #   include 'progress_bar_grouped.html' ignore missing
+          # endif
+        </fieldset>
+      </form>
+      # endif
+
+      # if milestone.description:
+      <div class="description trac-content">
+        ${wiki_to_html(context, milestone.description)}
+      </div>
+      # endif
+
+      # with alist = attachments, compact = true, foldable = true
+      #   include 'list_of_attachments.html'
+      # endwith
+
+      # set can_modify = 'MILESTONE_MODIFY' in perm(milestone.resource)
+      # set can_delete = 'MILESTONE_DELETE' in perm(milestone.resource)
+      # if can_modify or can_delete or attachments.can_create:
+      <div class="buttons">
+        # if can_modify:
+        <form method="get" action="${req.request_path}" id="editmilestone">
+          <div>
+            <input type="hidden" name="action" value="edit" />
+            <input type="submit" value="${_('Edit milestone')}" accesskey="e" />
+          </div>
+        </form>
+        # endif
+        # if can_delete:
+        <form method="get" action="${req.request_path}" id="deletemilestone">
+          <div>
+            <input type="hidden" name="action" value="delete" />
+            <input type="submit" value="${_('Delete milestone')}" />
+          </div>
+        </form>
+        # endif
+        # with alist = attachments
+        #   include 'attach_file_form.html'
+        # endwith
+      </div>
+      # endif
+
+      # call(note, page) jmacros.wikihelp('TracRoadmap'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using the roadmap.
+
+      #   endtrans
+      # endcall
+
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

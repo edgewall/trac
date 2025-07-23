@@ -1,0 +1,176 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'admin.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block admintitle
+      ${_("Basics")}
+      # endblock admintitle
+    </title>
+  </head>
+
+  <body>
+    # block adminpanel
+    <h2>${_("Basic Settings")}</h2>
+
+    <div>
+      <form class="mod" id="modbasic" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Project")}</legend>
+          <div class="field">
+            <label>${_("Name:")}<br />
+              <input type="text" name="name" size="48" value="${project.name}" />
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("URL:")}<br />
+              <input type="text" name="url" size="48" value="${project.url}" />
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Description:")}<br />
+              <textarea name="descr" class="trac-resizable" rows="3" cols="50">
+${project.descr}</textarea>
+            </label>
+          </div>
+          <div class="field">
+            <label>${_("Default handler:")}<br />
+              <select name="default_handler">
+                # if default_handler not in valid_default_handlers:
+                <option value="${default_handler}">${default_handler}</option>
+                # endif
+                # for handler in valid_default_handlers:
+                <option${{'selected': handler == default_handler,
+                          'value': handler
+                         }|htmlattr}>${handler}</option>
+                # endfor
+              </select>
+            </label>
+            # if default_handler not in valid_default_handlers:
+            <span class="hint">
+              # trans default_handler
+
+              ${default_handler} is not a valid IRequestHandler or is not enabled.
+
+              # endtrans
+            </span>
+            # endif
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>${_("Localization")}</legend>
+          <div class="field">
+            <label>${_("Default timezone:")}<br />
+              <select name="default_timezone">
+                <option value="">${_("Server's local time zone")}</option>
+                # for tzname in timezones:
+                <option${{'selected': tzname == default_timezone,
+                          'value': tzname
+                         }|htmlattr}>${tzname}</option>
+                # endfor
+              </select>
+            </label>
+            # if not has_pytz:
+            <span class="hint">
+              # trans
+
+              Install pytz for a complete list of timezones.
+
+              # endtrans
+            </span>
+            # endif
+          </div>
+          <div class="field">
+            <label>${_("Default language:")}<br />
+              <select${{'disabled': not languages,
+                        'title': _('Translations are currently unavailable')
+                                 if not languages,
+                        'name': 'default_language'
+                       }|htmlattr}>
+                <option value="">${_("Browser's language")}</option>
+                # for locale, language in languages:
+                <option${{'selected': locale == default_language,
+                          'value': locale
+                         }|htmlattr}>${language}</option>
+                # endfor
+              </select>
+            </label>
+            # if not has_babel:
+            <span class="hint">
+              # trans
+
+              Install Babel for extended language support.
+
+              # endtrans
+            </span>
+            # endif
+            # if has_babel and not languages:
+            <span class="hint">
+              # trans
+
+              Message catalogs have not been compiled.
+
+              # endtrans
+            </span>
+            # endif
+          </div>
+          <div class="field">
+            <label>${_("Default date format:")}<br />
+              <select name="default_date_format">
+                <option value="">${_("Browser's language")}</option>
+                <option${{'selected': default_date_format == 'iso8601',
+                          'value': 'iso8601'
+                         }|htmlattr}>${_("ISO 8601 format")}</option>
+              </select>
+            </label>
+            # if not has_babel:
+            <span class="hint">
+              # trans
+
+              Install Babel for localized date formats.
+
+              # endtrans
+            </span>
+            # endif
+          </div>
+          <div class="field">
+            <label>${_("Default time format:")}<br />
+              <select name="default_dateinfo_format">
+                <option${{'selected': default_dateinfo_format == 'relative',
+                          'value': 'relative'
+                         }|htmlattr}>${_("Relative format")}</option>
+                <option${{'selected': default_dateinfo_format == 'absolute',
+                          'value': 'absolute'
+                         }|htmlattr}>${_("Absolute format")}</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+        <div class="buttons">
+          <input type="submit" value="${_('Apply changes')}" />
+        </div>
+      </form>
+
+      # call(note, page) jmacros.wikihelp('TracIni'):
+      #   trans note, page
+
+      ${note} See ${page} for help on configuration options.
+
+      #   endtrans
+      # endcall
+    </div>
+    # endblock adminpanel
+  </body>
+
+</html>

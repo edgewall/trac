@@ -1,0 +1,200 @@
+= Custom Ticket Fields
+Trac supports adding custom, user-defined fields to the ticket module. With custom fields you can add typed, site-specific properties to tickets.
+
+== Configuration
+
+Configure custom ticket fields in the [TracIni#ticket-custom-section "[ticket-custom]"] section of trac.ini.
+
+The syntax of each field definition is:
+{{{
+ FIELD_NAME = TYPE
+ (FIELD_NAME.OPTION = VALUE)
+ ...
+}}}
+
+The example below should help to explain the syntax.
+
+=== Field Names
+A field name can only contain lowercase letters a-z, uppercase letters A-Z or digits 0-9, and must not start with a leading digit.
+
+The following field names are reserved and can not be used for custom fields:
+* cc
+* changetime
+* col
+* comment
+* component
+* desc
+* description
+* format
+* group
+* groupdesc
+* id
+* keywords
+* max
+* milestone
+* or
+* order
+* owner
+* page
+* priority
+* report
+* reporter
+* resolution
+* row
+* severity
+* status
+* summary
+* time
+* type
+* verbose
+* version
+
+=== Available Field Types and Options
+
+ * '''text''': A simple (one line) text field.
+   * label: Descriptive label.
+   * value: Default value.
+   * order: Sort order placement relative to other custom fields.
+   * max_size: Maximum allowed size in characters (//Since 1.3.2//).
+   * format: One of:
+     * `plain` for plain text
+     * `wiki` for [WikiFormatting wiki formatted] content
+     * `reference` to treat the content as a queryable value
+     * `list` to interpret the content as a list of queryable values, separated by whitespace
+   * ticketlink_query: Query for linkifying ticket values.
+     Not applicable for format `plain` and `wiki`.
+ * '''checkbox''': A boolean value check box.
+   * label: Descriptive label.
+   * value: Default value, 0 or 1.
+   * order: Sort order placement.
+   * ticketlink_query: Query for linkifying ticket values.
+ * '''select''': Drop-down select box. Uses a list of values.
+   * label: Descriptive label.
+   * options: List of values, separated by '''|''' (vertical pipe).
+   * value: Default value (one of the values from options).
+   * order: Sort order placement.
+   * ticketlink_query: Query for linkifying ticket values.
+ * '''radio''': Radio buttons. Essentially the same as '''select'''.
+   * label: Descriptive label.
+   * options: List of values, separated by '''|''' (vertical pipe).
+   * value: Default value, one of the values from options.
+   * order: Sort order placement.
+   * ticketlink_query: Query for linkifying ticket values.
+ * '''textarea''': Multi-line text area.
+   * label: Descriptive label.
+   * value: Default text.
+   * rows: Height in lines.
+   * order: Sort order placement.
+   * max_size: Maximum allowed size in characters (//Since 1.3.2//).
+   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting.
+ * '''time''': Date and time picker. (//Since 1.1.1//)
+   * label: Descriptive label.
+   * value: Default date.
+   * order: Sort order placement.
+   * format: One of:
+     * `relative` for relative dates.
+     * `date` for absolute dates.
+     * `datetime` for absolute date and time values.
+
+If the `label` is not specified, it will be created by capitalizing the custom field name and replacing underscores with whitespaces.
+
+Macros will be expanded when rendering `textarea` fields with format `wiki`, but not when rendering `text` fields with format `wiki`.
+
+For applicable fields, the `ticketlink_query` option
+overrides [[TracIni#query-ticketlink_query-option|"[query] ticketlink_query"]], and the format is the same as
+that option. When the `ticketlink_query` option
+is not specified, `[query]` `ticketlink_query` is used to
+linkify the field.
+
+=== Sample Configuration
+
+{{{#!ini
+[ticket-custom]
+
+test_one = text
+test_one.label = Just a text box
+
+test_two = text
+test_two.label = Another text-box
+test_two.value = Default [mailto:joe@nospam.com owner]
+test_two.format = wiki
+
+test_three = checkbox
+test_three.label = Some checkbox
+test_three.value = 1
+
+test_four = select
+test_four.label = My selectbox
+test_four.options = one|two|third option|four
+test_four.value = two
+
+test_five = radio
+test_five.label = Radio buttons are fun
+test_five.options = |uno|dos|tres|cuatro|cinco
+test_five.value = dos
+
+test_six = textarea
+test_six.label = This is a large textarea
+test_six.value = Default text
+test_six.cols = 60
+test_six.rows = 30
+
+test_seven = time
+test_seven.label = A relative date
+test_seven.format = relative
+test_seven.value = now
+
+test_eight = time
+test_eight.label = An absolute date
+test_eight.format = date
+test_eight.value = yesterday
+
+test_nine = time
+test_nine.label = A date and time
+test_nine.format = datetime
+test_nine.value = in 2 hours
+}}}
+
+'''Note''': To make a `select` type field optional, specify a leading `|` in `fieldname.options` (e.g. `test_five`).
+
+=== Reports Involving Custom Fields
+
+Custom ticket fields are stored in the `ticket_custom` table, not in the `ticket` table. So to display the values from custom fields in a report, you will need a join on the 2 tables. Let's use an example with a custom ticket field called `progress`.
+
+{{{#!sql
+SELECT p.value AS __color__,
+   id AS ticket, summary, owner, c.value AS progress
+  FROM ticket t, enum p, ticket_custom c
+  WHERE status IN ('assigned') AND t.id = c.ticket AND c.name = 'progress'
+AND p.name = t.priority AND p.type = 'priority'
+  ORDER BY p.value
+}}}
+'''Note''': This will only show tickets that have progress set in them. This is '''not the same as showing all tickets'''. If you created this custom ticket field ''after'' you have already created some tickets, they will not have that field defined, and thus they will never show up on this ticket query. If you go back and modify those tickets, the field will be defined, and they will appear in the query.
+
+However, if you want to show all ticket entries (with progress defined and without), you need to use a `JOIN` for every custom field that is in the query:
+{{{#!sql
+SELECT p.value AS __color__,
+   id AS ticket, summary, component, version, milestone, severity,
+   (CASE status WHEN 'assigned' THEN owner||' *' ELSE owner END) AS owner,
+   time AS created,
+   changetime AS _changetime, description AS _description,
+   reporter AS _reporter,
+   (CASE WHEN c.value = '0' THEN 'None' ELSE c.value END) AS progress
+  FROM ticket t
+     LEFT OUTER JOIN ticket_custom c ON (t.id = c.ticket AND c.name = 'progress')
+     JOIN enum p ON p.name = t.priority AND p.type='priority'
+  WHERE status IN ('new', 'assigned', 'reopened')
+  ORDER BY p.value, milestone, severity, time
+}}}
+
+Note in particular the `LEFT OUTER JOIN` statement here.
+
+Note that option names in trac.ini are case-insensitive, so even if your option name includes uppercase characters:
+{{{#!ini
+[ticket-custom]
+Progress_Type = text
+}}}
+you must use '''lowercase''' in the SQL: `AND c.name = 'progress_type'`.
+
+----
+See also: TracTickets, TracIni

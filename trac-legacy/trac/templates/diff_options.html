@@ -1,0 +1,68 @@
+{# Copyright (C) 2009-2023 Edgewall Software
+
+This software is licensed as described in the file COPYING, which
+you should have received as part of this distribution. The terms
+are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+This software consists of voluntary contributions made by many
+individuals. For the exact contribution history, see the revision
+history and logs, available at https://trac.edgewall.org/.
+#}
+
+{# Adds diff option fields (to be used inside a form)
+
+Arguments:
+- `diff`: the datastructure which contains diff options
+#}
+<label for="style">${_("View differences")}</label>
+<select id="style" name="style">
+  <option ${{"selected": diff.style == 'inline'}|htmlattr}
+          value="inline">${_("inline")}</option>
+  <option ${{'selected': diff.style == 'sidebyside'}|htmlattr}
+          value="sidebyside">${_("side by side")}</option>
+</select>
+<div class="field">
+  # set input_radio
+  <input type="radio" name="contextall" value="0"
+         ${{"checked": not diff.options.contextall}|htmlattr}/>
+  # endset
+  # set input_text
+  <input type="text" name="contextlines" id="contextlines" size="2"
+         maxlength="3"
+         value="${'all' if diff.options.contextlines is lessthan(0) else
+                diff.options.contextlines}"/>
+  # endset
+  # trans radio=input_radio, text=input_text
+
+  <label>${radio} Show</label> <label>${text} lines around each change</label>
+
+  # endtrans
+  <br/>
+  <label><input type="radio" name="contextall" value="1"
+                ${{"checked": diff.options.contextall}|htmlattr}/>
+    ${_("Show the changes in full context")}</label>
+</div>
+<fieldset id="ignore">
+  # with options = diff.options
+  <legend>${_("Ignore:")}</legend>
+  <div class="field">
+    <input type="checkbox" id="ignoreblanklines" name="ignoreblanklines"
+           ${{"checked": options.ignoreblanklines}|htmlattr} />
+    <label for="ignoreblanklines">${_("Blank lines")}</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" id="ignorecase" name="ignorecase"
+           ${{"checked": options.ignorecase}|htmlattr} />
+    <label for="ignorecase">${_("Case changes")}</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" id="ignorewhitespace" name="ignorewhitespace"
+           ${{"checked": options.ignorewhitespace}|htmlattr} />
+    <label for="ignorewhitespace">${_("White space changes")}</label>
+  </div>
+  # endwith
+</fieldset>
+<div class="buttons">
+  <input type="submit" name="update" value="${_('Update')}" />
+</div>
+## jinjacheck: "label select" OK
