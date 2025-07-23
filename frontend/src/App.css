@@ -1,0 +1,34 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.App-header h1 {
+  margin: 0 0 10px 0;
+  color: #61dafb;
+}
+
+.App-header p {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.api-status {
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+} 
