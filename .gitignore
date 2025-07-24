@@ -38,6 +38,9 @@ venv/
 ENV/
 VENV/
 trac-env/
+.env.local
+
+
 
 #taskmaster
 .taskmaster/
