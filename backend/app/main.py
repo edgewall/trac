@@ -10,6 +10,12 @@ from contextlib import asynccontextmanager
 from typing import Dict, Any
 import logging
 import os
+import sys
+
+# Add the project root to Python path to import Trac modules
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -69,15 +75,35 @@ async def health_check() -> Dict[str, str]:
 async def test_trac_integration() -> Dict[str, Any]:
     """Test endpoint to verify Trac legacy integration."""
     try:
-        # TODO: Import and test Trac environment
-        # from trac.env import Environment
-        # env = Environment(path_to_trac_project)
+        # Import Trac environment
+        from trac.env import Environment
+        
+        # Path to test Trac environment
+        trac_env_path = os.path.join(project_root, "test-projects", "my-drone-project")
+        
+        # Initialize Trac environment
+        env = Environment(trac_env_path)
+        
+        # Get some basic information to verify integration
+        with env.db_transaction as db:
+            # Count tickets in the database
+            cursor = db.cursor()
+            cursor.execute("SELECT COUNT(*) FROM ticket")
+            ticket_count = cursor.fetchone()[0]
+            
+            # Get some sample ticket IDs
+            cursor.execute("SELECT id FROM ticket LIMIT 5")
+            sample_ticket_ids = [row[0] for row in cursor.fetchall()]
         
         return {
             "status": "success",
-            "message": "Trac integration test endpoint",
-            "trac_available": False,  # Will be True when integrated
-            "ticket_count": 0  # Placeholder for actual ticket count
+            "message": "Trac integration successful",
+            "trac_available": True,
+            "environment_path": trac_env_path,
+            "environment_name": env.project_name,
+            "ticket_count": ticket_count,
+            "sample_ticket_ids": sample_ticket_ids,
+            "trac_version": env.trac_version
         }
     except Exception as e:
         logger.error(f"Trac integration test failed: {str(e)}")
