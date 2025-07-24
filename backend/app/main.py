@@ -2,19 +2,19 @@
 HobbyTrack FastAPI Backend - Main Application
 """
 
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI, HTTPException, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from contextlib import asynccontextmanager
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 import logging
 import os
 import sys
 import jwt
 import requests
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 # Add the project root to Python path to import Trac modules
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -29,16 +29,53 @@ logger = logging.getLogger(__name__)
 CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY", "")
 CLERK_PUBLISHABLE_KEY = os.getenv("CLERK_PUBLISHABLE_KEY", "")
 
+# Development mode check
+DEVELOPMENT_MODE = not CLERK_SECRET_KEY
+if DEVELOPMENT_MODE:
+    logger.warning("Running in DEVELOPMENT MODE - Clerk authentication is mocked!")
+
 # JWT security scheme
 security = HTTPBearer(auto_error=False)
 
+# Pydantic Models for API responses
+class TicketModel(BaseModel):
+    """Individual ticket model with validation."""
+    id: int
+    summary: str
+    status: str
+    priority: str
+    reporter: str
+    owner: str
+    created: int
+    
+    @validator('summary')
+    def summary_must_not_be_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError('Summary cannot be empty')
+        return v.strip()
+    
+    @validator('status')
+    def status_must_be_valid(cls, v):
+        valid_statuses = ['new', 'assigned', 'accepted', 'closed', 'reopened']
+        if v not in valid_statuses:
+            logger.warning(f"Unexpected ticket status: {v}")
+        return v
 
-# Pydantic models for authentication
-class ClerkUser(BaseModel):
+class TicketsResponse(BaseModel):
+    """Response model for tickets endpoint."""
+    status: str
     user_id: str
-    email: Optional[str] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+    user_email: str
+    tickets: List[TicketModel]
+    total_count: int
+    message: Optional[str] = None
+
+class ClerkUser(BaseModel):
+    """User information from Clerk authentication."""
+    user_id: str
+    email: str
+    first_name: str
+    last_name: str
 
 
 class AuthenticationError(Exception):
@@ -228,11 +265,64 @@ async def test_trac_integration() -> Dict[str, Any]:
         )
 
 
-@app.get("/api/tickets")
-async def get_tickets(user: ClerkUser = Depends(require_auth)) -> Dict[str, Any]:
+@app.get(
+    "/api/tickets",
+    response_model=TicketsResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get Tickets for Authenticated User",
+    description="Retrieve a list of tickets from the Trac database for the authenticated user. Returns paginated results with ticket details.",
+    responses={
+        200: {
+            "description": "Successfully retrieved tickets",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "status": "success",
+                        "user_id": "user_123",
+                        "user_email": "user@example.com",
+                        "tickets": [
+                            {
+                                "id": 1,
+                                "summary": "Sample ticket",
+                                "status": "new",
+                                "priority": "high",
+                                "reporter": "user",
+                                "owner": "admin",
+                                "created": 1640995200
+                            }
+                        ],
+                        "total_count": 1,
+                        "message": None
+                    }
+                }
+            }
+        },
+        401: {"description": "Authentication required"},
+        403: {"description": "Access forbidden"},
+        503: {"description": "Trac service unavailable"},
+        500: {"description": "Internal server error"}
+    },
+    tags=["Tickets"]
+)
+async def get_tickets(user: ClerkUser = Depends(require_auth)) -> TicketsResponse:
     """
-    Protected endpoint to get tickets for authenticated users.
-    This demonstrates Clerk authentication protection.
+    **Get Tickets for Authenticated User**
+    
+    This endpoint retrieves tickets from the legacy Trac database for the authenticated user.
+    
+    **Authentication Required:** 
+    - Bearer token in Authorization header
+    - Valid Clerk JWT token
+    
+    **Returns:**
+    - List of tickets with metadata
+    - User information
+    - Total count
+    
+    **Example Usage:**
+    ```
+    curl -H "Authorization: Bearer <your-token>" http://localhost:8000/api/tickets
+    ```
     """
     try:
         # Import Trac environment
@@ -270,19 +360,33 @@ async def get_tickets(user: ClerkUser = Depends(require_auth)) -> Dict[str, Any]
                     "created": row[6]
                 })
         
-        return {
-            "status": "success",
-            "user_id": user.user_id,
-            "user_email": user.email,
-            "tickets": tickets,
-            "total_count": len(tickets)
-        }
+        return TicketsResponse(
+            status="success",
+            user_id=user.user_id,
+            user_email=user.email,
+            tickets=[TicketModel(**ticket) for ticket in tickets],
+            total_count=len(tickets)
+        )
         
+    except FileNotFoundError:
+        logger.error("Trac environment not found")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Trac environment is not available. Please check configuration."
+        )
+    except PermissionError:
+        logger.error("Permission denied accessing Trac database")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database access denied. Please check permissions."
+        )
     except Exception as e:
         logger.error(f"Failed to fetch tickets: {str(e)}")
+        # Don't expose internal error details in production
+        error_detail = str(e) if DEVELOPMENT_MODE else "Internal server error while fetching tickets"
         raise HTTPException(
-            status_code=500,
-            detail=f"Failed to fetch tickets: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_detail
         )
 
 
