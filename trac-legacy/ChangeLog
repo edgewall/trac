@@ -1,0 +1,4 @@
+The ChangeLog can be viewed:
+* On the web at https://trac.edgewall.org/wiki/TracChangeLog
+* In the source at trac/wiki/default-pages/TracChangeLog 
+* By navigating to the TracChangeLog page after installing or upgrading Trac. You must upgrade the wiki to get the latest TracChangeLog.

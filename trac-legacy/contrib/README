@@ -1,0 +1,7 @@
+This directory contains useful contributed scripts and programs for Trac.
+
+Please note that these scripts are provided AS-IS are NOT tested to the same
+extent as the main sources. They are usually maintained by the original
+author, typically listed at the top of the source file.
+
+See ../THANKS for a list of contributors.

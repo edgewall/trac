@@ -1,0 +1,61 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      # block title
+      ${_("Administration:")}
+      # block admintitle
+      # endblock admintitle
+      ${ super() }
+      # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="admin">
+      <h1>${_("Administration")}</h1>
+      <div id="tabs">
+        # for category, category_panels in panels:
+        #   set cat_is_active = category.id == active_cat
+        <ul>
+          <li${{'class': 'active' if cat_is_active}|htmlattr}>
+            ${category.label}
+            <ul>
+              # for panel in category_panels:
+              #   set panel = panel.panel
+              #   set pan_is_active = cat_is_active and panel.id == active_panel
+              <li${{'class': 'active' if pan_is_active}|htmlattr}>
+                <a href="${href.admin(category.id, panel.id)}">${
+                  panel.label}</a>
+              </li>
+              # endfor
+            </ul>
+          </li>
+        </ul>
+        # endfor
+      </div>
+      <div id="tabcontent">
+        # block adminpanel
+        # endblock adminpanel
+        <br style="clear: right" />
+      </div>
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

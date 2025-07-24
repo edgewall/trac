@@ -1,0 +1,172 @@
+= !TicketQuery Wiki Macro
+
+The !TicketQuery macro lets you display ticket information anywhere that accepts WikiFormatting.
+The query language used by the `[[TicketQuery]]` macro is described in the [TracQuery#QueryLanguage TracQuery] page.
+
+== Usage
+
+[[MacroList(TicketQuery)]]
+
+== Examples
+
+||= **Example** =||= **Result** =||= **Macro** =||
+|-----------------------------------------------------------
+||=Number of [query:status=new&milestone= Triage tickets]: =||\
+|| **[[TicketQuery(status=new&milestone=,count)]]**||\
+|| `[[TicketQuery(status=new&milestone=,count)]]` ||
+|-----------------------------------------------------------
+||=Number of new tickets: =||\
+|| **[[TicketQuery(status=new,count)]]**||\
+|| `[[TicketQuery(status=new,count)]]` ||
+|-----------------------------------------------------------
+||=Number of reopened tickets: =||\
+|| **[[TicketQuery(status=reopened,count)]]**||\
+|| `[[TicketQuery(status=reopened,count)]]` ||
+|-----------------------------------------------------------
+||=Number of assigned tickets: =||\
+|| **[[TicketQuery(status=assigned,count)]]**||\
+|| `[[TicketQuery(status=assigned,count)]]` ||
+|-----------------------------------------------------------
+||=Number of invalid tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=invalid,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=invalid,count)]]` ||
+|-----------------------------------------------------------
+||=Number of worksforme tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=worksforme,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=worksforme,count)]]` ||
+|-----------------------------------------------------------
+||=Number of duplicate tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=duplicate,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=duplicate,count)]]` ||
+|-----------------------------------------------------------
+||=Number of wontfix tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=wontfix,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=wontfix,count)]]` ||
+|-----------------------------------------------------------
+||=Number of fixed tickets: =||\
+|| **[[TicketQuery(status=closed,resolution=fixed,count)]]**||\
+|| `[[TicketQuery(status=closed,resolution=fixed,count)]]` ||
+|-----------------------------------------------------------
+||=Number of untriaged tickets (milestone unset): =||\
+|| **[[TicketQuery(status!=closed,milestone=,count)]]**||\
+|| `[[TicketQuery(status!=closed,milestone=,count)]]` ||
+|-----------------------------------------------------------
+||=Total number of tickets: =||\
+|| **[[TicketQuery(count)]]**||\
+|| `[[TicketQuery(count)]]` ||
+|-----------------------------------------------------------
+||=Number of tickets reported **or** owned by current user: =||\
+|| **[[TicketQuery(reporter=$USER,or,owner=$USER,count)]]**||\
+|| `[[TicketQuery(reporter=$USER,or,owner=$USER,count)]]` ||
+|-----------------------------------------------------------
+||=Number of tickets created this month: =||\
+|| **[[TicketQuery(created=thismonth..,count)]]**||\
+|| `[[TicketQuery(created=thismonth..,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed Firefox tickets: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed Opera tickets: =||\
+|| **[[TicketQuery(status=closed,keywords~=opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=opera,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed tickets affecting Firefox and Opera: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox opera,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed tickets affecting Firefox or Opera: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox|opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox|opera,count)]]` ||
+|-----------------------------------------------------------
+||=Number of tickets that affect Firefox or are closed and affect Opera: =||\
+|| **[[TicketQuery(keywords~=firefox,or,status=closed,keywords~=opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=opera,or,keywords~=firefox,count)]]` ||
+|-----------------------------------------------------------
+||=Number of closed Firefox tickets that don't affect Opera: =||\
+|| **[[TicketQuery(status=closed,keywords~=firefox - opera,count)]]**||\
+|| `[[TicketQuery(status=closed,keywords~=firefox -opera,count)]]` ||
+|-----------------------------------------------------------
+||=Last 3 modified tickets: =||\
+||**[[TicketQuery(max=3,order=modified,desc=1,compact)]]**||\
+|| `[[TicketQuery(max=3,order=modified,desc=1,compact)]]` ||
+|-----------------------------------------------------------
+{{{#!th rowspan=2, style="text-align: left;"
+Details of ticket #1:
+}}}
+{{{#!td style="border-bottom: 0;"
+}}}
+{{{#!td
+`[[TicketQuery(id=1,col=id|owner|reporter,rows=summary,table)]]`
+}}}
+|-
+{{{#!td colspan=2, style="border-top: 0;"
+[[TicketQuery(id=1,col=id|owner|reporter,rows=summary,table)]]
+}}}
+|-----------------------------------------------------------
+
+=== Format: list
+
+{{{
+[[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
+
+{{{
+[[TicketQuery(id=123)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(id=123)]]
+
+=== Format: compact
+
+{{{
+[[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
+
+=== Format: count
+
+{{{
+[[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+
+=== Format: progress
+
+{{{
+[[TicketQuery(milestone=0.12.8&group=type,format=progress)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(milestone=0.12.8&group=type,format=progress)]]
+
+=== Format: table
+
+You can choose the columns displayed in the table format (`format=table`) using `col=<field>`. You can specify multiple fields and the order they are displayed in by placing pipes (`|`) between the columns:
+{{{
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
+}}}
+
+This is displayed as:
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
+
+==== Full rows
+
+In ''table'' format you can specify full rows using `rows=<field>`:
+{{{
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
+}}}
+
+This is displayed as:
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
+
+----
+See also: TracQuery, TracTickets, TracReports

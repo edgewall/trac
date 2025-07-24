@@ -1,0 +1,349 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      ${title or _('Error')}
+      ${ super() }
+      # endblock title
+    </title>
+
+    # block head
+
+    ${ super() }
+
+    #   if frames:
+    <script>
+      jQuery(function($) {
+        $("#traceback a").click(function() {
+          $("div", this.parentNode).slideToggle("fast");
+          return false;
+        });
+        $("#plugins td.file a").click(function() {
+          var idx = parseInt($(this).attr("href").substring(6));
+          $("#traceback li").eq(idx).children("div").slideDown("fast");
+          return true;
+        });
+        $("#tbtoggle").click(function() {
+          var $this = $(this);
+          var plaintext = $this.children('.plaintext');
+          var interactive = $this.children('.interactive');
+          if (plaintext.is(':visible')) {
+            $("#traceback ul").fadeOut("fast", function() {
+              $("#traceback pre").fadeIn("fast");
+              plaintext.hide();
+              interactive.show();
+            });
+          } else {
+            $("#traceback pre").fadeOut("fast", function() {
+              $("#traceback ul").fadeIn("fast");
+              plaintext.show();
+              interactive.hide();
+            });
+          }
+          return false;
+        });
+       /* Only activate interactive view if Javascript is enabled */
+       $("#traceback ul").show();
+       $("#traceback pre").hide();
+       $("#tbtoggle").parent().show();
+      });
+    </script>
+    #   endif
+    <script>
+      jQuery(function($) {
+        $("form.newticket textarea").each(function() {
+          $(this).val($(this).val()
+                             .replace(/#USER_AGENT#/m, navigator.userAgent)
+                             .replace(/#JQUERY#/m, $().jquery)
+                             .replace(/#JQUERYUI#/m, $.ui.version)
+                             .replace(/#JQUERYTP#/m, $.timepicker.version));
+        });
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    <div>
+      # macro create_ticket(url=none)
+      <input type="hidden" name="reporter" value="${get_reporter_id(req)}" />
+      #   if url == trac.homepage.strip('/'):
+      <input type="hidden" name="version"
+             value="${trac.version.split('-', 1)[0] if 'dev' in trac.version
+                    else trac.version}" />
+      #   endif
+      #   for arg, value in tracker_args.items():
+      <input type="hidden" name="${arg}" value="${value}" />
+      #   endfor
+      <input type="hidden" name="summary" value="${message}" />
+      <textarea name="description" rows="3" cols="10">${
+          description_en if url else description
+      }</textarea>
+      <span class="inlinebuttons">
+        <input type="submit" name="create" value="${_('Create')}" />
+      </span>
+      # endmacro
+    </div>
+
+    # block content
+    <div id="content" class="error">
+      # if type == 'TracError':
+      <h1>${title}</h1>
+      #   if not find_element(message, tag='p') and not find_element(message, tag='div'):
+      <p class="message">${message}</p>
+      #   else:
+      ${message}
+      #   endif
+      # elif type == 'internal':
+      <h1>${_("Oops…")}</h1>
+      <div class="message">
+        <strong>${_("Trac detected an internal error:")}</strong>
+        <pre>${message}</pre>
+      </div>
+      #   if trac_error_rendering is undefined and 'TRAC_ADMIN' not in perm:
+      <p>
+        #   set trac_admin = _("Trac administrator")
+        #   set project_admin
+        #     if project.admin:
+        <a href="mailto:${project.admin}">${trac_admin}</a>
+        #     else:
+        ${trac_admin}
+        #     endif
+        #   endset
+        #   trans project_admin
+
+        There was an internal error in Trac.  It is recommended that
+        you notify your local ${project_admin} with the information
+        needed to reproduce the issue.
+
+        #   endtrans
+      </p>
+      #     if project.admin_href:
+      <form class="newticket" method="get"
+            action="${project.admin_href.newticket()}#">
+        <p>
+          #   trans create_a_ticket = create_ticket()
+
+          To that end, you could ${create_a_ticket} a ticket.
+
+          #   endtrans
+        </p>
+      </form>
+      #     endif
+      <p>${_("The action that triggered the error was:")}</p>
+      <pre>${req.method}: ${req.path_info}</pre>
+
+      #   else:
+      #     if not project.admin_href or project.admin_trac_url == '.':
+      <p>
+        ${_("This is probably a local installation issue.")}
+      </p>
+      #     else:
+      <form class="newticket" method="get"
+            action="${project.admin_href.newticket()}#">
+        <p>
+          #   trans create_a_ticket = create_ticket()
+
+          This is probably a local installation issue.  You should
+          ${create_a_ticket} a ticket at the admin Trac to report the
+          issue.
+
+          #   endtrans
+        </p>
+      </form>
+      #     endif
+
+      <h2>${_("Found a bug in Trac?")}</h2>
+      <p>
+        #   trans
+
+        If you think this should work and you can reproduce the
+        problem, you should consider creating a bug report.
+
+        #   endtrans
+      </p>
+
+      #     if faulty_plugins:
+      <p>
+        #     if len(faulty_plugins) == 1:
+        #       trans name = faulty_plugins[0].name
+
+        Note that the ${name} plugin seems to be involved.
+
+        #       endtrans
+        #     else:
+        #       trans
+
+        Note that the following plugins seem to be involved:
+
+        #       endtrans
+        ${faulty_plugins|map(attribute='name')|join(', ')}
+        #     endif
+        <strong>
+          ${_("Please report this issue to the plugin maintainer.")}
+        </strong>
+      </p>
+      #     endif
+
+      #     with q = quote_plus(message[:80])
+      <p>
+        #     set search_href = "/search?ticket=yes&amp;noquickjump=1&amp;q="
+        #     set searching
+        <a href="${tracker + search_href + q}">${_("searching")}</a>
+        #     endset
+        #     set searching_for_similar_issues
+        <strong>${tag_("%(searching)s for similar issues", searching=searching)}
+        </strong>
+        #     endset
+        #     set mailing_list
+        <a href="${trac.homepage + 'wiki/MailingList'}">${_("mailing list")}
+        </a>
+        #     endset
+        #     trans searching_for_similar_issues, mailing_list
+
+        Before you do that, though, please first try
+        ${searching_for_similar_issues}, as it is quite likely that
+        this problem has been reported before. For questions about
+        installation and configuration of Trac or its plugins, please
+        try the ${mailing_list} instead of creating a ticket.
+
+        #     endtrans
+      </p>
+      #     endwith
+      <form class="newticket" method="get" action="${tracker}/newticket">
+        <p>
+          # trans create = create_ticket(tracker)
+
+          Otherwise, please ${create} a new bug report describing the
+          problem and explain how to reproduce it.
+
+          # endtrans
+        </p>
+      </form>
+
+      #     if traceback:
+      <h2>${_("Python Traceback")}</h2>
+      <div id="traceback">
+        ${_("Most recent call last:")}
+        #     if frames:
+        <ul style="display: none">
+          #     for frame in frames:
+          <li class="frame">
+            <a href="#frame${loop.index0}" id="frame${loop.index0}">
+              #   set file = frame.filename
+              #   set line
+              <strong>${frame.lineno + 1}</strong>
+              #   endset
+              <span class="file">
+                #   trans file, line
+
+                File "${file}", line ${line}, in
+
+                # endtrans
+              </span>
+              <var>${frame.function}</var>
+            </a>
+            #     if frame.line:
+            <div class="source" style="display: none">
+              <h3>${_("Code fragment:")}</h3>
+              <table class="code">
+                <thead><tr>
+                    <th class="lineno">${_("Line")}</th>
+                    <th class="content"></th></tr></thead>
+                <tbody>
+                  # for line in (frame.lines_before + [frame.line] + frame.lines_after):
+                  <tr ${{'class': 'current'
+                      if loop.index0 == len(frame.lines_before)
+                      }|htmlattr}>
+                    <th>
+                      ${frame.lineno + loop.index - len(frame.lines_before)}
+                    </th>
+                    <td>${line or '&nbsp;'|safe}</td>
+                  </tr>
+                  # endfor
+                </tbody>
+              </table>
+            </div>
+            #     endif
+            #     if frame.vars:
+            <div class="vars" style="display: none">
+              <h3>${_("Local variables:")}</h3>
+              <table class="listing">
+                <thead><tr>
+                    <th>${_("Name")}</th>
+                    <th>${_("Value")}</th></tr></thead>
+                <tbody>
+                  # for name, value in sorted(frame.vars.items()):
+                  <tr ${{'class': loop.cycle('odd', none)}|htmlattr}>
+                    <th scope="row"><var>${name}</var></th>
+                    <td><code>${shorten_line(repr(value))}</code></td>
+                  </tr>
+                  # endfor
+                </tbody>
+              </table>
+            </div>
+            #     endif
+          </li>
+          #     endfor
+        </ul>
+        #     endif
+        <pre>
+          #   for frame in frames:
+          #     set file = frame.filename
+          #     set line = frame.lineno + 1
+          #     set function = frame.function
+          #     trans file, line, function
+
+          File "${file}", line ${line}, in ${function}
+
+          #     endtrans
+          #     if frame.line:
+          ${'\n  ' + frame.line.lstrip()}
+          #     endif
+          #   endfor
+          #   if not frames:
+          ${traceback}
+          #   endif
+        </pre>
+        <p style="display: none">
+          <button id="tbtoggle" class="trac-button">
+            <span class="plaintext">${_('Switch to plain text view')}</span>
+            <span class="interactive" style="display:none">${
+              _('Switch to interactive view')}</span>
+          </button>
+        </p>
+      </div>
+      #     endif
+
+      #     with system_info = env.system_info
+      #       include 'environment_info.html'
+      #     endwith
+      #   endif
+      # endif
+      <p>
+        # set trac_guide
+        <a href="${href.wiki('TracGuide')}">TracGuide</a>
+        # endset
+        # trans trac_guide
+
+        ${trac_guide} &mdash; The Trac User and Administration Guide
+
+        # endtrans
+      </p>
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

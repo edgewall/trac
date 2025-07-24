@@ -1,0 +1,333 @@
+# Dutch translations for Trac.
+# Copyright (C) 2010-2023 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# Laurens Holst <laurens.nospam@grauw.nl>, 2010.
+# Bas van Oostveen <trbs@trbs.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 1.5.4\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2022-12-14 22:34-0500\n"
+"PO-Revision-Date: 2022-12-20 02:57+0000\n"
+"Last-Translator: Trbs <trbs@trbs.net>\n"
+"Language: nl\n"
+"Language-Team: nl <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: tracopt/ticket/htdocs/ticketclone.js:22
+msgid "Clone"
+msgstr "Klonen"
+
+#: tracopt/ticket/htdocs/ticketclone.js:34
+msgid "Create a new ticket from this comment"
+msgstr "Maak een nieuwe ticket vanuit deze comment"
+
+#: tracopt/ticket/htdocs/ticketclone.js:41
+#, python-format
+msgid "(part of #%(ticketid)s) %(summary)s"
+msgstr "(onderdeel van #%(ticketid)s) %(summary)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:47
+#, python-format
+msgid ""
+"Copied from [%(source)s]:\n"
+"%(description)s"
+msgstr ""
+"Gekopieerd van [%(source)s]:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketclone.js:59
+msgid "Create a copy of this ticket"
+msgstr "Maak een kopie van deze ticket"
+
+#: tracopt/ticket/htdocs/ticketclone.js:60
+#, python-format
+msgid "%(summary)s (cloned)"
+msgstr "%(summary)s (gekloond)"
+
+#: tracopt/ticket/htdocs/ticketclone.js:65
+#, python-format
+msgid ""
+"Cloned from #%(id)s:\n"
+"%(description)s"
+msgstr ""
+"Gekloond van #%(id)s:\n"
+"%(description)s"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:16
+msgid "Delete ticket"
+msgstr "Verwijder ticket"
+
+#: tracopt/ticket/htdocs/ticketdeleter.js:22
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "Verwijder comment %(num)s "
+
+#: trac/admin/templates/admin_perms.html:10
+msgid "Toggle all"
+msgstr "Alles in-/uitschakelen"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(geen wijzigingsinformatie)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Sluiten"
+
+#: trac/htdocs/js/diff.js:117
+msgid "Tabular"
+msgstr "Tabulair"
+
+#: trac/htdocs/js/diff.js:123
+msgid "Unified"
+msgstr "Unified"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Map uitklappen"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Map overnieuw uitklappen"
+
+#: trac/htdocs/js/expand_dir.js:122
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Bezig met laden van %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:150
+msgid "(empty)"
+msgstr "(leeg)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "(error)"
+msgstr "(fout)"
+
+#: trac/htdocs/js/expand_dir.js:165
+msgid "Fold directory"
+msgstr "Map inklappen"
+
+#: trac/htdocs/js/folding.js:61
+#, python-format
+msgid "Show %(title)s"
+msgstr "%(title)s weergeven"
+
+#: trac/htdocs/js/folding.js:73
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (klik om kolom te verbergen)"
+
+#. TRANSLATOR: Format in month heading in the datepicker, extracts yearSuffix
+#. and showMonthAfterYear
+#: trac/htdocs/js/jquery-ui-i18n.js:4
+msgid "$month$year"
+msgstr "$month$year"
+
+#. TRANSLATOR: Link that closes the datepicker
+#. TRANSLATOR: Link that closes the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:7 trac/htdocs/js/jquery-ui-i18n.js:40
+msgid "Done"
+msgstr "Gereed"
+
+#. TRANSLATOR: Link to the previous month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:9
+msgid "Prev"
+msgstr "Vorige"
+
+#. TRANSLATOR: Link to the next month in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:11
+msgid "Next"
+msgstr "Volgende"
+
+#. TRANSLATOR: Link to the current day in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:13
+msgid "Today"
+msgstr "Vandaag"
+
+#. TRANSLATOR: Heading for the week-of-the-year column in the datepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:20
+msgid "Wk"
+msgstr "Wk"
+
+#. TRANSLATOR: Heading of the standalone timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:31
+msgid "Choose Time"
+msgstr "Kies Tijd"
+
+#. TRANSLATOR: Time selector label
+#: trac/htdocs/js/jquery-ui-i18n.js:33
+msgid "Time"
+msgstr "Tijd"
+
+#. TRANSLATOR: Time labels in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Hour"
+msgstr "Uur"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Minute"
+msgstr "Minuut"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:35
+msgid "Second"
+msgstr "Seconde"
+
+#: trac/htdocs/js/jquery-ui-i18n.js:36
+msgid "Time Zone"
+msgstr "Tijdzone"
+
+#. TRANSLATOR: Link to pick the current time in the timepicker
+#: trac/htdocs/js/jquery-ui-i18n.js:38
+msgid "Now"
+msgstr "Nu"
+
+#: trac/htdocs/js/query.js:160
+msgid "A filter already exists for that property"
+msgstr "Een filter bestaat al voor die eigenschap"
+
+#: trac/htdocs/js/query.js:187
+msgid "or"
+msgstr "of"
+
+#: trac/htdocs/js/query.js:210 trac/htdocs/js/query.js:345
+msgid "yes"
+msgstr "ja"
+
+#: trac/htdocs/js/query.js:213 trac/htdocs/js/query.js:348
+msgid "no"
+msgstr "nee"
+
+#: trac/htdocs/js/query.js:218
+#, python-format
+msgid "<label>between %(start)s</label> <label>and %(end)s</label>"
+msgstr "<label>tussen %(start)s</label> <label>en %(end)s</label> "
+
+#: trac/htdocs/js/query.js:381
+msgid " remove:"
+msgstr "verwijder:"
+
+#: trac/htdocs/js/query.js:391
+msgid " add:"
+msgstr "voeg toe:"
+
+#: trac/htdocs/js/query.js:425
+#, python-format
+msgid "Select ticket #%(id)s for modification"
+msgstr "Selecteer ticket #%(id)s om aan te passen"
+
+#: trac/htdocs/js/timeline_multirepos.js:4
+msgid "Show all repositories"
+msgstr "Alle repository's weergeven"
+
+#: trac/htdocs/js/timeline_multirepos.js:5
+msgid "Hide all repositories"
+msgstr "Alle repository's verbergen"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Link hier"
+
+#: trac/htdocs/js/trac.js:31
+msgid "Toggle group"
+msgstr "Groep in-/uitschakelen"
+
+#: trac/htdocs/js/trac.js:96
+msgid "At least one item must be selected"
+msgstr "Ten minste een item moet geselecteerd worden"
+
+#: trac/htdocs/js/trac.js:243
+msgid ""
+"You have unsaved changes. Your changes will be lost if you leave this "
+"page before saving your changes."
+msgstr ""
+"U heeft niet-opgeslagen wijzigingen. Uw wijzigingen zullen verloren gaan "
+"als u deze pagina verlaat voordat u uw wijzigingen opslaat."
+
+#: trac/htdocs/js/wiki.js:75
+#: trac/notification/templates/prefs_notification.html:16
+#: trac/ticket/templates/ticket.html:4
+msgid "Link to this section"
+msgstr "Link naar deze sectie"
+
+#: trac/htdocs/js/wiki.js:77
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Link naar #%(id)s"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Bold text: **Example**"
+msgstr "Vette tekst: **voorbeeld¨**"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Italic text: ''Example''"
+msgstr "Cursief gedrukt: ''Voorbeeld''"
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Heading: == Example"
+msgstr "Hoofding: == Voorbeeld"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Link: [http://www.voorbeeld.nl/ Voorbeeld]"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Code block: {{{ example }}}"
+msgstr "Codeblok: {{{ voorbeeld }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "Horizontal rule: ----"
+msgstr "Horizontale lijn: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "New paragraph"
+msgstr "Nieuwe paragraaf"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Line break: \\\\"
+msgstr "Regeleinde: \\\\"
+
+#: trac/htdocs/js/wikitoolbar.js:83
+msgid "Image: [[Image()]]"
+msgstr "Afbeelding: [[Image()]]"
+
+#: trac/notification/templates/prefs_notification.html:57
+#: trac/notification/templates/prefs_notification.html:77
+msgid "Drag rule to reorder"
+msgstr "Regel slepen om te herordenen"
+
+#: trac/versioncontrol/templates/changeset.html:8
+msgid "Link to this diff"
+msgstr "Link naar deze diff"
+
+#~ msgid "between"
+#~ msgstr "tussen"
+
+#~ msgid "and"
+#~ msgstr "en"
+
+#~ msgid "Select ticket %(id)s for modification"
+#~ msgstr "Selecteer ticket %(id)s om aan te passen"
+
+#~ msgid "Toggle selection of all tickets shown in this group"
+#~ msgstr "Wijzig selectie van alle getoonde tickets uit deze groep"
+
+#~ msgid "Bold text: '''Example'''"
+#~ msgstr "Vet gedrukt: '''Voorbeeld'''"
+
+#~ msgid "Heading: == Example =="
+#~ msgstr "Kop: == Voorbeeld =="
+
+#~ msgid "Line break: [[BR]]"
+#~ msgstr "Regelafbreking: [[BR]]"
+

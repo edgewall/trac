@@ -1,0 +1,87 @@
+{# Copyright (C) 2012-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Batch modification form for ticket queries
+
+<form id="batchmod_form" method="post" action="${req.href + '/batchmodify'}">
+  ${jmacros.form_token_input()}
+
+  <script>
+    jQuery(function($) {
+      initializeBatch();
+      $("#batchmod_value_comment").autoPreview("${href.wiki_render()}", {
+          realm: "ticket"
+        }, $("#preview").showOnPreview());
+    });
+  </script>
+
+  <fieldset id="batchmod_fieldset">
+    <legend class="foldable">${_("Batch Modify")}</legend>
+    <div>
+      <div>
+        <table>
+          <tr id="add_batchmod_field_row">
+            <td colspan="3">
+              <label class="batchmod_label" for="add_batchmod_field">${
+                _("Change:")}</label>
+              <select id="add_batchmod_field">
+                <option label="${_('field…')}"></option>
+                # set non_modifiable_fields = (
+                    ('id', 'resolution', 'status', 'owner', 'time',
+                     'changetime', 'summary', 'description') +
+                    (('reporter',) if 'TICKET_ADMIN' not in req.perm else ())
+                  )
+                # for field_name in field_names if (field_name not in non_modifiable_fields and fields[field_name].type != 'textarea'):
+                <option value="${field_name}">${fields[field_name].label}</option>
+                # endfor
+              </select>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div>
+        <label for="batchmod_value_comment">${_("Comment:")}</label>
+        <textarea id="batchmod_value_comment" name="batchmod_value_comment"
+                  class="wikitext trac-fullwidth trac-resizable"
+                  rows="6" cols="78"></textarea>
+        <label for="batchmod_value_comment" class="trac-textarea-hint">
+        # trans wikiformatting = jmacros.wikiformatting_link()
+
+        You may use ${wikiformatting} here.
+
+        # endtrans
+        </label>
+      </div>
+      <div id="preview" class="trac-content trac-draft" style="display:none">
+      </div>
+
+      # include 'ticket_workflow.html'
+
+      <div class="buttons">
+        <input type="hidden" name="selected_tickets" value=""/>
+        <input type="hidden" name="query_href" value="${query_href}"/>
+        <input type="submit" id="batchmod_submit" name="batchmod_submit"
+               class="trac-disable-on-submit" value="${_('Change tickets')}" />
+      </div>
+
+      # call(note, page) jmacros.wikihelp('TracBatchModify'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using batch modify.
+
+      #   endtrans
+      # endcall
+  </div>
+
+  </fieldset>
+
+</form>

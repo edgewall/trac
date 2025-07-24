@@ -1,0 +1,182 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'admin.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block admintitle
+
+      ${_("Milestones")}
+
+      # endblock admintitle
+    </title>
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        $("#millist").addSelectAllCheckboxes();
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block adminpanel
+    #  set perm = req.perm('admin', 'ticket/milestones')
+    #  set can_create = 'MILESTONE_CREATE' in perm
+    #  set can_modify = 'MILESTONE_MODIFY' in perm
+    #  set can_remove = 'MILESTONE_DELETE' in perm
+    #  set can_config = 'TICKET_ADMIN' in perm
+    #  set can_view_tickets = 'TICKET_VIEW' in perm
+    <h2>
+      # set nb_milestones
+      #   if view == 'list':
+      <span class="trac-count">(${len(milestones)})</span>
+      #   endif
+      # endset
+      # trans nb_milestones
+
+      Manage Milestones ${nb_milestones}
+
+      # endtrans
+    </h2>
+    <div>
+      #   if view == 'detail':
+      #     include 'milestone_edit_form.html'
+      #   else:
+      #     if can_create:
+      <form class="addnew" id="addmilestone" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Add Milestone:")}</legend>
+          <div class="field">
+            <label>${_("Name:")} <input type="text" name="name" id="name" size="22"/></label>
+          </div>
+          <div class="field">
+            <input type="hidden" name="due" value="1" />
+            <label>${_("Due:")}
+              <input type="text" id="duedate" class="trac-datetimepicker"
+                     name="duedate" size="${len(datetime_hint) + 1}"
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
+              <span class="trac-datetimehint">
+                ${_("Format %(datehint)s", datehint=datetime_hint)}
+              </span>
+            </label>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
+      #     endif
+
+      #     if milestones:
+      <form id="milestone_table" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <table class="listing" id="millist">
+          <thead>
+            <tr>
+              # if can_remove:
+              <th class="sel"></th>
+              # endif
+              <th>${_("Name")}</th><th>${_("Due")}</th><th>${_("Completed")}</th>
+              <th title="${_('Default milestone for new tickets')}">${_("Default")}</th>
+              <th title="${_('Default milestone for retargeting tickets')}">${_("Retarget")}</th>
+              <th title="${_('Number of tickets associated with milestone')}">${_("Tickets")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            # for milestone in milestones:
+            <tr>
+              # if can_remove:
+              <td class="sel">
+                <input type="checkbox" class="trac-disable-determinant"
+                       name="sel" value="${milestone.name}" />
+              </td>
+              # endif
+              <td>
+                <a href="${panel_href(milestone.name)}">${milestone.name}</a>
+              </td>
+              <td>${format_datetime(milestone.due) if milestone.due}</td>
+              <td>${format_datetime(milestone.completed) if milestone.completed}</td>
+              <td class="default">
+                <input type="radio" name="ticket_default"${
+                     {'value': milestone.name,
+                      'checked': milestone.name == ticket_default,
+                      'disabled': not can_config
+                     }|htmlattr}/>
+              </td>
+              <td class="default">
+                <input type="radio" name="retarget_default"${
+                     {'value': milestone.name,
+                      'checked': milestone.name == retarget_default,
+                      'disabled': not can_config
+                      }|htmlattr}/>
+              </td>
+                # set ticket_count = num_tickets(milestone)
+              <td class="num">
+                # if ticket_count == 0 or not can_view_tickets:
+                ${ticket_count}
+                # else:
+                <a href="${query_href(milestone.name)}">${ticket_count}</a>
+                # endif
+              </td>
+            </tr>
+            # endfor
+          </tbody>
+        </table>
+        <div class="buttons">
+          # if can_config:
+          <input type="submit" name="apply" value="${_('Apply changes')}" />
+          # endif
+          # if can_remove:
+          <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
+          # endif
+          # if can_config:
+          <input type="submit"
+                 title="${_('Clear default ticket milestone and default retargeting milestone')}"
+                 name="clear" value="${_('Clear defaults')}" />
+          # endif
+        </div>
+        <p class="help">
+          #   trans
+
+          You can remove all items from this list to completely
+          hide this field from the user interface.
+
+          #   endtrans
+        </p>
+      </form>
+      #     else:
+      <p class="help">
+        #     trans
+
+        As long as you don't add any items to the list, this field
+        will remain completely hidden from the user interface.
+
+        #     endtrans
+      </p>
+      #     endif
+      #   endif
+
+      #   call(note, page) jmacros.wikihelp('TracRoadmap'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using ticket milestones.
+
+      #     endtrans
+      #   endcall
+    </div>
+    # endblock adminpanel
+  </body>
+
+</html>

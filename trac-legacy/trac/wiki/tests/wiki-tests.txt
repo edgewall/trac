@@ -1,0 +1,3087 @@
+============================================================
+
+        Font styles
+
+============================== Bold + italic markup
+This should be '''''bold and italic'''''
+------------------------------
+<p>
+This should be <strong><em>bold and italic</em></strong>
+</p>
+------------------------------
+============================== Multiline bold italic markup (WikiCreole)
+**//bold
+italic (//not italic//)
+multiline//**
+------------------------------
+<p>
+<strong><em>bold
+italic (</em>not italic<em>)
+multiline</em></strong>
+</p>
+------------------------------
+============================== Problematic markup: comma-separated list with a time + bold markup
+23:59,'''test''',123
+------------------------------
+<p>
+23:59,<strong>test</strong>,123
+</p>
+------------------------------
+============================== Consecutive bold + italic markup
+'''''one''''', '''''two''''', '''''three''''', '''''four'''''
+------------------------------
+<p>
+<strong><em>one</em></strong>, <strong><em>two</em></strong>, <strong><em>three</em></strong>, <strong><em>four</em></strong>
+</p>
+------------------------------
+============================== Underline + overstrike markup
+__~~underlineoversrike~~__
+------------------------------
+<p>
+<span class="underline"><del>underlineoversrike</del></span>
+</p>
+------------------------------
+============================== Problematic markup: overlapping tags
+__~~overlapping__tags~~
+------------------------------
+<p>
+<span class="underline"><del>overlapping</del></span><del>tags</del>
+</p>
+------------------------------
+============================== Problematic markup: out of order close tags
+__~~outoforderclosetags__~~
+------------------------------
+<p>
+<span class="underline"><del>outoforderclosetags</del></span><del></del>
+</p>
+------------------------------
+============================== Problematic markup: bold + missing close italic
+'''''bolditalic''' # Open italic should be closed before paragraph end
+------------------------------
+<p>
+<strong><em>bolditalic</em></strong><em> # Open italic should be closed before paragraph end
+</em></p>
+------------------------------
+============================== Italic immediately followed by bold markup
+''italic'''''bold'''
+------------------------------
+<p>
+<em>italic</em><strong>bold</strong>
+</p>
+------------------------------
+============================== Bold immediately followed by italic markup
+'''bold'''''italic''
+------------------------------
+<p>
+<strong>bold</strong><em>italic</em>
+</p>
+------------------------------
+============================== Multiline bold italic markup
+'''''bold
+italic
+multiline'''''
+------------------------------
+<p>
+<strong><em>bold
+italic
+multiline</em></strong>
+</p>
+------------------------------
+------------------------------
+<p>
+<strong><em>bold<br />
+italic<br />
+multiline</em></strong><br />
+</p>
+============================== Problematic multiline bold italic markup
+'''''bold
+italic
+multiline
+without endtags
+------------------------------
+<p>
+<strong><em>bold
+italic
+multiline
+without endtags
+</em></strong></p>
+------------------------------
+============================== Super and subscript markup
+^superscript^, ,,subscript,,, normal.
+------------------------------
+<p>
+<sup>superscript</sup>, <sub>subscript</sub>, normal.
+</p>
+------------------------------
+<sup>superscript</sup>, <sub>subscript</sub>, normal.
+============================== Escaping markup
+!'''''foobar!''''' x
+!''foo!'' x
+!'''bar!''' x
+!__foo!__ x
+!~~bar!~~ x
+!,,boo!,, x
+!^baz!^ x
+------------------------------
+<p>
+'''''foobar''''' x
+''foo'' x
+'''bar''' x
+__foo__ x
+~~bar~~ x
+,,boo,, x
+^baz^ x
+</p>
+------------------------------
+============================== Complex mixed verbatim markup
+{{{verbatim}}}
+{{{
+{{{in `block`
+}}}
+`{{{this is verbatim}}}` and {{{`that` should also `be` verbatim}}}
+------------------------------
+<p>
+<code>verbatim</code>
+</p>
+<pre class="wiki">{{{in `block`
+</pre><p>
+<code>{{{this is verbatim}}}</code> and <code>`that` should also `be` verbatim</code>
+</p>
+------------------------------
+<code>verbatim</code>
+ […]
+<code>{{{this is verbatim}}}</code> and <code>`that` should also `be` verbatim</code>
+============================================================
+
+        Link Resolvers
+
+============================== Link resolvers, short form
+link:1
+
+Thing [link:1] Thing[link:2]
+------------------------------
+<p>
+<a class="odd resolver" href="/thing/1">link:1</a>
+</p>
+<p>
+Thing <a class="odd resolver" href="/thing/1">1</a> Thing<a class="even resolver" href="/thing/2">2</a>
+</p>
+------------------------------
+============================== Escaping links resolvers, short form
+!link:1
+Thing ![link:1 number 1], CS![link:1], ![link:bar]
+------------------------------
+<p>
+link:1
+Thing [link:1 number 1], CS[link:1], [link:bar]
+</p>
+------------------------------
+============================== Link resolvers, alternative short form
+<link:1>
+
+Thing<link:2 and (3)>
+------------------------------
+<p>
+&lt;<a class="odd resolver" href="/thing/1">link:1</a>&gt;
+</p>
+<p>
+Thing&lt;<a class="text resolver" href="/stuff/2%20and%20(3)">link:2 and (3)</a>&gt;
+</p>
+------------------------------
+============================== Escaping links resolvers, alternative short form
+!<link:1>
+------------------------------
+<p>
+&lt;link:1&gt;
+</p>
+------------------------------
+============================== Link resolvers, long form with label
+[link:1 thing one], [http://www.edgewall.com/ edgewall]
+------------------------------
+<p>
+<a class="odd resolver" href="/thing/1">thing one</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>edgewall</a>
+</p>
+------------------------------
+============================== Link resolver SHREF_TARGET_LAST
+Add-on to link:123:
+Some change.
+link:1
+This ticket is the first one
+link:123>
+link:123&
+see link:xü.
+------------------------------
+<p>
+Add-on to <a class="odd resolver" href="/thing/123">link:123</a>:
+Some change.
+<a class="odd resolver" href="/thing/1">link:1</a>
+This ticket is the first one
+<a class="odd resolver" href="/thing/123">link:123</a>&gt;
+<a class="odd resolver" href="/thing/123">link:123</a>&amp;
+see <a class="text resolver" href="/stuff/x%C3%BC">link:xü</a>.
+</p>
+------------------------------
+Add-on to <a class="odd resolver" href="/thing/123">link:123</a>:
+Some change.
+<a class="odd resolver" href="/thing/1">link:1</a>
+This ticket is the first one
+<a class="odd resolver" href="/thing/123">link:123</a>&gt;
+<a class="odd resolver" href="/thing/123">link:123</a>&amp;
+see <a class="text resolver" href="/stuff/x%C3%BC">link:xü</a>.
+============================== Link resolver SHREF_TARGET_FIRST
+<bug>http://localhost/bugzilla/show_bug.cgi?id=1284</bug> 804
+__Summary:__
+see link:Überflüssigkeit
+------------------------------
+<p>
+&lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon"></span>http://localhost/bugzilla/show_bug.cgi?id=1284</a>&lt;/bug&gt; 804
+<span class="underline">Summary:</span>
+see <a class="text resolver" href="/stuff/%C3%9Cberfl%C3%BCssigkeit">link:Überflüssigkeit</a>
+</p>
+------------------------------
+============================== Link resolver SHREF_TARGET_MIDDLE
+||http://example.com/img.png||text||
+------------------------------
+<table class="wiki">
+<tr><td><a class="ext-link" href="http://example.com/img.png"><span class="icon"></span>http://example.com/img.png</a></td><td>text
+</td></tr></table>
+------------------------------
+||<a class="ext-link" href="http://example.com/img.png"><span class="icon"></span>http://example.com/img.png</a>||text||
+============================== Link resolver, long form with quoting
+[link:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
+
+link:"Foo Bar" link:"Foo Bar#baz"
+
+[link:"Foo Bar" Foo Bar] [link:"Foo Bar#baz" Foo Bar]
+
+[link:Argv "*argv[] versus **argv"]
+
+[link:test "test.txt", line 123]
+
+[link:pl/de %de]
+------------------------------
+<p>
+<a class="text resolver" href="/stuff/WikiStart">Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Foo%20Bar">link:"Foo Bar"</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">link:"Foo Bar#baz"</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Foo%20Bar">Foo Bar</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">Foo Bar</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Argv">*argv[] versus **argv</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/test">"test.txt", line 123</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/pl/de">%de</a>
+</p>
+------------------------------
+============================== Link resolver in markup
+'''link:1''', ''link:1'', ~~link:1~~, __link:1__
+------------------------------
+<p>
+<strong><a class="odd resolver" href="/thing/1">link:1</a></strong>, <em><a class="odd resolver" href="/thing/1">link:1</a></em>, <del><a class="odd resolver" href="/thing/1">link:1</a></del>, <span class="underline"><a class="odd resolver" href="/thing/1">link:1</a></span>
+</p>
+------------------------------
+============================== Link resolver, quoting of target
+link:1
+link:12
+link:123
+link:'1'
+link:'12'
+link:'123'
+link:"1"
+link:"12"
+link:"123"
+------------------------------
+<p>
+<a class="odd resolver" href="/thing/1">link:1</a>
+<a class="even resolver" href="/thing/12">link:12</a>
+<a class="odd resolver" href="/thing/123">link:123</a>
+<a class="odd resolver" href="/thing/1">link:'1'</a>
+<a class="even resolver" href="/thing/12">link:'12'</a>
+<a class="odd resolver" href="/thing/123">link:'123'</a>
+<a class="odd resolver" href="/thing/1">link:"1"</a>
+<a class="even resolver" href="/thing/12">link:"12"</a>
+<a class="odd resolver" href="/thing/123">link:"123"</a>
+</p>
+------------------------------
+============================== Link resolver look alike, quoting of target
+nolink:"<blink>"
+------------------------------
+<p>
+nolink:&#34;&lt;blink&gt;&#34;
+</p>
+------------------------------
+============================== Bracketed links
+See <http://en.wikipedia.org/wiki/Mornington_Crescent_(game)>
+------------------------------
+<p>
+See &lt;<a class="ext-link" href="http://en.wikipedia.org/wiki/Mornington_Crescent_(game)"><span class="icon"></span>http://en.wikipedia.org/wiki/Mornington_Crescent_(game)</a>&gt;
+</p>
+------------------------------
+============================================================
+
+        Other Links
+
+============================== Relative links
+Relative links are supported:
+[../parent See above] Note: see wikisyntax tests for other parent tests
+[./sibling See next]
+[./sibling#index See next (index)]
+[./sibling?version=1 See next (v1)]
+[... nothing to see] [...]
+[//docs See documentation]
+[//images/logo.png Our logo]
+[/]
+[/?param=value#anchor]
+[/newticket?component=test new ticket]
+[#title]
+[#title see Title]
+------------------------------
+<p>
+Relative links are supported:
+<a class="missing wiki" href="/wiki/parent" rel="nofollow">See above</a> Note: see wikisyntax tests for other parent tests
+<a class="missing wiki" href="/wiki/WikiStart/sibling" rel="nofollow">See next</a>
+<a class="missing wiki" href="/wiki/WikiStart/sibling#index" rel="nofollow">See next (index)</a>
+<a class="missing wiki" href="/wiki/WikiStart/sibling?version=1" rel="nofollow">See next (v1)</a>
+[... nothing to see] [...]
+<a href="/docs">See documentation</a>
+<a href="/images/logo.png">Our logo</a>
+<a href="/">/</a>
+<a href="/?param=value#anchor">/</a>
+<a href="/newticket?component=test">new ticket</a>
+<a class="wiki" href="/wiki/WikiStart#title">#title</a>
+<a class="wiki" href="/wiki/WikiStart#title">see Title</a>
+</p>
+------------------------------
+============================== Relative links (WikiCreole style)
+Relative links are supported:
+[[../parent|See above]] Note: see wikisyntax tests for other parent tests
+[[./sibling|See next]]
+[[...|nothing to see]] [[...]]
+[[//a ] ]]
+[[//docs|See documentation]]
+[[//images/logo.png|Our logo]]
+[[/]]
+[[/?param=value#anchor]]
+[[/newticket?component=test|new ticket]]
+[[#title]]
+[[#title|see Title]]
+------------------------------
+<p>
+Relative links are supported:
+<a class="missing wiki" href="/wiki/parent" rel="nofollow">See above</a> Note: see wikisyntax tests for other parent tests
+<a class="missing wiki" href="/wiki/WikiStart/sibling" rel="nofollow">See next</a>
+<a class="missing wiki" href="/wiki/..." rel="nofollow">nothing to see</a> <a class="missing wiki" href="/wiki/..." rel="nofollow">...</a>
+<a class="missing wiki" href="/wiki/a%20%5D%20" rel="nofollow">a ] </a>
+<a href="/docs">See documentation</a>
+<a href="/images/logo.png">Our logo</a>
+<a href="/">/</a>
+<a href="/?param=value#anchor">/</a>
+<a href="/newticket?component=test">new ticket</a>
+<a class="wiki" href="/wiki/WikiStart#title">#title</a>
+<a class="wiki" href="/wiki/WikiStart#title">see Title</a>
+</p>
+------------------------------
+==============================  Wiki anchors
+This is the [=#init] initialization routine: ...
+Look for [=#extra ''additional explanations''] here.
+------------------------------
+<p>
+This is the <span class="wikianchor" id="init"></span> initialization routine: ...
+Look for <span class="wikianchor" id="extra"><em>additional explanations</em></span> here.
+</p>
+------------------------------
+==============================  Wiki anchors (WikiCreole style)
+This is the [[=#init]] initialization routine: ...
+Look for [[=#extra|''additional explanations'']] here.
+------------------------------
+<p>
+This is the <span class="wikianchor" id="init"></span> initialization routine: ...
+Look for <span class="wikianchor" id="extra"><em>additional explanations</em></span> here.
+</p>
+------------------------------
+==============================  Image links are now regular external links
+http://example.com/img.png?foo=bar
+------------------------------
+<p>
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"></span>http://example.com/img.png?foo=bar</a>
+</p>
+------------------------------
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"></span>http://example.com/img.png?foo=bar</a>
+============================== Arbitrary protocol Link
+''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
+------------------------------
+<p>
+<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"></span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
+</p>
+------------------------------
+==============================  mailto: links and automatic e-mail detection
+Author: mailto:cboos@edgewall.org,
+i.e. [mailto:cboos@edgewall.org me]
+
+joe'bar@site.info,
+trac+devel@another-site.fr,
+T_r+a-c1.23@yet_another-site.edu.au
+!not@an.email.com
+someone@louvre.museum-
+local@exa६ple.org (U+096c)
+local@example.or೬ (U+0cec)
+local@example.o６g (U+ff16)
+local@example.or𝟨 (U+1d7e8)
+------------------------------
+<p>
+Author: <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>mailto:cboos@edgewall.org</a>,
+i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>me</a>
+</p>
+<p>
+<a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon"></span>joe'bar@site.info</a>,
+<a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon"></span>trac+devel@another-site.fr</a>,
+<a class="mail-link" href="mailto:T_r+a-c1.23@yet_another-site.edu.au"><span class="icon"></span>T_r+a-c1.23@yet_another-site.edu.au</a>
+not@an.email.com
+<a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon"></span>someone@louvre.museum</a>-
+local@exa६ple.org (U+096c)
+<a class="mail-link" href="mailto:local@example.or"><span class="icon"></span>local@example.or</a>೬ (U+0cec)
+<a class="mail-link" href="mailto:local@example.o"><span class="icon"></span>local@example.o</a>６g (U+ff16)
+<a class="mail-link" href="mailto:local@example.or"><span class="icon"></span>local@example.or</a>𝟨 (U+1d7e8)
+</p>
+------------------------------
+============================== Arbitrary protocol Link
+''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
+------------------------------
+<p>
+<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"></span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
+</p>
+------------------------------
+============================== Generic InterTrac links
+th:roadmap
+th:roadmap:
+[th:]
+[th: Trac Hacks]
+th:wiki:"my test spaced wiki1"
+th:"wiki:my test spaced wiki2"
+th:'wiki:"my test spaced wiki3"'
+[th:wiki:"my test spaced wiki4"]
+[th:'wiki:"my test spaced wiki5"']
+[th:"wiki:my test spaced wiki6"]
+[th:wiki:"my test spaced wiki7" My Test Spaced Wiki 7]
+[th:"wiki:my test spaced wiki8" My Test Spaced Wiki 8]
+[th:'wiki:"my test spaced wiki9"' My Test Spaced Wiki 9]
+------------------------------
+<p>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"></span>th:roadmap</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"></span>th:roadmap</a>:
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>th</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>Trac Hacks</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki1%22" title="wiki:&#34;my test spaced wiki1&#34; in Trac Hacks"><span class="icon"></span>th:wiki:"my test spaced wiki1"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki2" title="wiki:my test spaced wiki2 in Trac Hacks"><span class="icon"></span>th:"wiki:my test spaced wiki2"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki3%22" title="wiki:&#34;my test spaced wiki3&#34; in Trac Hacks"><span class="icon"></span>th:'wiki:"my test spaced wiki3"'</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki4%22" title="wiki:&#34;my test spaced wiki4&#34; in Trac Hacks"><span class="icon"></span>wiki:"my test spaced wiki4"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki5%22" title="wiki:&#34;my test spaced wiki5&#34; in Trac Hacks"><span class="icon"></span>wiki:"my test spaced wiki5"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki6" title="wiki:my test spaced wiki6 in Trac Hacks"><span class="icon"></span>wiki:my test spaced wiki6</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki7%22" title="wiki:&#34;my test spaced wiki7&#34; in Trac Hacks"><span class="icon"></span>My Test Spaced Wiki 7</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki8" title="wiki:my test spaced wiki8 in Trac Hacks"><span class="icon"></span>My Test Spaced Wiki 8</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki9%22" title="wiki:&#34;my test spaced wiki9&#34; in Trac Hacks"><span class="icon"></span>My Test Spaced Wiki 9</a>
+</p>
+------------------------------
+============================== Another arbitrary protocol Link
+svn+ssh://secureserver.org
+[svn+ssh://secureserver.org SVN link]
+rfc-2396.compatible://link
+[rfc-2396.compatible://link RFC 2396]
+rfc-2396+under_score://link
+[rfc-2396+under_score://link underscore]
+unsafe://scheme is not rendered
+------------------------------
+<p>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>svn+ssh://secureserver.org</a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>rfc-2396.compatible://link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
+<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"></span>rfc-2396+under_score://link</a>
+<a class="ext-link" href="rfc-2396+under_score://link"><span class="icon"></span>underscore</a>
+unsafe://scheme is not rendered
+</p>
+------------------------------
+============================== WikiCreole style for the above examples
+[[link:WikiStart| Foo]] [[http://www.edgewall.com/|Edgewall]]
+
+[[link:Foo Bar|Foo Bar]] [[link:Foo Bar#baz|Foo Bar]]
+
+[[Foo Bar]] [[Foo Bar|Fu Bar]] [[Foo Bar#baz|Foo Bar]]
+
+[[link:Argv|"*argv[] versus **argv"]]
+
+[[link:test|"test.txt", line 123]]
+
+[[link:pl/de|%de]]
+
+i.e. [[mailto:cboos@edgewall.org|me]]
+
+[[th:]]
+[[th:|Trac Hacks]]
+
+[[svn+ssh://secureserver.org|SVN link]]
+[[rfc-2396.compatible://link|RFC 2396]]
+------------------------------
+<p>
+<a class="text resolver" href="/stuff/WikiStart"> Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>Edgewall</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Foo%20Bar">Foo Bar</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">Foo Bar</a>
+</p>
+<p>
+<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Foo Bar</a> <a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Fu Bar</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">Foo Bar</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Argv">*argv[] versus **argv</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/test">"test.txt", line 123</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/pl/de">%de</a>
+</p>
+<p>
+i.e. <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>me</a>
+</p>
+<p>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>th</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"></span>Trac Hacks</a>
+</p>
+<p>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"></span>SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"></span>RFC 2396</a>
+</p>
+------------------------------
+============================== More WikiCreole examples
+[[coffeehouse setup|How to set up a coffee house]]
+
+[[link:Template]]
+[[link:Template|]]
+
+[[trac:wiki:Pipe (computing)|]]
+[[trac:wiki:Pipe (computing)|]]
+
+[[|b]] (might change to relative)
+
+[[]] no "empty" link here
+[[ ]] is not completely empty...
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/coffeehouse%20setup" rel="nofollow">How to set up a coffee house</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Template">Template</a>
+<a class="text resolver" href="/stuff/Template">Template</a>
+</p>
+<p>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in The Trac Project"><span class="icon"></span>wiki:Pipe (computing)</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in The Trac Project"><span class="icon"></span>wiki:Pipe (computing)</a>
+</p>
+<p>
+<a class="wiki" href="/wiki/WikiStart">b</a> (might change to relative)
+</p>
+<p>
+[[]] no "empty" link here
+<a class="missing wiki" href="/wiki/%20" rel="nofollow"> </a> is not completely empty...
+</p>
+------------------------------
+============================== Link resolver counter examples
+Test:[[BR]] There should be a
+line break
+
+Other test:'''bold text''' should be bold
+------------------------------
+<p>
+Test:<br /> There should be a
+line break
+</p>
+<p>
+Other test:<strong>bold text</strong> should be bold
+</p>
+------------------------------
+Test:  There should be a
+line break
+
+Other test:<strong>bold text</strong> should be bold
+------------------------------
+<p>
+Test:<br /> There should be a<br />
+line break<br />
+</p>
+<p>
+Other test:<strong>bold text</strong> should be bold<br />
+</p>
+============================== Link resolver counter example
+'''Note:'''
+------------------------------
+<p>
+<strong>Note:</strong>
+</p>
+------------------------------
+<strong>Note:</strong>
+==============================
+============================================================
+
+        Processor blocks
+
+============================== Code Block 1
+{{{
+Preformatted text.
+}}}
+Paragraph
+------------------------------
+<pre class="wiki">Preformatted text.
+</pre><p>
+Paragraph
+</p>
+------------------------------
+ […]
+Paragraph
+============================== Code Block 2
+{{{
+<b>Preformatted text</b>.
+}}}
+Paragraph
+------------------------------
+<pre class="wiki">&lt;b&gt;Preformatted text&lt;/b&gt;.
+</pre><p>
+Paragraph
+</p>
+------------------------------
+ […]
+Paragraph
+============================== Embedded code blocks
+{{{
+Outer block.
+{{{
+Inner block.
+}}}
+}}}
+Paragraph
+------------------------------
+<pre class="wiki">Outer block.
+{{{
+Inner block.
+}}}
+</pre><p>
+Paragraph
+</p>
+------------------------------
+ […]
+Paragraph
+============================== Consecutive code blocks
+Block
+{{{
+number one
+}}}
+and block
+{{{
+number two
+}}}
+.
+------------------------------
+<p>
+Block
+</p>
+<pre class="wiki">number one
+</pre><p>
+and block
+</p>
+<pre class="wiki">number two
+</pre><p>
+.
+</p>
+------------------------------
+Block
+ […]
+and block
+ […]
+.
+============================== Unfinished code blocks
+Block
+{{{
+number one
+
+and block
+{{{
+number two
+ }}
+------------------------------
+<p>
+Block
+</p>
+<pre class="wiki">number one
+
+and block
+{{{
+number two
+ }}
+}}}
+</pre>------------------------------
+Block[…]
+============================== Wiki processor
+{{{
+#!default
+Preformatted text.
+}}}
+Paragraph
+------------------------------
+<pre class="wiki">Preformatted text.
+</pre><p>
+Paragraph
+</p>
+------------------------------
+ […]
+Paragraph
+============================== Wiki processor, compact declaration
+{{{#!default
+Preformatted text.
+}}}
+Paragraph
+{{{#!default}}} just normal inline code.
+------------------------------
+<pre class="wiki">Preformatted text.
+</pre><p>
+Paragraph
+<code>#!default</code> just normal inline code.
+</p>
+------------------------------
+ […]
+Paragraph
+<code>#!default</code> just normal inline code.
+============================== Wiki processor, prefix removal
+  {{{
+  Here we keep the space prefix, as there's at least one line not having it.
+Preformatted text.
+  }}}
+Paragraph
+  {{{#!default
+  Here we remove the space prefix, as all lines have it.
+  Preformatted text.
+  }}}
+Paragraph
+------------------------------
+<pre class="wiki">  Here we keep the space prefix, as there's at least one line not having it.
+Preformatted text.
+</pre><p>
+Paragraph
+</p>
+<pre class="wiki">Here we remove the space prefix, as all lines have it.
+Preformatted text.
+</pre><p>
+Paragraph
+</p>
+------------------------------
+============================== Wiki processor counter example
+{{{
+#!/bin/sh
+echo "foo"
+}}}
+Paragraph
+------------------------------
+<pre class="wiki">#!/bin/sh
+echo "foo"
+</pre><p>
+Paragraph
+</p>
+------------------------------
+ […]
+Paragraph
+============================== HTML wiki processor
+{{{
+#!html
+<p>Hello World</p>
+}}}
+------------------------------
+<p>Hello World</p>
+------------------------------
+ […]
+============================== HTML wiki processor, XSS check 1
+{{{
+#!html
+<script>alert("");</script>
+}}}
+------------------------------
+
+------------------------------
+ […]
+============================== HTML wiki processor, XSS check 2
+{{{
+#!html
+<div onclick="alert('')">Click me</div>
+}}}
+------------------------------
+<div>Click me</div>
+------------------------------
+ […]
+============================== HTML wiki processor, XSS check 3
+{{{
+#!html
+<a href="http://example.com">Safe link</a>
+<a href="svn://repos.example.com">Link to repository</a>
+<a href="javascript:alert('')">Unsafe link</a>
+}}}
+------------------------------
+<a href="http://example.com">Safe link</a>
+<a href="svn://repos.example.com">Link to repository</a>
+<a>Unsafe link</a>
+------------------------------
+ […]
+============================== HTML wiki processor, cross-origin resources 1
+{{{
+#!html
+<img src="http://example.org/foo.png" />
+<img src="//example.org/foo.png" />
+<img src="/path/to/foo.png" />
+<img src="./foo.png" />
+<img src="foo.png" />
+<img src="data:image/png,foo" />
+}}}
+------------------------------
+<img crossorigin="anonymous" src="http://example.org/foo.png"/>
+<img crossorigin="anonymous" src="//example.org/foo.png"/>
+<img src="/path/to/foo.png"/>
+<img src="./foo.png"/>
+<img src="foo.png"/>
+<img src="data:image/png,foo"/>
+------------------------------
+============================== HTML wiki processor, cross-origin resources 2
+{{{
+#!html
+<span style="background-image:url(http://example.org/foo.png)">text</span>
+<span style="background-image:url(//example.org/foo.png)">text</span>
+<span style="background-image:url(/path/to/foo.png)">text</span>
+<span style="background-image:url(./foo.png)">text</span>
+<span style="background-image:url(foo.png)">text</span>
+<span style="background-image:url(data:image/png,foo)">text</span>
+}}}
+------------------------------
+<span>text</span>
+<span>text</span>
+<span style="background-image:url(/path/to/foo.png)">text</span>
+<span style="background-image:url(./foo.png)">text</span>
+<span style="background-image:url(foo.png)">text</span>
+<span style="background-image:url(data:image/png,foo)">text</span>
+------------------------------
+============================== HTML comment wiki processor
+Before
+{{{
+#!htmlcomment
+This is a comment <em>with embedded tags &amp; entities</em>
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<!--
+This is a comment <em>with embedded tags &amp; entities</em>
+-->
+<p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
+============================== HTML comment wiki processor, comment ends with "-"
+Before
+{{{
+#!htmlcomment
+This comment ends with -
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<!--
+This comment ends with -
+-->
+<p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
+============================== HTML comment wiki processor, comment contains "--"
+Before
+{{{
+#!htmlcomment
+The character sequence -- is not allowed in comments
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<div class="system-message"><strong>Error: Forbidden character sequence "--" in htmlcomment wiki code block</strong></div><p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
+============================== WikiProcessor default arguments
+[[div(Div has 'wikipage' class.)]]
+[[table()]]
+Table must have 'wiki' class.
+------------------------------
+<p>
+</p><div class="wikipage"><p>
+Div has 'wikipage' class.
+</p>
+</div><p>
+</p><table class="wiki"></table><p>
+Table must have 'wiki' class.
+</p>
+------------------------------
+============================== div and span wiki processors
+And now it's [[span('''TIME FOR BED!,class=important)]]. Really.
+{{{
+#!div ; class=important
+Go ahead, edit it freely.
+
+ {{{
+ #!div; style="border: 2pt solid blue; margin: 1em; padding: .5em"; class=demo
+ And now it's [[span('''TIME FOR BED! ''',class=important)]]. Really.
+ }}}
+etc.
+}}}
+and
+{{{#!rtl
+Some RTL text
+}}}
+{{{#!rtl class="important"
+with an additional class
+}}}
+Done.
+------------------------------
+<p>
+And now it's <span class="important"><strong>TIME FOR BED!</strong></span>. Really.
+</p>
+<div class="important"><p>
+Go ahead, edit it freely.
+</p>
+<div class="demo" style="border: 2pt solid blue; margin: 1em; padding: .5em"><p>
+And now it's <span class="important"><strong>TIME FOR BED! </strong></span>. Really.
+</p>
+</div><p>
+etc.
+</p>
+</div><p>
+and
+</p>
+<div class="rtl"><p>
+Some RTL text
+</p>
+</div><div class="rtl important"><p>
+with an additional class
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+And now it's <span class="important"><strong>TIME FOR BED!</strong></span>. Really.
+ […]
+and
+ […]
+ […]
+Done.
+============================== div and Span wiki processors
+{{{
+#!div ; class="important"
+Go ahead, [[Span(''edit it freely'',class=important)]].
+}}}
+Done.
+------------------------------
+<div class="important"><p>
+Go ahead, <span class="important"><em>edit it freely</em></span>.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+ […]
+Done.
+============================== span wiki processor
+{{{
+#!span style="background: #ffd"
+This is a multiline span
+ - only ''inline'' wiki formatting here, of course
+ - this is only a span after all!
+}}}
+TODO: should be expanded in inline mode
+------------------------------
+<span style="background: #ffd">This is a multiline span
+ - only <em>inline</em> wiki formatting here, of course
+ - this is only a span after all!</span><p>
+TODO: should be expanded in inline mode
+</p>
+------------------------------
+ […]
+TODO: should be expanded in inline mode
+============================== div and Span wiki processors
+{{{
+#!div ; style="background: #aeaeae"
+== Heading ==
+Headings are now inside the block thanks to the default .wikipage class.
+}}}
+Done.
+------------------------------
+<div class="wikipage" style="background: #aeaeae"><h2 class="section" id="Heading">Heading</h2>
+<p>
+Headings are now inside the block thanks to the default .wikipage class.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+ […]
+Done.
+============================== div and Span wiki processors, cross-origin resources
+{{{
+#!div style="background-color:#c00;background-image:url(//example.org/foo.png)"
+Go ahead, [[Span(edit it freely,style=color:#333;background-image:url(/path/to/foo.png))]].
+}}}
+{{{
+#!div style="background-color:#c00;background-image:url(data:image/png,foo)"
+Go ahead, [[Span(edit it freely,style=color:#333;background-image:url(//example.org/foo.png))]].
+}}}
+Done.
+------------------------------
+<div class="wikipage" style="background-color:#c00"><p>
+Go ahead, <span style="color:#333; background-image:url(/path/to/foo.png)">edit it freely</span>.
+</p>
+</div><div class="wikipage" style="background-color:#c00; background-image:url(data:image/png,foo)"><p>
+Go ahead, <span style="color:#333">edit it freely</span>.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+============================================================
+
+        Wiki Macros
+
+============================== Macro help shortcut (with content)
+[[HelloWorld?(hej hopp)]]
+------------------------------
+<p>
+</p><div class="trac-macrolist"><h3 id="HelloWorld-macro"><code>[[HelloWorld]]</code></h3><p>
+A dummy macro used by the unit test.
+</p>
+</div><p>
+</p>
+------------------------------
+[[HelloWorld?(...)]]
+============================== Macro help shortcut (no content)
+[[HelloWorld?]]
+------------------------------
+<p>
+</p><div class="trac-macrolist"><h3 id="HelloWorld-macro"><code>[[HelloWorld]]</code></h3><p>
+A dummy macro used by the unit test.
+</p>
+</div><p>
+</p>
+------------------------------
+[[HelloWorld?]]
+============================== Macro with arguments (leading)
+[[HelloWorld(hej hopp)]]
+------------------------------
+<p>
+Hello World, args = hej hopp
+</p>
+------------------------------
+[[HelloWorld(...)]]
+============================== Macro with arguments (in flow)
+Hello, [[HelloWorld(hej hopp)]]
+------------------------------
+<p>
+Hello, Hello World, args = hej hopp
+</p>
+------------------------------
+Hello, [[HelloWorld(...)]]
+============================== Bad macro call, but valid WikiCreole link
+[[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) </a> # This shouldnt executed as macro since it contain whitespace between ) and ]
+</p>
+------------------------------
+<a class="missing wiki" href="/wiki/HelloWorld(hej%20hopp)%20" rel="nofollow">HelloWorld(hej hopp) </a> # This shouldnt executed as macro since it contain whitespace between ) and ]
+============================== Another bad macro call
+[[HelloWorld(hej hopp))]] # Extra right brace and still executed
+------------------------------
+<p>
+Hello World, args = hej hopp) # Extra right brace and still executed
+</p>
+------------------------------
+[[HelloWorld(...)]] # Extra right brace and still executed
+============================== Two consecutive macros on a line
+[[HelloWorld(hej hopp)]] [[HelloWorld(hej hopp2)]] # Test non greedy match
+------------------------------
+<p>
+Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy match
+</p>
+------------------------------
+[[HelloWorld(...)]] [[HelloWorld(...)]] # Test non greedy match
+============================== Macro returning a <div>
+[[DivHelloWorld(hej hopp)]]
+------------------------------
+<p>
+</p><div>Hello World, args = hej hopp</div><p>
+</p>
+------------------------------
+[[DivHelloWorld(...)]]
+============================== Macro returning a <table> preceded by space
+[[TableHelloWorld(hej hopp)]]
+------------------------------
+<p>
+</p>
+        <table><tr><th>Hello World</th><td>hej hopp</td></tr></table>
+        <p>
+</p>
+------------------------------
+[[TableHelloWorld(...)]]
+============================== Macro returning a <div class="...code...">
+[[DivCode(hej hopp)]]
+------------------------------
+<p>
+<span class="code-block">Hello World, args = hej hopp</span>
+</p>
+------------------------------
+[[DivCode(...)]]
+============================== Macro returning an html.DIV(class="...code...">)
+[[DivCodeElement(hej hopp)]]
+------------------------------
+<p>
+<span class="code-block">Hello World, args = hej hopp</span>
+</p>
+------------------------------
+[[DivCodeElement(...)]]
+============================== Macro returning a Genshi Stream (no "code" div)
+[[DivCodeStream(hej hopp)]]
+------------------------------
+<p>
+</p><div>Hello World, args = hej hopp</div><p>
+</p>
+------------------------------
+[[DivCodeStream(...)]]
+============================== Macro returning None
+[[None(hej hopp)]] nada
+------------------------------
+<p>
+ nada
+</p>
+------------------------------
+[[None(...)]] nada
+============================== WikiProcessor defined as a macro
+[[WikiProcessorSample(inlined content)]]
+{{{#!WikiProcessorSample arg1=this arg2="the second argument" arg3=1-2,6
+multiline
+content
+}}}
+------------------------------
+<p>
+Called as a macro: inlined content
+</p>
+Called as a processor with params: <dl><dt>arg1</dt><dd>this</dd><dt>arg2</dt><dd>the second argument</dd><dt>arg3</dt><dd>1-2,6</dd></dl>multiline
+content
+------------------------------
+[[WikiProcessorSample(...)]]
+ […]
+============================== WikiProcessor code block with linenos
+{{{#!default lineno
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+{{{#!default lineno=3
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+------------------------------
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td>print 'this is a python sample'
+</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td>a = b+3
+</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td>z = "this is a string"
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td>print 'this is the end of the python sample'
+</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a1-L3"><a href="#a1-L3">3</a></th><td>print 'this is a python sample'
+</td></tr><tr><th id="a1-L4"><a href="#a1-L4">4</a></th><td>a = b+3
+</td></tr><tr><th id="a1-L5"><a href="#a1-L5">5</a></th><td>z = "this is a string"
+</td></tr><tr><th id="a1-L6"><a href="#a1-L6">6</a></th><td>print 'this is the end of the python sample'
+</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+------------------------------
+============================== WikiProcessor code block with linenos, id, marks
+{{{#!default lineno=3 id=b marks=4-5
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+{{{#!default lineno=3 id=c
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+------------------------------
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="b-L3"><a href="#b-L3">3</a></th><td>print 'this is a python sample'
+</td></tr><tr class="hilite"><th id="b-L4"><a href="#b-L4">4</a></th><td>a = b+3
+</td></tr><tr class="hilite"><th id="b-L5"><a href="#b-L5">5</a></th><td>z = "this is a string"
+</td></tr><tr><th id="b-L6"><a href="#b-L6">6</a></th><td>print 'this is the end of the python sample'
+</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="c-L3"><a href="#c-L3">3</a></th><td>print 'this is a python sample'
+</td></tr><tr><th id="c-L4"><a href="#c-L4">4</a></th><td>a = b+3
+</td></tr><tr><th id="c-L5"><a href="#c-L5">5</a></th><td>z = "this is a string"
+</td></tr><tr><th id="c-L6"><a href="#c-L6">6</a></th><td>print 'this is the end of the python sample'
+</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+============================== WikiProcessor code block with invalid arguments
+{{{#!default lineno=-10
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+{{{#!default lineno=a id=d marks=a-b
+print 'this is a python sample'
+a = b+3
+z = "this is a string"
+print 'this is the end of the python sample'
+}}}
+Paragraph
+------------------------------
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="a-L1"><a href="#a-L1">1</a></th><td>print 'this is a python sample'
+</td></tr><tr><th id="a-L2"><a href="#a-L2">2</a></th><td>a = b+3
+</td></tr><tr><th id="a-L3"><a href="#a-L3">3</a></th><td>z = "this is a string"
+</td></tr><tr><th id="a-L4"><a href="#a-L4">4</a></th><td>print 'this is the end of the python sample'
+</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+<div class="wiki-code"><table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="d-L1"><a href="#d-L1">1</a></th><td>print 'this is a python sample'
+</td></tr><tr><th id="d-L2"><a href="#d-L2">2</a></th><td>a = b+3
+</td></tr><tr><th id="d-L3"><a href="#d-L3">3</a></th><td>z = "this is a string"
+</td></tr><tr><th id="d-L4"><a href="#d-L4">4</a></th><td>print 'this is the end of the python sample'
+</td></tr></tbody></table></div><p>
+Paragraph
+</p>
+------------------------------
+------------------------------
+============================== Inlined HTML wiki processor
+Inline [[html(<B> Test </B>)]] text
+------------------------------
+<p>
+Inline <b> Test </b> text
+</p>
+------------------------------
+Inline [[html(...)]] text
+============================== BR macro
+Line break [[BR]] another line[[br()]]last line
+------------------------------
+<p>
+Line break <br /> another line<br />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== BR macro with clear:left, clear:right
+Line break [[BR(clear:left)]] another line[[br(clear:right)]]last line
+------------------------------
+<p>
+Line break <br style="clear: left" /> another line<br style="clear: right" />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== BR macro with clear=left, clear=right
+Line break [[BR(clear=left)]] another line[[br(clear=right)]]last line
+------------------------------
+<p>
+Line break <br style="clear: left" /> another line<br style="clear: right" />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== BR macro with clear both
+Line break [[BR(clear:both)]] another line[[br(clear)]]last line
+------------------------------
+<p>
+Line break <br style="clear: both" /> another line<br style="clear: both" />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== WikiCreole line break
+Line break \\ another line\\last line
+------------------------------
+<p>
+Line break <br /> another line<br />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== Comment wiki processor
+Test comment blocks
+{{{
+#!comment
+This is simply removed from the output
+}}}
+------------------------------
+<p>
+Test comment blocks
+</p>
+------------------------------
+Test comment blocks
+============================== Comment wiki processor called as a macro
+Inline [[comment(This should not be seen)]] comment
+------------------------------
+<p>
+Inline  comment
+</p>
+------------------------------
+Inline  comment
+============================== Exception with ascii bytes
+[[ValueErrorWithUtf8(error)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Error: Macro ValueErrorWithUtf8(error) failed</strong><pre>error</pre></div>
+</p>
+------------------------------
+============================== MacroError with fragment
+[[MacroErrorWithFragment(Érrör)]]
+------------------------------
+<p>
+<div class="system-message"><strong>Macro MacroErrorWithFragment(Érrör) failed</strong><pre>The content: <code>Érrör</code></pre></div>
+</p>
+------------------------------
+============================== Exception with utf-8 bytes
+{{{#!ValueErrorWithUtf8
+Érrör
+}}}
+[[ValueErrorWithUtf8(érrör)]]
+------------------------------
+<div class="system-message"><strong>Error: Processor ValueErrorWithUtf8 failed</strong><pre>Érrör
+</pre></div><p>
+<div class="system-message"><strong>Error: Macro ValueErrorWithUtf8(érrör) failed</strong><pre>érrör</pre></div>
+</p>
+------------------------------
+============================== TracError with unicode
+{{{#!TracErrorWithUnicode
+Érrör
+}}}
+[[TracErrorWithUnicode(érrör)]]
+------------------------------
+<div class="system-message"><strong>Error: Processor TracErrorWithUnicode failed</strong><pre>Érrör
+</pre></div><p>
+<div class="system-message"><strong>Error: Macro TracErrorWithUnicode(érrör) failed</strong><pre>érrör</pre></div>
+</p>
+------------------------------
+============================== ProcessorError with fragment
+{{{#!ProcessorErrorWithFragment
+Érrör
+}}}
+Paragraph
+------------------------------
+<div class="system-message"><strong>Processor ProcessorErrorWithFragment failed</strong><pre>The content: <code>Érrör
+</code></pre></div><p>
+Paragraph
+</p>
+------------------------------
+============================================================
+
+           Headings
+
+============================== I18N heading
+= ça marche! =
+------------------------------
+<h1 class="section" id="çamarche">ça marche!</h1>
+------------------------------
+= ça marche! =
+============================== Quoted heading
+= "Test" =
+------------------------------
+<h1 class="section" id="Test">"Test"</h1>
+------------------------------
+= "Test" =
+============================== Heading with < and >
+= Foo <Bar> Baz =
+------------------------------
+<h1 class="section" id="FooBarBaz">Foo &lt;Bar&gt; Baz</h1>
+------------------------------
+= Foo &lt;Bar&gt; Baz =
+============================== Heading with .
+= Version 0.10 =
+------------------------------
+<h1 class="section" id="Version0.10">Version 0.10</h1>
+------------------------------
+= Version 0.10 =
+============================== Normal heading
+== Heading with trailing white-space ==
+------------------------------
+<h2 class="section" id="Headingwithtrailingwhite-space">Heading with trailing white-space</h2>
+------------------------------
+== Heading with trailing white-space ==
+============================== Formatted heading
+== ''Formatted'' ~~Heading~~ ==
+------------------------------
+<h2 class="section" id="FormattedHeading"><em>Formatted</em> <del>Heading</del></h2>
+------------------------------
+== ''Formatted'' ~~Heading~~ ==
+============================== Heading with link
+== [wiki:SandBox Linked Heading] ==
+------------------------------
+<h2 class="section" id="LinkedHeading"><a class="missing wiki" href="/wiki/SandBox" rel="nofollow">Linked Heading</a></h2>
+------------------------------
+== [wiki:SandBox Linked Heading] ==
+============================== Normal heading, fixed id
+== Heading with fixed id == #heading-fixed-id
+------------------------------
+<h2 class="section" id="heading-fixed-id">Heading with fixed id</h2>
+------------------------------
+== Heading with fixed id == #heading-fixed-id
+============================== Normal heading, auto-corrected id
+== 10 tips ==
+[[br]] oops!
+------------------------------
+<h2 class="section" id="a10tips">10 tips</h2>
+<p>
+<br /> oops!
+</p>
+------------------------------
+== 10 tips ==
+  oops!
+------------------------------
+------------------------------
+
+<ol>
+  <li>
+    <ol>
+      <li>
+        <a href="#a10tips">10 tips</a>
+      </li>
+    </ol>
+  </li>
+</ol>
+============================== Relaxed heading
+= Title
+== Chapter
+=== Section
+==== Subsection
+===== Subsubsection #h5
+====== h6
+======== but no h7
+------------------------------
+<h1 class="section" id="Title">Title</h1>
+<h2 class="section" id="Chapter">Chapter</h2>
+<h3 class="section" id="Section">Section</h3>
+<h4 class="section" id="Subsection">Subsection</h4>
+<h5 class="section" id="h5">Subsubsection</h5>
+<h6 class="section" id="h6">h6</h6>
+<p>
+======== but no h7
+</p>
+------------------------------
+= Title
+== Chapter
+=== Section
+==== Subsection
+===== Subsubsection #h5
+====== h6
+======== but no h7
+------------------------------
+------------------------------
+
+<ol>
+  <li>
+    <a href="#Title">Title</a>
+    <ol>
+      <li>
+        <a href="#Chapter">Chapter</a>
+        <ol>
+          <li>
+            <a href="#Section">Section</a>
+            <ol>
+              <li>
+                <a href="#Subsection">Subsection</a>
+                <ol>
+                  <li>
+                    <a href="#h5">Subsubsection</a>
+                    <ol>
+                      <li>
+                        <a href="#h6">h6</a>
+                      </li>
+                    </ol>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+============================================================
+
+             Lists
+
+============================== Bulleted lists
+Paragraph
+ * foo bar
+   boo baz
+   * Subitem
+     Subitem line 2
+ * item 2
+   item 2 line 2
+Paragraph
+ - foo bar
+   boo baz
+ • item 2
+Paragraph
+------------------------------
+<p>
+Paragraph
+</p>
+<ul><li>foo bar
+boo baz
+<ul><li>Subitem
+Subitem line 2
+</li></ul></li><li>item 2
+item 2 line 2
+</li></ul><p>
+Paragraph
+</p>
+<ul><li>foo bar
+boo baz
+</li><li>item 2
+</li></ul><p>
+Paragraph
+</p>
+------------------------------
+Paragraph
+ * foo bar
+   boo baz
+   * Subitem
+     Subitem line 2
+ * item 2
+   item 2 line 2
+Paragraph
+ - foo bar
+   boo baz
+ • item 2
+Paragraph
+============================== Changelog sample (and e-mail link)
+2003-09-18 23:26  Joe Bar <joeb@gloogle.gom>
+
+	* src/code.py: Fix problem with obsolete use of
+	backslash in symbols.
+        * src/test.py: Added unit tests.
+          - test + symbol
+          - test - symbol
+Paragraph
+------------------------------
+<p>
+2003-09-18 23:26  Joe Bar &lt;<a class="mail-link" href="mailto:joeb@gloogle.gom"><span class="icon"></span>joeb@gloogle.gom</a>&gt;
+</p>
+<ul><li>src/code.py: Fix problem with obsolete use of
+backslash in symbols.
+</li><li>src/test.py: Added unit tests.
+<ul><li>test + symbol
+</li><li>test - symbol
+</li></ul></li></ul><p>
+Paragraph
+</p>
+------------------------------
+============================== Complex bulleted list
+    * foo bar
+      boo baz
+           * Subitem 1
+             - nested item 1
+             - nested item 2
+             nested item 2 continued
+           Subitem 1 continued
+        * Subitem 2
+         Subitem 2 continued
+        * Subitem 3
+          continued
+    * item 2
+     item 2 line 2
+Paragraph
+------------------------------
+<ul><li>foo bar
+boo baz
+<ul><li>Subitem 1
+<ul><li>nested item 1
+</li><li>nested item 2
+nested item 2 continued
+</li></ul>Subitem 1 continued
+</li></ul></li><li>Subitem 2
+Subitem 2 continued
+</li><li>Subitem 3
+continued
+</li></ul><ul><li>item 2
+item 2 line 2
+</li></ul><p>
+Paragraph
+</p>
+------------------------------
+============================== Numbered lists
+ 1. item 1
+   a. item 1.a
+   a. item 1.b
+     0. start at 0
+
+Some paragraph
+
+ 2. continue with item 2
+    i. roman 1
+    ii. roman 2
+      II. upper roman
+          B. upper alpha
+          C. etc.
+Paragraph
+------------------------------
+<ol><li>item 1
+<ol class="loweralpha"><li>item 1.a
+</li><li>item 1.b
+<ol start="0"><li>start at 0
+</li></ol></li></ol></li></ol><p>
+Some paragraph
+</p>
+<ol start="2"><li>continue with item 2
+<ol class="lowerroman"><li>roman 1
+</li><li>roman 2
+<ol class="upperroman"><li>upper roman
+<ol class="upperalpha" start="2"><li>upper alpha
+</li><li>etc.
+</li></ol></li></ol></li></ol></li></ol><p>
+Paragraph
+</p>
+------------------------------
+1. item 1
+   a. item 1.a
+   a. item 1.b
+     0. start at 0
+
+Some paragraph
+
+ 2. continue with item 2
+    i. roman 1
+    ii. roman 2
+      II. upper roman
+          B. upper alpha
+          C. etc.
+Paragraph
+============================== Numbered lists multi-line items
+ 1. This is a very long line at
+    the first level, which works correctly.
+    1. But this line at the second level, which
+       is also continued on the next line, does not.
+Paragraph
+------------------------------
+<ol><li>This is a very long line at
+the first level, which works correctly.
+<ol><li>But this line at the second level, which
+is also continued on the next line, does not.
+</li></ol></li></ol><p>
+Paragraph
+</p>
+------------------------------
+1. This is a very long line at
+    the first level, which works correctly.
+    1. But this line at the second level, which
+       is also continued on the next line, does not.
+Paragraph
+============================== List with explicit numerical start > 9
+'''First steps'''
+
+ 1. Do this
+ 2. Do that
+ ...
+ 9. Then this
+
+'''Next steps'''
+
+ 10. Now this must work
+ 11. This is ok again..
+ ...
+ 19. More steps
+
+'''And more'''
+
+ 20. This is ok
+ 21. This ok too
+
+ ...
+------------------------------
+<p>
+<strong>First steps</strong>
+</p>
+<ol><li>Do this
+</li><li>Do that
+...
+</li><li>Then this
+</li></ol><p>
+<strong>Next steps</strong>
+</p>
+<ol start="10"><li>Now this must work
+</li><li>This is ok again..
+...
+</li><li>More steps
+</li></ol><p>
+<strong>And more</strong>
+</p>
+<ol start="20"><li>This is ok
+</li><li>This ok too
+</li></ol><blockquote>
+<p>
+...
+</p>
+</blockquote>
+------------------------------
+============================== List with explicit loweralpha start > 'a.'
+'''First steps'''
+
+ a. Do this
+ b. Do that
+ ...
+ e. Then this
+
+'''Next steps'''
+
+ f. restarts at "f"
+ g. follows with "g"
+ ...
+ h. More steps
+
+'''And more'''
+
+ i. Now this is wrong
+ j. (just never restart with "i." or "I.")
+
+ ...
+------------------------------
+<p>
+<strong>First steps</strong>
+</p>
+<ol class="loweralpha"><li>Do this
+</li><li>Do that
+...
+</li><li>Then this
+</li></ol><p>
+<strong>Next steps</strong>
+</p>
+<ol class="loweralpha" start="6"><li>restarts at "f"
+</li><li>follows with "g"
+...
+</li><li>More steps
+</li></ol><p>
+<strong>And more</strong>
+</p>
+<ol class="lowerroman"><li>Now this is wrong
+</li><li>(just never restart with "i." or "I.")
+</li></ol><blockquote>
+<p>
+...
+</p>
+</blockquote>
+------------------------------
+============================== Numbered lists counter-examples
+ This will not start a new numbered
+ list. There's more than one character
+ before the "."
+ OTOH, the following is a roman numbered list:
+ iii. start
+ xxvii. maximal number in sequence
+Paragraph
+------------------------------
+<blockquote>
+<p>
+This will not start a new numbered
+list. There's more than one character
+before the "."
+OTOH, the following is a roman numbered list:
+</p>
+</blockquote>
+<ol class="lowerroman"><li>start
+</li><li>maximal number in sequence
+</li></ol><p>
+Paragraph
+</p>
+------------------------------
+============================== Unicode digits will not start a numbered list
+ ³. U+00B3 will not start a numbered list.
+ ੧. U+0A67 will not start a numbered list.
+ ൬. U+0D6C will not start a numbered list.
+ ➀. U+2780 will not start a numbered list.
+------------------------------
+<blockquote>
+<p>
+³. U+00B3 will not start a numbered list.
+੧. U+0A67 will not start a numbered list.
+൬. U+0D6C will not start a numbered list.
+➀. U+2780 will not start a numbered list.
+</p>
+</blockquote>
+------------------------------
+============================== Mixed lists multi-line items
+ 1. multi-line
+    numbered list
+    i. multi-line
+      item i.
+      * sub item
+    ii. multi-line
+      item ii.
+      * sub item
+        multiline
+        a. subsub
+          multiline
+        b. subsub
+    iii. multi-line
+      item iii.
+      * sub item
+Paragraph
+------------------------------
+<ol><li>multi-line
+numbered list
+<ol class="lowerroman"><li>multi-line
+item i.
+<ul><li>sub item
+</li></ul></li><li>multi-line
+item ii.
+<ul><li>sub item
+multiline
+<ol class="loweralpha"><li>subsub
+multiline
+</li><li>subsub
+</li></ol></li></ul></li><li>multi-line
+item iii.
+<ul><li>sub item
+</li></ul></li></ol></li></ol><p>
+Paragraph
+</p>
+------------------------------
+============================== Lists and partial inline markup (#3232)
+This line ''does not close italic.
+
+No problems though as it resets. Lists won't though:
+ * '''Not closing bold...
+ * Bold Continues here...
+
+This will be bold too as will the rest of the page.
+------------------------------
+<p>
+This line <em>does not close italic.
+</em></p>
+<p>
+No problems though as it resets. Lists won't though:
+</p>
+<ul><li><strong>Not closing bold...
+</strong></li><li>Bold Continues here...
+</li></ul><p>
+This will be bold too as will the rest of the page.
+</p>
+------------------------------
+This line <em>does not close italic.
+
+No problems though as it resets. Lists won't though:
+ * <strong>Not closing bold...
+ * Bold Continues here...
+
+This will be bold too as will the rest of the page.</strong></em>
+============================== Lists starting at beginning of line
+- item 1
+- item 2
+  - sub 2.1
+  - sub 2.2
+
+a. item A
+b. item B
+Paragraph
+------------------------------
+<ul><li>item 1
+</li><li>item 2
+<ul><li>sub 2.1
+</li><li>sub 2.2
+</li></ul></li></ul><ol class="loweralpha"><li>item A
+</li><li>item B
+</li></ol><p>
+Paragraph
+</p>
+------------------------------
+============================== Simple definition list
+ term:: definition
+------------------------------
+<dl class="wiki"><dt>term</dt><dd>definition
+</dd></dl>
+------------------------------
+term:: definition
+============================== Tricky definition list
+ term:: definition:: text
+------------------------------
+<dl class="wiki"><dt>term</dt><dd>definition:: text
+</dd></dl>
+------------------------------
+term:: definition:: text
+============================== Verbatim term in definition list
+ `term`:: definition
+------------------------------
+<dl class="wiki"><dt><code>term</code></dt><dd>definition
+</dd></dl>
+------------------------------
+<code>term</code>:: definition
+============================== Another verbatim term in definition list
+ {{{term}}}:: definition
+------------------------------
+<dl class="wiki"><dt><code>term</code></dt><dd>definition
+</dd></dl>
+------------------------------
+<code>term</code>:: definition
+============================== Complex definition list
+ complex topic:: multiline
+                 ''formatted''
+                 definition
+------------------------------
+<dl class="wiki"><dt>complex topic</dt><dd>multiline
+<em>formatted</em>
+definition
+</dd></dl>
+------------------------------
+complex topic:: multiline
+                 <em>formatted</em>
+                 definition
+============================== Definition list counter example
+ term::definition
+------------------------------
+<blockquote>
+<p>
+term::definition
+</p>
+</blockquote>
+------------------------------
+term::definition
+============================== Pathological definition list counter example with block quotes
+ {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}}
+------------------------------
+<blockquote>
+<p>
+<code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code>
+</p>
+</blockquote>
+------------------------------
+<code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code> <code>a</code>
+============================== Definition list + escaped definition list
+ complex topic:: multiline
+                 `not:: a dl`
+------------------------------
+<dl class="wiki"><dt>complex topic</dt><dd>multiline
+<code>not:: a dl</code>
+</dd></dl>
+------------------------------
+complex topic:: multiline
+                 <code>not:: a dl</code>
+============================== Definition list + another escaped definition list
+ complex topic:: multiline
+                 {{{not:: a dl}}}
+------------------------------
+<dl class="wiki"><dt>complex topic</dt><dd>multiline
+<code>not:: a dl</code>
+</dd></dl>
+------------------------------
+complex topic:: multiline
+                 <code>not:: a dl</code>
+============================== Definition list after paragraph
+1st:
+ term:: definition
+2nd:
+ `not:: a`definition
+3rd:
+ term:: definition at last line
+------------------------------
+<p>
+1st:
+</p>
+<dl class="wiki"><dt>term</dt><dd>definition
+</dd></dl>
+<p>
+2nd:
+</p>
+<blockquote>
+<p>
+<code>not:: a</code>definition
+</p>
+</blockquote>
+<p>
+3rd:
+</p>
+<dl class="wiki"><dt>term</dt><dd>definition at last line
+</dd></dl>
+------------------------------
+1st:
+ term:: definition
+2nd:
+ <code>not:: a</code>definition
+3rd:
+ term:: definition at last line
+============================================================
+
+            Tables
+
+============================== Simple Table, one column
+|| a ||
+|| b ||
+------------------------------
+<table class="wiki">
+<tr><td> a
+</td></tr><tr><td> b
+</td></tr></table>
+------------------------------
+|| a ||
+|| b ||
+============================== Simple Table, multiple columns
+in:
+|| RPC# || parameter len || ..... parameter ..... ||
+out:
+|| RPC# || parameter len || ..... parameter ..... ||
+----
+------------------------------
+<p>
+in:
+</p>
+<table class="wiki">
+<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter .....
+</td></tr></table>
+<p>
+out:
+</p>
+<table class="wiki">
+<tr><td> RPC# </td><td> parameter len </td><td> ..... parameter .....
+</td></tr></table>
+<hr />
+------------------------------
+in:
+|| RPC# || parameter len || ..... parameter ..... ||
+out:
+|| RPC# || parameter len || ..... parameter ..... ||
+----
+============================== Simple Table with colspan
+in:
+|| name |||| parameter info ||
+|| RPC# || parameter len || ..... parameter ..... ||
+|||||| end ||
+|| !#8977 || this should also work ||||
+----
+------------------------------
+<p>
+in:
+</p>
+<table class="wiki">
+<tr><td> name </td><td colspan="2"> parameter info
+</td></tr><tr><td> RPC# </td><td> parameter len </td><td> ..... parameter .....
+</td></tr><tr><td colspan="3"> end
+</td></tr><tr><td> #8977 </td><td> this should also work </td><td>
+</td></tr></table>
+<hr />
+------------------------------
+in:
+|| name |||| parameter info ||
+|| RPC# || parameter len || ..... parameter ..... ||
+|||||| end ||
+|| #8977 || this should also work ||||
+----
+============================== Table headings (plus colspan)
+||= this is a header =||||= another header =|| not a header ||
+||= also a header =|| some non- || header cells ||= header =||
+------------------------------
+<table class="wiki">
+<tr><th> this is a header </th><th colspan="2"> another header </th><td> not a header
+</td></tr><tr><th> also a header </th><td> some non- </td><td> header cells </td><th> header
+</th></tr></table>
+------------------------------
+============================== Table headings (plus alignment)
+||=left align =||=default=||= default =||= right align=||=  center  =||
+||left align ||default|| default || right align||  center  ||
+------------------------------
+<table class="wiki">
+<tr><th style="text-align: left">left align </th><th>default</th><th> default </th><th style="text-align: right"> right align</th><th style="text-align: center">  center
+</th></tr><tr><td style="text-align: left">left align </td><td>default</td><td> default </td><td style="text-align: right"> right align</td><td style="text-align: center">  center
+</td></tr></table>
+------------------------------
+============================== Indented tables, multiple columns
+|| a || b ||
+
+  || a || b ||
+  || a || b ||
+
+|| a || b ||
+------------------------------
+<table class="wiki">
+<tr><td> a </td><td> b
+</td></tr></table>
+<blockquote>
+<table class="wiki">
+<tr><td> a </td><td> b
+</td></tr><tr><td> a </td><td> b
+</td></tr></table>
+</blockquote>
+<table class="wiki">
+<tr><td> a </td><td> b
+</td></tr></table>
+------------------------------
+|| a || b ||
+
+  || a || b ||
+  || a || b ||
+
+|| a || b ||
+============================== Table escaping
+|| a !|| b ||
+
+!|| a !|| b !||
+------------------------------
+<table class="wiki">
+<tr><td> a || b
+</td></tr></table>
+<p>
+|| a || b ||
+</p>
+------------------------------
+|| a || b ||
+
+|| a || b ||
+============================== Table with row continuation
+|| a very long cell, with lots of content || \
+|| \
+|| a second cell, on the same row ||
+||
+|| Another row || \
+|| Another row ||
+|| normal || row ||
+|| a very long cell, with lots of content || \
+|| a second cell, on the same row ||
+|| normal || row ||
+|||| \
+|| this should also work ||
+------------------------------
+<table class="wiki">
+<tr><td> a very long cell, with lots of content
+
+</td><td> a second cell, on the same row
+</td></tr><tr>
+</tr><tr><td> Another row
+</td><td> Another row
+</td></tr><tr><td> normal </td><td> row
+</td></tr><tr><td> a very long cell, with lots of content
+</td><td> a second cell, on the same row
+</td></tr><tr><td> normal </td><td> row
+</td></tr><tr><td>
+</td><td> this should also work
+</td></tr></table>
+------------------------------
+============================== Table with !#th and !#td wiki processors
+{{{
+#!th style="text-align: left"
+ - some header
+}}}
+{{{
+#!th
+ - another header
+ - with more rows
+}}}
+||
+{{{
+#!td rowspan=2
+
+Arbitrarily big content (even an embedded table of course):
+|| A || B ||
+
+ {{{
+ #!div class=important
+ or better, an embedded wiki paragraph, itself with a big table
+ ||= A =||= B =||
+  {{{
+  #!td colspan=2
+   {{{
+   def hello():
+     print "A and B!"
+   }}}
+  }}}
+ }}}
+
+}}}
+{{{
+#!td
+
+Second cell, first row
+}}}
+||
+{{{
+#!td
+
+Second cell, second row...
+}}}
+------------------------------
+<table class="wiki">
+<tr><th style="text-align: left"><ul><li>some header
+</li></ul></th><th><ul><li>another header
+</li><li>with more rows
+</li></ul></th>
+</tr><tr><td rowspan="2"><p>
+Arbitrarily big content (even an embedded table of course):
+</p>
+<table class="wiki">
+<tr><td> A </td><td> B
+</td></tr></table>
+<div class="important"><p>
+or better, an embedded wiki paragraph, itself with a big table
+</p>
+<table class="wiki">
+<tr><th> A </th><th> B
+</th></tr><tr><td colspan="2"><pre class="wiki">def hello():
+  print "A and B!"
+</pre></td></tr></table>
+</div></td><td><p>
+Second cell, first row
+</p>
+</td>
+</tr><tr><td><p>
+Second cell, second row...
+</p>
+</td></tr></table>
+------------------------------
+============================== Table with wiki processors, unfinished block
+{{{
+#!td style="vertical-align: top"
+ - some header
+}}}
+{{{
+#!td
+ - another header
+ - with more rows
+||
+{{{
+#!td rowspan=2
+not another cell, but an embedded table...
+------------------------------
+<table class="wiki">
+<tr><td style="vertical-align: top"><ul><li>some header
+</li></ul></td><td><ul><li>another header
+</li><li>with more rows
+</li></ul><table class="wiki">
+<tr>
+</tr><tr><td rowspan="2"><p>
+not another cell, but an embedded table...
+</p>
+</td></tr></table>
+</td></tr></table>
+------------------------------
+============================== Table with wiki processors, wikimedia row sep
+{{{#!th   ........... 11
+Heading A
+}}}
+{{{#!th   ...........    12
+Heading B
+}}}
+|--------------------------- style="background: grey"
+{{{#!td   ........... 21
+Content A
+}}}
+{{{#!td   ...........    22
+Content B
+}}}
+------------------------------
+<table class="wiki">
+<tr><th><p>
+Heading A
+</p>
+</th><th><p>
+Heading B
+</p>
+</th></tr><tr style="background: grey">
+<td><p>
+Content A
+</p>
+</td><td><p>
+Content B
+</p>
+</td></tr></table>
+------------------------------
+ […]
+ […][…]
+ […]
+============================== Table with wiki processors (tr, th and td)
+A very nice table:
+{{{#!table style="border: none"
+{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++ style="background: #ffd"
+    {{{#!th .......................................... style="background: #dfd"
+
+    Header A
+
+    }}}
+    {{{#!th .......................................... style="background: #dfd"
+
+    Header B
+
+    }}}
+}}}
+{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++ style="background: #fdf"
+    {{{#!td ..........................................
+
+    Content A
+
+    }}}
+    {{{#!td ..........................................
+
+    Content B
+
+    }}}
+}}}
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<table class="wiki" style="border: none"><tr style="background: #ffd"><th style="background: #dfd"><p>
+Header A
+</p>
+</th><th style="background: #dfd"><p>
+Header B
+</p>
+</th></tr><tr style="background: #fdf"><td><p>
+Content A
+</p>
+</td><td><p>
+Content B
+</p>
+</td></tr></table><p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+Paragraph
+============================== Table with wiki processors (table but no cells)
+A very nice table:
+{{{#!table style="border: none"
+
+This table processor doesn't contain any cell, this is an error.
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<div class="system-message"><strong>!#table must contain at least one table cell (and table cells only)</strong></div><p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+Paragraph
+============================== Table with wiki processors (tr but no cells)
+A very nice table:
+{{{#!table style="border: none"
+
+{{{#!tr
+This tr processor doesn't contain any cell, this is an error.
+}}}
+
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<div class="system-message"><strong>!#table must contain at least one table cell (and table cells only)</strong></div><p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+Paragraph
+============================== Table with wiki processors (table + multiple embedded tables)
+A very nice table:
+{{{#!table style="border: none"
+
+|| only one table ||
+
+|| extra table is an error||
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<div class="system-message"><strong>!#table must contain at most one table</strong></div><p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+Paragraph
+============================== Table with wiki processors within div
+{{{#!div
+  {{{#!td rowspan=2
+  A cell can now contain any markup:
+   - lists
+   - blocks
+   - etc.
+  }}}
+  {{{#!td
+  Another cell with rich content,
+  on the same row
+  }}}
+  |-
+  {{{#!td
+  Another cell with rich content,
+  on the next row
+  }}}
+}}}
+Paragraph
+------------------------------
+<div class="wikipage"><table class="wiki">
+<tr><td rowspan="2"><p>
+A cell can now contain any markup:
+</p>
+<ul><li>lists
+</li><li>blocks
+</li><li>etc.
+</li></ul></td><td><p>
+Another cell with rich content,
+on the same row
+</p>
+</td></tr><tr>
+<td><p>
+Another cell with rich content,
+on the next row
+</p>
+</td></tr></table>
+</div><p>
+Paragraph
+</p>
+------------------------------
+============================== Table with broken inline markups (#13355)
+|| a^1 ||
+|| b^2^ ||
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1
+</sup></td></tr><tr><td> b<sup>2</sup>
+</td></tr></table>
+------------------------------
+============================== Table with broken inline markups 2 (#13355)
+|| a^1 || b^2 ||
+|| c^3^ ||
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1 </sup></td><td> b<sup>2
+</sup></td></tr><tr><td> c<sup>3</sup>
+</td></tr></table>
+------------------------------
+============================== Table with broken inline markups 3 (#13355)
+|| a^1**2 || b**1//2^3^4//5**6 ||
+|| c^1**2**3^4 || d**1//2^3 ||
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1<strong>2 </strong></sup></td><td> b<strong>1<em>2<sup>3</sup>4</em>5</strong>6
+</td></tr><tr><td> c<sup>1<strong>2</strong>3</sup>4 </td><td> d<strong>1<em>2<sup>3
+</sup></em></strong></td></tr></table>
+------------------------------
+============================== Table with broken inline markups without closing (#13355)
+|| a^1**2 || b**1//2^3^4//5**6
+|| c^1**2**3^4 || d**1//2^3
+------------------------------
+<table class="wiki">
+<tr><td> a<sup>1<strong>2 </strong></sup></td><td> b<strong>1<em>2<sup>3</sup>4</em>5</strong>6
+</td></tr><tr><td> c<sup>1<strong>2</strong>3</sup>4 </td><td> d<strong>1<em>2<sup>3
+</sup></em></strong></td></tr></table>
+------------------------------
+============================================================
+
+         Mixed examples
+
+============================== Mix of headings and lists
+= Heading 1 =
+Paragraph
+ * Item 1
+   * Item 2
+Another paragraph
+------------------------------
+<h1 class="section" id="Heading1">Heading 1</h1>
+<p>
+Paragraph
+</p>
+<ul><li>Item 1
+<ul><li>Item 2
+</li></ul></li></ul><p>
+Another paragraph
+</p>
+------------------------------
+= Heading 1 =
+Paragraph
+ * Item 1
+   * Item 2
+Another paragraph
+------------------------------
+<h1 class="section" id="Heading1">Heading 1</h1>
+<p>
+Paragraph<br />
+</p>
+<ul><li>Item 1
+<ul><li>Item 2
+</li></ul></li></ul><p>
+Another paragraph<br />
+</p>
+============================== Heading, lists and table
+Paragraph
+----
+ 1. Item 1
+   2. Item 2
+||Table||cell||
+||Foo||Bar||Baz||
+http://www.edgewall.com/
+------------------------------
+<p>
+Paragraph
+</p>
+<hr />
+<ol><li>Item 1
+<ol start="2"><li>Item 2
+</li></ol></li></ol><table class="wiki">
+<tr><td>Table</td><td>cell
+</td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
+</td></tr></table>
+<p>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
+</p>
+------------------------------
+Paragraph
+----
+ 1. Item 1
+   2. Item 2
+||Table||cell||
+||Foo||Bar||Baz||
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a>
+------------------------------
+<p>
+Paragraph<br />
+</p>
+<hr />
+<ol><li>Item 1
+<ol start="2"><li>Item 2
+</li></ol></li></ol><table class="wiki">
+<tr><td>Table</td><td>cell
+</td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
+</td></tr></table>
+<p>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"></span>http://www.edgewall.com/</a><br />
+</p>
+============================== Lists, indents and table
+
+  * Bar
+    * Foo
+
+    || Foo || Bar ||
+
+  || Foo || Bar ||
+------------------------------
+<ul><li>Bar
+<ul><li>Foo
+</li></ul></li></ul><blockquote>
+<blockquote>
+<table class="wiki">
+<tr><td> Foo </td><td> Bar
+</td></tr></table>
+</blockquote>
+</blockquote>
+<blockquote>
+<table class="wiki">
+<tr><td> Foo </td><td> Bar
+</td></tr></table>
+</blockquote>
+------------------------------
+* Bar
+    * Foo
+
+    || Foo || Bar ||
+
+  || Foo || Bar ||
+============================== "Tabstops" set by lists and quotes
+        This is one level deep
+
+  * Bar
+        * Foo
+
+        Now this should be 2 levels deep as well
+
+               This is now level 3.
+
+        Continue on level 2.
+
+          - but a list always restart at level 1.
+Paragraph.
+------------------------------
+<blockquote>
+<p>
+This is one level deep
+</p>
+</blockquote>
+<ul><li>Bar
+<ul><li>Foo
+</li></ul></li></ul><blockquote>
+<blockquote>
+<p>
+Now this should be 2 levels deep as well
+</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>
+This is now level 3.
+</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>
+Continue on level 2.
+</p>
+</blockquote>
+</blockquote>
+<ul><li>but a list always restart at level 1.
+</li></ul><p>
+Paragraph.
+</p>
+------------------------------
+============================== Citations (mail style, no consistent space)
+> This is the quoted text
+>> a nested quote
+A comment on the above
+>> start 2nd level
+>> continue 2nd level
+> first level
+------------------------------
+<blockquote class="citation">
+<p>
+This is the quoted text
+</p>
+<blockquote class="citation">
+<p>
+a nested quote
+</p>
+</blockquote>
+</blockquote>
+<p>
+A comment on the above
+</p>
+<blockquote class="citation">
+<blockquote class="citation">
+<p>
+start 2nd level
+continue 2nd level
+</p>
+</blockquote>
+<p>
+first level
+</p>
+</blockquote>
+------------------------------
+&gt; This is the quoted text
+&gt;&gt; a nested quote
+A comment on the above
+&gt;&gt; start 2nd level
+&gt;&gt; continue 2nd level
+&gt; first level
+------------------------------
+<blockquote class="citation">
+<p>
+This is the quoted text<br />
+</p>
+<blockquote class="citation">
+<p>
+a nested quote<br />
+</p>
+</blockquote>
+</blockquote>
+<p>
+A comment on the above<br />
+</p>
+<blockquote class="citation">
+<blockquote class="citation">
+<p>
+start 2nd level<br />
+continue 2nd level<br />
+</p>
+</blockquote>
+<p>
+first level<br />
+</p>
+</blockquote>
+============================== Citations (reply to style, consistent space)
+ A quote
+A paragraph
+ definition :: term
+
+> A quote
+>A paragraph
+> definition :: term
+
+>  A quote
+> A paragraph
+>  definition :: term
+------------------------------
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+</p>
+<dl class="wiki"><dt>definition</dt><dd>term
+</dd></dl>
+<blockquote class="citation">
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+</p>
+<dl class="wiki"><dt>definition</dt><dd>term
+</dd></dl>
+</blockquote>
+<blockquote class="citation">
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+</p>
+<dl class="wiki"><dt>definition</dt><dd>term
+</dd></dl>
+</blockquote>
+------------------------------
+A quote
+A paragraph
+ definition :: term
+
+&gt; A quote
+&gt;A paragraph
+&gt; definition :: term
+
+&gt;  A quote
+&gt; A paragraph
+&gt;  definition :: term
+============================== Citations of arbitrary wiki content
+ - First level
+   - second level
+ > - This is the quoted list, in first level item
+ >   - subitem
+ >
+ > > a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+ > > {{{
+ > > block
+ > > }}}
+ > > > || nested || table ||
+Paragraph
+------------------------------
+<ul><li>First level
+<ul><li>second level
+</li></ul><blockquote class="citation">
+<ul><li>This is the quoted list, in first level item
+<ul><li>subitem
+</li></ul></li></ul><blockquote class="citation">
+<p>
+a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+</p>
+<pre class="wiki">block
+</pre><blockquote class="citation">
+<table class="wiki">
+<tr><td> nested </td><td> table
+</td></tr></table>
+</blockquote>
+</blockquote>
+</blockquote>
+</li></ul><p>
+Paragraph
+</p>
+------------------------------
+- First level
+   - second level
+ &gt; - This is the quoted list, in first level item
+ &gt;   - subitem
+ &gt;
+ &gt; &gt; a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+ &gt; &gt; {{{
+ &gt; &gt; block
+ &gt; &gt; }}}
+ &gt; &gt; &gt; || nested || table ||
+Paragraph
+============================== Citation and follow-up block
+> a
+{{{
+b
+}}}
+> c
+------------------------------
+<blockquote class="citation">
+<p>
+a
+</p>
+</blockquote>
+<pre class="wiki">b
+</pre><blockquote class="citation">
+<p>
+c
+</p>
+</blockquote>
+------------------------------
+&gt; a
+ […]
+&gt; c
+============================== Block and follow-up citation
+{{{
+> a
+b
+}}}
+> c
+------------------------------
+<pre class="wiki">&gt; a
+b
+</pre><blockquote class="citation">
+<p>
+c
+</p>
+</blockquote>
+------------------------------
+ […]
+&gt; c
+============================== List immediately followed by binary inline markup, #11009
+***
+* list
+***
+------------------------------
+<p>
+<strong>*
+</strong></p>
+<ul><li>list
+</li></ul><p>
+<strong>*
+</strong></p>
+------------------------------
+============================== List immediately followed by binary inline markup 1, #11373
+ 1. normal in list
+''italic
+in paragraph
+
+ 1. normal in list
+//italic
+in paragraph
+------------------------------
+<ol><li>normal in list
+</li></ol><p>
+<em>italic
+in paragraph
+</em></p>
+<ol><li>normal in list
+</li></ol><p>
+<em>italic
+in paragraph
+</em></p>
+------------------------------
+============================== List immediately followed by binary inline markup 2, #11373
+ 1. //italic in list
+''italic
+in paragraph
+
+ 1. ''italic in list
+//italic
+in paragraph
+
+1. ''italic in list
+''italic
+in paragraph
+
+1. //italic in list
+//italic
+in paragraph
+------------------------------
+<ol><li><em>italic in list
+</em></li></ol><p>
+<em>italic
+in paragraph
+</em></p>
+<ol><li><em>italic in list
+</em></li></ol><p>
+<em>italic
+in paragraph
+</em></p>
+<ol><li><em>italic in list
+</em></li></ol><p>
+<em>italic
+in paragraph
+</em></p>
+<ol><li><em>italic in list
+</em></li></ol><p>
+<em>italic
+in paragraph
+</em></p>
+------------------------------
+============================== List immediately followed by binary inline markup 3, #11373
+ 1. ''italic in list
+'''''bolditalic
+in paragraph'''''
+------------------------------
+<ol><li><em>italic in list
+</em></li></ol><p>
+<strong><em>bolditalic
+in paragraph</em></strong>
+</p>
+------------------------------
+============================== List immediately followed by binary inline markup 4, #11373
+ 1. '''bold in list
+'''''bolditalic
+in paragraph'''''
+------------------------------
+<ol><li><strong>bold in list
+</strong></li></ol><p>
+<strong><em>bolditalic
+in paragraph</em></strong>
+</p>
+------------------------------
+============================== Processor with attributes using hyphens (#12023)
+Begin.
+{{{
+#!div class=wiki accept-charset=utf-8
+A paragraph in div element.
+}}}
+End.
+------------------------------
+<p>
+Begin.
+</p>
+<div accept-charset="utf-8" class="wiki"><p>
+A paragraph in div element.
+</p>
+</div><p>
+End.
+</p>
+------------------------------
+============================== Binary inline markup after indent - 1 (#12675)
+  **foo
+    //bar
+  **baz
+//missing
+closed markup
+------------------------------
+<blockquote>
+<p>
+<strong>foo
+</strong></p>
+<blockquote>
+<p>
+<em>bar
+</em></p>
+</blockquote>
+<p>
+<strong>baz
+</strong></p>
+</blockquote>
+<p>
+<em>missing
+closed markup
+</em></p>
+------------------------------
+============================== Binary inline markup after indent - 2 (#12675)
+54******94
+Vl
+
+       C
+54******94
+------------------------------
+<p>
+54<strong></strong><strong>94
+Vl
+</strong></p>
+<blockquote>
+<p>
+C
+</p>
+</blockquote>
+<p>
+54<strong></strong><strong>94
+</strong></p>
+------------------------------
+============================== Macro within block - paragraph (#13045)
+[[HelloWorld(foo)]] [[HelloWorld(bar)]]
+
+[[DivHelloWorld(bar)]] [[DivHelloWorld(baz)]]
+------------------------------
+<p>
+Hello World, args = foo Hello World, args = bar
+</p>
+<p>
+</p><div>Hello World, args = bar</div><p> </p><div>Hello World, args = baz</div><p>
+</p>
+------------------------------
+============================== Macro within block - list (#13045)
+start
+
+ - [[HelloWorld(foo)]] [[HelloWorld(bar)]]
+ - [[DivHelloWorld(bar)]] [[DivHelloWorld(baz)]]
+
+end
+------------------------------
+<p>
+start
+</p>
+<ul><li>Hello World, args = foo Hello World, args = bar
+</li><li><div>Hello World, args = bar</div> <div>Hello World, args = baz</div>
+</li></ul><p>
+end
+</p>
+------------------------------
+============================== Macro within block - table (#13045)
+|| [[HelloWorld(foo)]] || [[HelloWorld(bar)]] ||
+|| [[DivHelloWorld(bar)]] || [[DivHelloWorld(baz)]] ||
+------------------------------
+<table class="wiki">
+<tr><td> Hello World, args = foo </td><td> Hello World, args = bar
+</td></tr><tr><td> <div>Hello World, args = bar</div> </td><td> <div>Hello World, args = baz</div>
+</td></tr></table>
+------------------------------
+============================== Macro within block - definition list (#13045)
+ inline :: [[HelloWorld(foo)]] [[HelloWorld(bar)]]
+ block  :: [[DivHelloWorld(bar)]] [[DivHelloWorld(baz)]]
+------------------------------
+<dl class="wiki"><dt>inline</dt><dd>Hello World, args = foo Hello World, args = bar
+</dd><dt>block</dt><dd><div>Hello World, args = bar</div> <div>Hello World, args = baz</div>
+</dd></dl>
+------------------------------

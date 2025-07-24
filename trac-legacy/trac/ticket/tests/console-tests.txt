@@ -1,0 +1,559 @@
+===== test_component_help =====
+component add <name> [owner]
+
+    Add component
+
+component chown <name> <owner>
+
+    Change component owner
+
+component list
+
+    Show components
+
+component remove <name>
+
+    Remove component
+
+component rename <name> <newname>
+
+    Rename component
+
+===== test_component_list_ok =====
+
+Name        Owner
+--------------------
+component1  somebody
+component2  somebody
+
+===== test_component_add_ok =====
+
+Name           Owner
+-----------------------
+component1     somebody
+component2     somebody
+new_component
+
+===== test_component_add_optional_owner_ok =====
+
+Name           Owner
+-----------------------
+component1     somebody
+component2     somebody
+new_component  new_user
+
+===== test_component_add_error_already_exists =====
+ResourceExistsError: Component "component1" already exists.
+===== test_component_rename_ok =====
+
+Name          Owner
+----------------------
+changed_name  somebody
+component2    somebody
+
+===== test_component_rename_error_bad_component =====
+ResourceNotFound: Component bad_component does not exist.
+===== test_component_rename_error_bad_new_name =====
+ResourceExistsError: Component "component2" already exists.
+===== test_component_chown_ok =====
+
+Name        Owner
+-------------------------
+component1  somebody
+component2  changed_owner
+
+===== test_component_chown_error_bad_component =====
+ResourceNotFound: Component bad_component does not exist.
+===== test_component_remove_ok =====
+
+Name        Owner
+--------------------
+component2  somebody
+
+===== test_component_remove_error_bad_component =====
+ResourceNotFound: Component bad_component does not exist.
+===== test_ticket_help =====
+ticket remove <ticket#>
+
+    Remove ticket
+
+ticket remove_comment <ticket#> <comment#>
+
+    Remove ticket comment
+
+===== test_ticket_remove_ok =====
+Ticket #1 and all associated data removed.
+===== test_ticket_remove_error_no_ticket_argument =====
+Error: Invalid arguments
+
+ticket remove <ticket#>
+
+    Remove ticket
+
+===== test_ticket_remove_error_ticket_id_not_an_int =====
+Error: <ticket#> must be a number
+===== test_ticket_remove_error_invalid_ticket_id =====
+ResourceNotFound: Ticket 2 does not exist.
+===== test_ticket_comment_remove_ok =====
+The ticket comment 1 on ticket #1 has been deleted.
+===== test_ticket_comment_remove_error_no_ticket_argument =====
+Error: Invalid arguments
+
+ticket remove_comment <ticket#> <comment#>
+
+    Remove ticket comment
+
+===== test_ticket_comment_remove_error_no_comment_argument =====
+Error: Invalid arguments
+
+ticket remove_comment <ticket#> <comment#>
+
+    Remove ticket comment
+
+===== test_ticket_comment_remove_error_ticket_id_not_an_int =====
+Error: <ticket#> must be a number
+===== test_ticket_comment_remove_error_comment_id_not_an_int =====
+Error: <comment#> must be a number
+===== test_ticket_comment_remove_error_invalid_ticket_id =====
+ResourceNotFound: Ticket 2 does not exist.
+===== test_ticket_comment_remove_error_invalid_comment_id =====
+Error: Comment 2 not found
+===== test_ticket_type_list_ok =====
+
+Possible Values
+---------------
+defect
+enhancement
+task
+
+===== test_ticket_type_add_ok =====
+
+Possible Values
+---------------
+defect
+enhancement
+task
+new_type
+
+===== test_ticket_type_add_error_already_exists =====
+ResourceExistsError: Ticket Type value "defect" already exists
+===== test_ticket_type_change_ok =====
+
+Possible Values
+---------------
+bug
+enhancement
+task
+
+===== test_ticket_type_change_error_bad_type =====
+ResourceNotFound: Ticket Type bad_type does not exist.
+===== test_ticket_type_change_error_bad_new_name =====
+ResourceExistsError: Ticket Type value "task" already exists
+===== test_ticket_type_remove_ok =====
+
+Possible Values
+---------------
+defect
+enhancement
+
+===== test_ticket_type_remove_error_bad_type =====
+ResourceNotFound: Ticket Type bad_type does not exist.
+===== test_ticket_type_order_down_ok =====
+
+Possible Values
+---------------
+enhancement
+defect
+task
+
+===== test_ticket_type_order_up_ok =====
+
+Possible Values
+---------------
+enhancement
+defect
+task
+
+===== test_ticket_type_order_error_bad_type =====
+ResourceNotFound: Ticket Type bad_type does not exist.
+===== test_priority_help =====
+priority add <value>
+
+    Add a priority value option
+
+priority change <value> <newvalue>
+
+    Change a priority value
+
+priority list
+
+    Show possible ticket priorities
+
+priority order <value> up|down
+
+    Move a priority value up or down in the list
+
+priority remove <value>
+
+    Remove a priority value
+
+===== test_priority_list_ok =====
+
+Possible Values
+---------------
+blocker
+critical
+major
+minor
+trivial
+
+===== test_priority_add_ok =====
+
+Possible Values
+---------------
+blocker
+critical
+major
+minor
+trivial
+new_priority
+
+===== test_priority_add_many_ok =====
+
+Possible Values
+---------------
+blocker
+critical
+major
+minor
+trivial
+p0
+p1
+p2
+p3
+p4
+p5
+p6
+p7
+p8
+p9
+p10
+
+===== test_priority_add_error_already_exists =====
+ResourceExistsError: Priority value "blocker" already exists
+===== test_priority_change_ok =====
+
+Possible Values
+---------------
+blocker
+critical
+normal
+minor
+trivial
+
+===== test_priority_change_error_bad_priority =====
+ResourceNotFound: Priority bad_priority does not exist.
+===== test_priority_change_error_bad_new_name =====
+ResourceExistsError: Priority value "minor" already exists
+===== test_priority_remove_ok =====
+
+Possible Values
+---------------
+blocker
+critical
+minor
+trivial
+
+===== test_priority_remove_error_bad_priority =====
+ResourceNotFound: Priority bad_priority does not exist.
+===== test_priority_order_down_ok =====
+
+Possible Values
+---------------
+critical
+blocker
+major
+minor
+trivial
+
+===== test_priority_order_up_ok =====
+
+Possible Values
+---------------
+critical
+blocker
+major
+minor
+trivial
+
+===== test_priority_order_error_bad_priority =====
+ResourceNotFound: Priority bad_priority does not exist.
+===== test_severity_help =====
+severity add <value>
+
+    Add a severity value option
+
+severity change <value> <newvalue>
+
+    Change a severity value
+
+severity list
+
+    Show possible ticket severities
+
+severity order <value> up|down
+
+    Move a severity value up or down in the list
+
+severity remove <value>
+
+    Remove a severity value
+
+===== test_severity_list_ok =====
+
+Possible Values
+---------------
+
+===== test_severity_add_ok =====
+
+Possible Values
+---------------
+new_severity
+
+===== test_severity_add_error_already_exists =====
+ResourceExistsError: Severity value "blocker" already exists
+===== test_severity_change_ok =====
+
+Possible Values
+----------------
+end-of-the-world
+
+===== test_severity_change_error_bad_severity =====
+ResourceNotFound: Severity bad_severity does not exist.
+===== test_severity_change_error_bad_new_name =====
+ResourceExistsError: Severity value "major" already exists
+===== test_severity_remove_ok =====
+
+Possible Values
+---------------
+
+===== test_severity_remove_error_bad_severity =====
+ResourceNotFound: Severity bad_severity does not exist.
+===== test_severity_order_down_ok =====
+
+Possible Values
+---------------
+bar
+foo
+
+===== test_severity_order_up_ok =====
+
+Possible Values
+---------------
+bar
+foo
+
+===== test_severity_order_error_bad_severity =====
+ResourceNotFound: Severity bad_severity does not exist.
+===== test_version_help =====
+version add <name> [time]
+
+    Add version
+
+version list
+
+    Show versions
+
+version remove <name>
+
+    Remove version
+
+version rename <name> <newname>
+
+    Rename version
+
+version time <name> <time>
+
+    Set version date
+
+===== test_version_list_ok =====
+
+Name  Time
+----------
+2.0
+1.0
+
+===== test_version_add_ok =====
+
+Name  Time
+----------------
+2.0
+1.0
+9.9   2004-01-11
+
+===== test_version_add_too_many_arguments =====
+Error: Invalid arguments
+
+version add <name> [time]
+
+    Add version
+
+===== test_version_add_error_already_exists =====
+ResourceExistsError: Version "1.0" already exists.
+===== test_version_rename_ok =====
+
+Name  Time
+----------
+9.9
+2.0
+
+===== test_version_rename_error_bad_version =====
+ResourceNotFound: Version bad_version does not exist.
+===== test_version_rename_error_bad_new_name =====
+ResourceExistsError: Version "2.0" already exists.
+===== test_version_time_ok =====
+
+Name  Time
+----------------
+1.0
+2.0   2004-01-11
+
+===== test_version_time_unset_ok =====
+
+Name  Time
+----------
+2.0
+1.0
+
+===== test_version_time_error_bad_version =====
+ResourceNotFound: Version bad_version does not exist.
+===== test_version_remove_ok =====
+
+Name  Time
+----------
+2.0
+
+===== test_version_remove_error_bad_version =====
+ResourceNotFound: Version bad_version does not exist.
+===== test_backslash_use_ok =====
+
+Name  Time
+----------
+\
+2.0
+1.0
+
+===== test_milestone_help =====
+milestone add <name> [due]
+
+    Add milestone
+
+milestone completed <name> <completed>
+
+    Set milestone complete date
+
+milestone due <name> <due>
+
+    Set milestone due date
+
+milestone list
+
+    Show milestones
+
+milestone remove <name>
+
+    Remove milestone
+
+milestone rename <name> <newname>
+
+    Rename milestone
+
+===== test_milestone_list_ok =====
+
+Name        Due  Completed
+--------------------------
+milestone1
+milestone2
+milestone3
+milestone4
+
+===== test_milestone_add_ok =====
+
+Name           Due         Completed
+------------------------------------
+new_milestone  2004-01-11
+milestone1
+milestone2
+milestone3
+milestone4
+
+===== test_milestone_add_utf8_ok =====
+
+Name        Due         Completed
+---------------------------------
+©tat_final  2004-01-11
+milestone1
+milestone2
+milestone3
+milestone4
+
+===== test_milestone_add_error_already_exists =====
+ResourceExistsError: Milestone "milestone1" already exists.
+===== test_milestone_add_invalid_date =====
+TracError: "<add>" is an invalid date, or the date format is not known. Try "%(hint)s" or "%(isohint)s" instead.
+===== test_milestone_rename_ok =====
+
+Name               Due  Completed
+---------------------------------
+changed_milestone
+milestone2
+milestone3
+milestone4
+
+===== test_milestone_rename_error_bad_milestone =====
+ResourceNotFound: Milestone bad_milestone does not exist.
+===== test_milestone_due_ok =====
+
+Name        Due         Completed
+---------------------------------
+milestone2  2004-01-11
+milestone1
+milestone3
+milestone4
+
+===== test_milestone_due_unset_ok =====
+
+Name        Due  Completed
+--------------------------
+milestone1
+milestone2
+milestone3
+milestone4
+
+===== test_milestone_due_error_bad_milestone =====
+ResourceNotFound: Milestone bad_milestone does not exist.
+===== test_milestone_due_invalid_date =====
+TracError: "<due>" is an invalid date, or the date format is not known. Try "%(hint)s" or "%(isohint)s" instead.
+===== test_milestone_completed_ok =====
+
+Name        Due  Completed
+------------------------------------
+milestone2       2004-01-11 00:00:00
+milestone1
+milestone3
+milestone4
+
+===== test_milestone_completed_error_bad_milestone =====
+ResourceNotFound: Milestone bad_milestone does not exist.
+===== test_milestone_completed_invalid_date =====
+TracError: "<com>" is an invalid date, or the date format is not known. Try "%(hint)s" or "%(isohint)s" instead.
+===== test_milestone_remove_ok =====
+
+Name        Due  Completed
+--------------------------
+milestone1
+milestone2
+milestone4
+
+===== test_milestone_remove_error_bad_milestone =====
+ResourceNotFound: Milestone bad_milestone does not exist.

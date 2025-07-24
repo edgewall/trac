@@ -1,0 +1,39 @@
+{# Copyright (C) 2008-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+{# Snippet for a <th> corresponding to a sortable column.
+
+  Expects the following variables to be set specifically:
+
+   - `class_`: the CSS class for the column
+   - `title`:  the title attribute for the column
+
+  e.g.
+
+  # with class_ = 'name', title = 'Name'
+  #   include 'sortable_th.html'
+  # endwith
+
+  Expects the following variables from the context:
+
+  order, desc, href, reponame, path, stickyrev
+#}
+<th ${{'class': ('desc' if desc else 'asc') if order == class_}|htmlattr}>
+  <a title="${_('Sort by %(col)s %(direction)s',
+            col=class_,
+            direction=_("(descending)") if order == class_ and not desc else
+                      _("(ascending)"))}"
+     href="${href.browser(reponame, path, rev=stickyrev,
+                          order=class_ if class_ != 'name' else None,
+                          desc=1 if class_ == order and not desc else None)}">${
+    title}</a>
+</th>
+## jinjacheck: "th" OK

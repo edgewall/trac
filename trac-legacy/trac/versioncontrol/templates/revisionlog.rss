@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at http://trac.edgewall.com/license.html.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at http://trac.edgewall.org/.
+#}
+##
+## Revision log view - RSS flavor
+##
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  ## jinjacheck: "no DTD found" OK
+  # with log_href = abs_href.log(reponame, path, rev=rev)
+  <channel>
+    <title>Revisions of ${path}</title>
+    <link>${log_href}</link>
+    <description>Trac Log - Revisions of ${path}{%
+      if reponame %} in ${reponame}{% endif %}</description>
+    <language>en-US</language>
+    <generator>Trac ${trac.version}</generator>
+    # if chrome.logo.src_abs:
+    <image>
+      <title>${project.name}</title>
+      <url>${chrome.logo.src_abs}</url>
+      <link>${log_href}</link>
+    </image>
+    # endif
+
+    # for item in items:
+    #   set change = changes[item.rev]
+    #   set item_context = context.child('changeset', change.rev, parent=repos.resource)
+    <item>
+      # with author = change.author
+      #   include 'author_or_creator.rss'
+      # endwith
+      <pubDate>${http_date(change.date)}</pubDate>
+      <title>Revision ${display_rev(item.rev)}: ${shorten_line(change.message)
+      }</title>
+      <link>${abs_href.changeset(item.rev, reponame, item.path)}</link>
+      <guid isPermaLink="false">${abs_href.changeset(item.rev, reponame, item.path)
+      }</guid>
+      # set m = change.message
+      <description>${
+      (wiki_to_html(item_context, m)
+         if verbose else
+       wiki_to_oneliner(item_context, m)
+         if wiki_format_messages else
+       m)
+      |forceescape
+      }</description>
+      <category>Log</category>
+    </item>
+    # endfor
+ </channel>
+ # endwith
+</rss>

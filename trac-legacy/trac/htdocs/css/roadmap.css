@@ -1,0 +1,93 @@
+/* General styles for the progress bars */
+table.progress {
+ border: 1px solid #d7d7d7;
+ border-collapse: collapse;
+ border-spacing: 0;
+ box-shadow: .3em .3em .4em #f2f2f2; /* main_box_shadow */
+ float: left;
+ margin: 0;
+ padding: 0;
+ empty-cells: show;
+}
+table.progress a, table.progress :link, table.progress :visited,
+table.progress :link:hover, table.progress :visited:hover {
+ border: none;
+ display: block;
+ width: 100%;
+ height: 1.2em;
+ padding: 0;
+ margin: 0;
+ text-decoration: none
+}
+table.progress td { background: #fff; padding: 0 }
+table.progress td.new { background: #f5f5b5 }
+table.progress td.closed { background: #bae0ba }
+table.progress td :hover { background: none }
+p.percent {
+ line-height: 1.2em;
+ margin: 0;
+}
+
+/* Styles for the roadmap view */
+.milestones { margin: 2em 0 0; padding: 0 }
+.milestone { margin-bottom: 4em }
+.milestone .info { white-space: nowrap }
+.milestone .info h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ margin: .5em 0;
+ box-shadow: .2em .3em .5em 0 #f6f6f6; /* wiki_h2_box_shadow */
+ border-radius: .2em; /* sep_border_radius */
+}
+.milestone .info h2 :link, .milestone .info h2 :visited {
+ color: #000;
+ display: block;
+ border-bottom: none;
+ padding: .2em .4em;
+}
+.milestone .info h2 :link:hover, .milestone .info h2 :visited:hover {
+ color: #000;
+}
+.milestone .info h2 em { color: #b00; font-style: normal }
+.milestone .info .date {
+ color: #888;
+ font-size: .9em;
+ font-style: italic;
+ margin: 0 0 1em 0;
+}
+.milestone .description { margin: 1em 0 2em }
+
+#stats {
+ float: right;
+ margin: 0 1em 2em 2em;
+ padding: 0;
+ width: 400px;
+ max-width: 40%;
+}
+#stats legend { white-space: nowrap }
+
+/* Styles for progress bars */
+.trac-progress .progress, .trac-groupprogress { margin: 0 1em; width: 40em; max-width: 70% }
+.trac-progress .legend {
+ font-size: .8em;
+ font-style: italic;
+ margin: 1em 1em 2em;
+ white-space: nowrap;
+ clear: left;
+}
+.trac-progress .legend .interval { margin: 0 .8em }
+.trac-groupprogress table { border-collapse: collapse; width: 100% }
+.trac-groupprogress th, .trac-groupprogress td {
+ font-size: .8em;
+ padding: 0;
+ white-space: nowrap
+}
+.trac-groupprogress th { text-align: right; }
+.trac-groupprogress th :link, .trac-groupprogress th :visited { border: none }
+.trac-groupprogress td { padding-left: 0.5em; width: 100% }
+.trac-groupprogress table.progress  {
+ margin: 3px 1em 3px 0;
+ box-shadow: none;
+}
+.trac-groupprogress table.progress td  { padding: 0 }
+.trac-groupprogress p.percent { margin-top: 3px; white-space: nowrap }

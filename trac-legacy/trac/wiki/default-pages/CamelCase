@@ -1,0 +1,24 @@
+= !CamelCase
+
+New wiki links are automatically created when concatenating capitalized words, such that for example the words 'Camel' and 'Case' concatenated form a link to this CamelCase page.
+
+!CamelCase is the original wiki convention for creating hyperlinks, with the additional requirement that the capital letters are followed by a lower-case letter; hence "AlabamA" and "ABc" will not be links.
+
+== Customizing the Wiki behavior
+
+While Trac remains faithful to the original Wiki style, it also provides a number of ways to accommodate users with different preferences:
+ * To prevent the creation of a link for the CamelCase word, prefix the word with an exclamation mark (`!`): `!CamelCase`.
+ * By default a CamelCase word with no corresponding Wiki page will be rendered as a gray link followed by a question mark. This is useful for example when the CamelCase style is used to name code artefacts like class names, and a Wiki page is expected to exist to document each class. The behavior can be configured through the [TracIni#wiki-ignore_missing_pages-option "[wiki] ignore_missing_pages"] option in TracIni.
+ * To automatically insert space characters between the words of a CamelCase link when rendering the link, enable [TracIni#wiki-split_page_names-option "[wiki] split_page_names"] of TracIni.
+ * To create explicit Wiki links see WikiPageNames.
+ * To completely disable Wiki formatting in some places, for example when rendering commit log messages, use the [TracIni#changeset-wiki_format_messages-option "[wiki] wiki_format_messages"] option in TracIni.
+
+See TracIni for more information on the available options.
+
+== More information on !CamelCase
+
+ * http://c2.com/cgi/wiki?WikiCase
+ * [https://en.wikipedia.org/wiki/CamelCase CamelCase] on Wikipedia
+
+----
+See also: WikiPageNames, WikiNewPage, WikiFormatting, TracWiki

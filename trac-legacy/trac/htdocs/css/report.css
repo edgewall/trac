@@ -1,0 +1,287 @@
+@import url(code.css);
+
+.report.edit {
+ max-width: 56em;
+ margin: 0 auto;
+}
+
+/* Report listing */
+.report #trac-sort-order {
+ float: right;
+ font-size: .5em;
+ font-weight: normal;
+}
+
+.report #trac-sort-order a {
+ background-position: 100% 50%;
+ background-repeat: no-repeat;
+ margin-left: 4px;
+}
+.report #trac-sort-order a.asc {
+ font-weight: bold;
+ padding-right: 12px;
+ background-image: url(../asc.png);
+}
+.report #trac-sort-order a.desc {
+ font-weight: bold;
+ padding-right: 12px;
+ background-image: url(../desc.png);
+}
+
+.report div.reports { clear: both }
+
+.report div.reports h2 {
+ /* taken from .wikipage h2 */
+ padding: 0.2em .3em .1em 0; /* wiki_h2_padding */
+ border-bottom: 2pt solid #b00; /* wiki_h2_bottom */
+ box-shadow: .2em .3em .5em 0 #f6f6f6; /* wiki_h2_box_shadow */
+}
+.report div.reports h3 {
+ /* taken from .wikipage h3 */
+}
+.report div.reports h3 :link, .report div.reports h3 :visited {
+ color: #000;
+ border-bottom: none;
+}
+.report div.reports h3 em {
+ color: #800;
+ font-style: normal;
+}
+
+.report form .inlinebuttons { float: right }
+.uisymbols .report form .inlinebuttons { margin-top: -.6em }
+
+.report span.foldable { display: none }
+.report div.description {
+ font-size: 90%;
+ margin: 1em .5em .5em;
+}
+
+/* Report results */
+#prefs .buttons { margin-top: 0 }
+#prefs fieldset {
+ margin-left: 1em;
+ border: 1px dotted #dfdfdf;
+}
+#prefs fieldset legend {
+ margin: 0;
+ padding: 2px;
+ font-size: 1.1em;
+}
+#prefs fieldset th { text-align: right }
+.ui-autocomplete {
+ max-height: 10em;
+ overflow-y: auto;
+ overflow-x: hidden;
+}
+
+h1 .numrows, h2 .numrows {
+ margin-left: 1em;
+ color: #999;
+ font-size: 65%;
+ font-weight: normal;
+}
+h2.report-result {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ margin: 2em 0 .6em 0;
+ padding: .2em .4em;
+ box-shadow: 1px 1px .5em 0 #ccc;
+ border-radius: .1em
+}
+#report-descr { margin: 0 2em; font-size: 90% }
+#report-notfound { margin: 2em; font-size: 110% }
+
+/* Report edit form */
+#content.report.edit form {
+ max-width: 54em;
+}
+#content.report .field { margin: 1em 0; }
+#content.report .field label { display: block; padding-bottom: .3em; }
+
+#query { clear: right }
+#query fieldset, #query fieldset input, #query fieldset select {
+ font-size: .9em; /* query_filter_font_size */
+}
+#query fieldset { margin-top: 1em }
+#query fieldset.collapsed {
+ border-width: 0;
+ margin-bottom: 0pt;
+ padding: 0pt .5em;
+}
+#query .option, #query .option input, #query .option select {
+ font-size: .9em; /* query_filter_font_size */
+}
+#query .option { float: left; line-height: 2em; margin: .9em 2.5em 0 .5em; padding: 0 0 .1em }
+#query .buttons { float: right; margin-top: .5em }
+#query .buttons input { margin: .5em }
+#query hr { clear: both; margin: 0; visibility: hidden }
+#trac-report-buttons { float: right }
+
+#filters table { width: 100% }
+#filters td.trac-clause { padding: 0 }
+#filters td .trac-clause-lsep {
+ float: left;
+ width: 47%;
+ line-height: 50%;
+}
+#filters td .trac-clause-msep {
+ float: left;
+ text-align: center;
+ width: 5%;
+}
+#filters td .trac-clause-rsep {
+ float: right;
+ width: 47%;
+ line-height: 50%;
+}
+#filters td hr {
+ margin: 1px;
+ visibility: visible
+}
+
+#filters tr { height: 2em }
+#filters th, #filters td { padding: 0 .2em; vertical-align: middle }
+#filters th {
+ text-align: right;
+ white-space: nowrap;
+}
+
+#filters td.mode { text-align: right }
+#filters td.filter { width: 100% }
+#filters td.filter label.control { padding-right: 1em }
+#filters td.and { white-space: nowrap }
+#filters td.or { text-align: right; white-space: nowrap }
+#filters div.inlinebuttons { display: inline }
+
+#columns div label {
+ display: block;
+ float: left;
+ padding: 0pt 1em .5em 0pt;
+}
+
+/* Styles for the report list and the report results table
+   (extends the styles for "table.listing") */
+.reports td.title { width: 100%; white-space: normal; }
+.tickets tbody:first-child tr.trac-group h2 { margin-top: 0; }
+.tickets tr.trac-group { border: none; }
+.tickets tr.trac-group:hover, .tickets tr.trac-group:hover td {
+ background: none !important;
+}
+.tickets tr.trac-group th { background: none; border: none; padding: 0 0 1em; }
+.tickets tr.trac-group td { padding: 0 !important }
+.tickets tr.trac-columns th { background: #f7f7f0 }
+.tickets tr.trac-columns th {
+ border: 1px solid #d7d7d7;
+ border-bottom-color: #999;
+ font-size: .9em;
+ font-weight: bold;
+ padding: 2px .5em;
+ vertical-align: bottom;
+ white-space: nowrap;
+}
+.tickets tr.trac-columns th :link:hover, .tickets tr.trac-columns th :visited:hover {
+ background-color: transparent;
+}
+.tickets tr.trac-columns th a { border: none; padding-right: 12px }
+.tickets tr.trac-columns th, .reports tr.trac-columns th {
+ text-transform: capitalize;
+ white-space: nowrap;
+}
+.tickets tbody td, .reports tbody td { padding: .1em .5em !important; }
+.tickets tbody td a, .reports tbody td a { border-bottom: none }
+.tickets tbody td.id :link, .tickets tbody td.id :visited {
+ font-weight: bold;
+}
+.tickets tbody td.time a, .tickets tbody td.changetime a { white-space: nowrap }
+.tickets tbody tr { border-bottom: 1px solid #ddd }
+.tickets tbody tr:hover { background: #eed; color: #000 }
+.tickets tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
+.tickets tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
+.tickets tr.color2-odd  { background: #ffb; border-color: #eea; color: #880 }
+.tickets tr.color2-even { background: #ffd; border-color: #dd8; color: #880 }
+.tickets tr.color3-odd  { background: #fbfbfb; border-color: #ddd; color: #444 }
+.tickets tr.color3-even { background: #f6f6f6; border-color: #ccc; color: #333 }
+.tickets tr.color4-odd  { background: #e7ffff; border-color: #cee; color: #099 }
+.tickets tr.color4-even { background: #dff; border-color: #bee; color: #099 }
+.tickets tr.color5-odd  { background: #e7eeff; border-color: #cde; color: #469 }
+.tickets tr.color5-even { background: #dde7ff; border-color: #cde; color: #469 }
+.tickets tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
+.tickets tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
+.tickets tr.color6-odd a, .color6-even a { color: #b66 }
+.tickets tbody tr.fullrow td, .tickets tbody td.fullrow {
+ border: none;
+ color: #333;
+ background: transparent;
+ padding: 0 1em !important;  /* Opera 9 is *very* sensitive with this */
+ font-size: 85%;
+}
+.tickets tbody tr.fullrow:hover { background: transparent !important }
+.tickets .fullrow :link, .tickets .fullrow :visited { display: inline }
+.tickets .fullrow .meta { color: #999; }
+.tickets .fullrow hr { display: none }
+
+/* Query results table */
+
+table.tickets caption.trac-group {
+ padding: .1em 0; /* same as .tickets tbody td */
+ border: 1px dotted #ddd;
+ text-align: left;
+}
+table.tickets caption.trac-group h2 { margin-top: 0 }
+table.tickets tbody tr.added td { font-weight: bold }
+table.tickets tbody tr.changed td { font-style: italic }
+table.tickets tbody tr.removed td { color: #999 }
+table.tickets tbody tr.prio1 { background: #fdc; border-color: #e88 }
+table.tickets tbody tr.even.prio1 { background: #fed; border-color: #e99 }
+table.tickets tbody tr.prio2 { background: #ffb; border-color: #eea }
+table.tickets tbody tr.even.prio2 { background: #ffd; border-color: #dd8 }
+table.tickets tbody tr.prio3 { background: #fbfbfb; border-color: #ddd }
+table.tickets tbody tr.even.prio3 { background: #f6f6f6; border-color: #ccc }
+table.tickets tbody tr.prio4 { background: #e7ffff; border-color: #cee }
+table.tickets tbody tr.even.prio4 { background: #dff; border-color: #bee }
+table.tickets tbody tr.prio5 { background: #e7eeff; border-color: #cde }
+table.tickets tbody tr.even.prio5 { background: #dde7ff }
+table.tickets tbody tr.prio6 { background: #f0f0f0; border-color: #ddd }
+table.tickets tbody tr.even.prio6 { background: #f7f7f7 }
+table.tickets tbody tr.fullrow th {
+ border: none;
+ vertical-align: middle;
+ text-align: center;
+ font-size: 85%;
+}
+table.tickets tbody tr p:first-child { margin-top: 0 }
+table.tickets tbody tr p:last-child { margin-bottom: 0 }
+
+/* Batchmod Form */
+
+#batchmod_form { display: none; }
+#batchmod_form > fieldset.collapsed {
+ border-width: 0;
+ margin-bottom: 0pt;
+ padding: 0pt .5em;
+}
+#batchmod_form > fieldset { margin-top: 1.5em }
+#batchmod_form fieldset input,
+#batchmod_form fieldset select, .batchmod_property {
+ font-size: .9em;  /* query_filter_font_size */
+}
+#batchmod_form fieldset input#batchmod_submit { font-size: 100% }
+#batchmod_form th {
+ text-align: right;
+ white-space: nowrap;
+ font-size: .9em; /* query_filter_font_size */
+}
+.batchmod_required:before { content: " * "; }
+.batchmod_required {
+ color: red;
+ font-size: .9em; /* query_filter_font_size */
+ font-weight: bold;
+ font-style: italic;
+ padding-left: .5em;
+}
+#action { margin-top: 0; line-height: 2em; }
+
+@media print {
+ .sel { display: none }
+}

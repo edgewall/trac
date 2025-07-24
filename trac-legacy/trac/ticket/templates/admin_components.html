@@ -1,0 +1,179 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'admin.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block admintitle
+      ${_("Components")}
+      # endblock admintitle
+    </title>
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        $("#complist").addSelectAllCheckboxes();
+      # if view == 'detail':
+        $("#description").autoPreview("${href.wiki_render()}", {
+            realm: "${component.resource.realm}",
+            id: ${to_json(component.resource.id)|safe}
+          }, $("#preview").showOnPreview());
+      # endif
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block adminpanel
+    <h2>${_("Manage Components")}
+      # if view == 'list':
+      <span class="trac-count">(${len(components)})</span>
+      # endif
+    </h2>
+
+    <div>
+      #   macro owner_field(default_owner='', br_after_label=false)
+      <div class="field">
+        <label>${_("Owner:")}
+          # if br_after_label:
+          <br />
+          # endif
+          # if owners:
+          <select size="1" id="owner" name="owner">
+            # for owner in owners:
+            <option${{'selected': owner == default_owner, 'value': owner
+                     }|htmlattr}>${owner}</option>
+            # endfor
+            # if default_owner and default_owner not in owners:
+            <option selected="selected" value="${default_owner}">${default_owner}</option>
+            # endif
+          </select>
+          # else:
+          <input type="text" name="owner" value="${default_owner}" />
+          # endif
+        </label>
+      </div>
+      #   endmacro
+
+      #   if view == 'detail':
+      <form id="edit" class="mod" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Modify Component:")}</legend>
+          <div class="field">
+            <label>${_("Name:")}<br /><input type="text" name="name" class="trac-autofocus" value="${component.name}" /></label>
+          </div>
+          ${owner_field(component.owner, True)}
+          <div class="field description">
+            <label for="description">${_("Description:")}</label>
+            <textarea id="description" name="description" class="wikitext trac-fullwidth trac-resizable"
+                      rows="8" cols="78">${component.description}</textarea>
+            <label for="description" class="trac-textarea-hint">
+              # trans wikiformatting = jmacros.wikiformatting_link()
+
+              You may use ${wikiformatting} here.
+
+              # endtrans
+            </label>
+          </div>
+          <div id="preview" class="trac-content trac-draft" style="display:none">
+          </div>
+        </fieldset>
+        <div class="buttons">
+          <input type="submit" name="save" class="trac-disable-on-submit" value="${_('Submit changes')}"/>
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
+        </div>
+      </form>
+      #   else:
+      <form class="addnew" id="addcomponent" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <fieldset>
+          <legend>${_("Add Component:")}</legend>
+          <div class="field">
+            <label>${_("Name:")} <input type="text" name="name"/></label>
+          </div>
+          ${owner_field()}
+          <div class="buttons">
+            <input type="submit" name="add" class="trac-disable-on-submit" value="${_('Add')}"/>
+          </div>
+        </fieldset>
+      </form>
+
+      #     if components:
+      <form  id="component_table" method="post" action="${req.request_path}">
+        ${jmacros.form_token_input()}
+        <table class="listing" id="complist">
+          <thead>
+            <tr><th class="sel"></th>
+              <th>${_("Name")}</th><th>${_("Owner")}</th><th>${_("Default")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            # for comp in components:
+            <tr>
+              <td class="sel">
+                <input type="checkbox" class="trac-disable-determinant"
+                       name="sel" value="${comp.name}" />
+              </td>
+              <td class="name">
+                <a href="${panel_href(comp.name)}">${comp.name}</a>
+              </td>
+              <td class="owner">${comp.owner}</td>
+              <td class="default">
+                <input type="radio" name="default"${
+                     {'value': comp.name,
+                      'checked': comp.name == default
+                     }|htmlattr}/>
+              </td>
+            </tr>
+            # endfor
+          </tbody>
+        </table>
+        <div class="buttons">
+          <input type="submit" name="apply" value="${_('Apply changes')}" />
+          <input type="submit" name="remove" class="trac-disable trac-disable-on-submit" value="${_('Remove selected items')}" />
+          <input type="submit" name="clear" value="${_('Clear default')}" />
+        </div>
+        <p class="help">
+          #   trans
+
+          You can remove all items from this list to completely
+          hide this field from the user interface.
+
+          #   endtrans
+        </p>
+      </form>
+      #     else:
+      <p class="help">
+        #     trans
+
+        As long as you don't add any items to the list, this field
+        will remain completely hidden from the user interface.
+
+        #     endtrans
+      </p>
+      #     endif
+      #   endif
+
+      #   call(note, page) jmacros.wikihelp('TracTickets'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using the ticket system.
+
+      #     endtrans
+      #   endcall
+    </div>
+    # endblock adminpanel
+  </body>
+
+</html>

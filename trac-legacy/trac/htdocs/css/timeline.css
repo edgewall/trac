@@ -1,0 +1,138 @@
+/* Timeline */
+
+.timeline #prefs fieldset label { display: block }
+.timeline #prefs .buttons { margin: -.5em 0 0 }
+
+.timeline h2 {
+ background: #f7f7f7;
+ border-bottom: 1px solid #d7d7d7;
+ font-size: 105%;
+ margin: 2em 0 .5em;
+ padding: .4em;
+ box-shadow: .2em .3em .5em 0 #f6f6f6; /* wiki_h2_box_shadow */
+ /* box-shadow: 0em .1em .3em 0 #eee;  timeline_box_shadow */
+ border-radius: .2em; /* sep_border_radius */
+}
+.timeline dl {
+ line-height: 1.3em;
+ margin-left: 1em;
+}
+.timeline dl.unread {
+ margin-left: 0.38em;
+ border-left: 0.31em solid #c0f0c0;
+ padding-left: 0.31em;
+}
+
+.timeline dt { background: 3px 4px no-repeat; padding: 0 }
+.timeline dt + dt { margin-top: .75em; }
+.timeline dt :link, .timeline dt :visited {
+ background: 3px 3px no-repeat;
+ border: none;
+ color: #000;
+ padding: 0 4px 2px 22px;
+}
+.timeline dt>:link, .timeline dt>:visited {
+ background-position: 3px 4px;  /* Hide from IE/Win */
+}
+.timeline dt :link:hover, .timeline dt :visited:hover {
+ background-color: #eed;
+ color: #000;
+}
+.timeline dt em {
+ color: #b00;
+ font-style: normal;
+ text-decoration: none;
+}
+.timeline dt em.trac-parent-resource {
+ color: #000;
+}
+.timeline dt .time { color: #999; font-size: 80%; }
+.timeline dt .trac-author { color: #666; }
+.timeline dt.highlight { background-color: #ffa; }
+.timeline dd {
+ font-size: 80%;
+ margin: 0 0 .75em 5.8em;
+ padding: 0;
+ color: #776;
+}
+
+/* Apply icon background-image twice to avoid hover-flicker in IE/Win */
+.timeline dt.changeset, .timeline dt.changeset a {
+ background-image: url(../changeset.png) !important
+}
+.timeline dt.newticket, .timeline dt.newticket a {
+ background-image: url(../newticket.png) !important
+}
+.timeline dt.reopenedticket, .timeline dt.reopenedticket a {
+ background-image: url(../newticket.png) !important
+}
+.timeline dt.editedticket, .timeline dt.editedticket a {
+ background-image: url(../editedticket.png) !important
+}
+.timeline dt.closedticket, .timeline dt.closedticket a {
+ background-image: url(../closedticket.png) !important
+}
+.timeline dt.batchmodify, .timeline dt.batchmodify a {
+ background-image: url(../batchmodify.png) !important
+}
+.timeline dt.wiki, .timeline dt.wiki a {
+ background-image: url(../wiki.png) !important
+}
+.timeline dt.milestone, .timeline dt.milestone a {
+ background-image: url(../milestone.png) !important
+}
+.timeline dt.attachment, .timeline dt.attachment a {
+ background-image: url(../attachment.png) !important
+}
+
+/* styles for the 'changeset_long_messages' option */
+.timeline dd.changeset p { margin: 0; padding: 0 }
+.timeline dd.changeset ul { padding-left: 15px; }
+
+/* Styles for the 'changeset_show_files' option */
+.timeline dd.changeset .changes {
+ color: #aaa;
+ font-size: 90%;
+ margin-left: 0;
+ padding-left: 0;
+ list-style-type: none;
+}
+.timeline dd.changeset .changes li div {
+ border: 1px solid #999;
+ display: inline-block;
+ margin: 0 .5em 0 0;
+ width: .8em;
+ height: .8em;
+ vertical-align: middle;
+}
+.timeline dd.changeset .changes li span {
+ margin-right: .8em;
+}
+.timeline dd.changeset .changes .add    { background: #bfb }
+.timeline dd.changeset .changes .delete { background: #f88 }
+.timeline dd.changeset .changes .edit   { background: #fd8 }
+.timeline dd.changeset .changes .copy   { background: #88f }
+.timeline dd.changeset .changes .move   { background: #ccc }
+.timeline dt.changeset .branch,
+.timeline dt.changeset .tag,
+.timeline dt.changeset .trac-bookmark {
+ color: #777;
+ font-size: 80%;
+ background: #f6f6f6;
+ border: 1px solid #ddd;
+ border-radius: .1em;
+ margin: 0 0 0 .5em;
+ padding: 0 .2em .15em;
+}
+.timeline dt.changeset .head {
+ background: #d0ffd0;
+ border: 1px solid #9d9;
+}
+.timeline dt.changeset .tag {
+ background: #ffa;
+ border: 1px solid #fe0;
+}
+.timeline dt.changeset .trac-bookmark {
+ background: #bdf;
+ border: 1px solid #9ae;
+}

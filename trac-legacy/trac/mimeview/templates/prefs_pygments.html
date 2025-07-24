@@ -1,0 +1,88 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'prefs.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    # block preftitle
+    ${_("Syntax Highlighting")}
+    # endblock preftitle
+    </title>
+
+    # block head
+    ${ super() }
+    <style>
+      div.code pre { border: 1px solid #999; font-size: 90%; margin: 1em 2em;
+        padding: 5px; width: 60%;
+      }
+      # for style_ in styles:
+      ${- style_defs(style_)|safe}
+      # endfor
+    </style>
+    <script>
+      jQuery(function($) {
+        var selection = window.selection;
+        var default_style = window.default_style;
+        var $theme = $('#pygment_theme');
+        var $field = $theme.closest('div.field');
+        $theme.attr("autocomplete", "off").on('change keypress', function() {
+          var style = this.value || default_style;
+          $field.removeClass('trac-pygments-' + selection)
+                .addClass('trac-pygments-' + style);
+          selection = style;
+        }).change();
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block prefpanel
+    <div class="field trac-pygments-${selection}">
+      <label>${_("Style:")}
+        <select id="pygment_theme" name="style">
+          <option value="">${_("Default: %(default)s",
+                               default=default_style.title())}</option>
+          # for style in styles:
+          <option${{'value': style,
+                    'selected': selection == style
+                   }|htmlattr}>${style.title()}</option>
+          # endfor
+        </select>
+      </label>
+      <p class="hint">
+        # trans
+
+        The Pygments syntax highlighter can be used with different
+        coloring styles.
+
+        # endtrans
+      </p>
+      ${_("Preview:")}
+      <div class="code"><pre>${output|safe}</pre></div>
+    </div>
+    # endblock prefpanel
+
+    <div>
+      # block prefpanelhelp
+      #   call(note, page) jmacros.wikihelp('TracSyntaxColoring'):
+      #     trans note, page
+
+      ${note} See ${page} for help on using syntax coloring.
+
+      #     endtrans
+      #   endcall
+      # endblock prefpanelhelp
+    </div>
+
+  </body>
+</html>

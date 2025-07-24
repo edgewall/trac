@@ -1,0 +1,369 @@
+{# Copyright (C) 2009-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+<div id="content" class="changeset">
+  # with
+  <div id="title">
+    # set cset_href = href.changeset(new_rev, reponame)
+    # set old_drev = display_rev(old_rev)
+    # set new_drev = display_rev(new_rev)
+
+    # set newpath
+    <a title="${_('Show entry in browser')}"
+       href="${href.browser(reponame, new_path, rev=new_rev)}"
+       >${new_path}</a>
+    # endset
+    # set oldpath
+    <a title="${_('Show entry in browser')}"
+       href="${href.browser(reponame, old_path, rev=old_rev)}"
+       >${old_path}</a>
+    # endset
+    # set newrev
+    <a title="${_('Show full changeset')}"
+       href="${cset_href}">${new_drev}</a>
+    # endset
+    # set newrrev
+    <a title="${_('Show full changeset')}"
+       href="${cset_href}">r${new_drev}</a>
+    # endset
+    # set shortnewrev
+    <a href="${cset_href}">${new_drev}</a>
+    # endset
+    # set oldrrev
+    <a title="${_('Show full changeset')}"
+       href="${href.changeset(old_rev, reponame)}">r${old_drev}</a>
+    # endset
+    # set logoldnew
+    <a title="${_('Show revision log')}"
+       href="${href.log(reponame, new_path, rev=new_rev, stop_rev=old_rev)}"
+       >[${old_drev}:${new_drev}]</a>
+    # endset
+
+    <h1>
+    # if reponame:
+    #   if changeset and restricted:
+    #     trans newrev, newpath, reponame
+
+    Changeset ${newrev} in ${reponame} for ${newpath}
+
+    #     endtrans
+    #   elif not changeset and restricted:
+    #     trans newpath, logoldnew, reponame
+
+    Changes in ${newpath} ${logoldnew} in ${reponame}
+
+    #     endtrans
+    #   elif not changeset and not restricted:
+    #     trans reponame, oldpath, oldrrev, newpath, newrrev
+
+    Changes in ${reponame} from ${oldpath} at ${oldrev}
+    to ${newpath} at ${newrev}
+
+    #     endtrans
+    #   else:
+    #     if annotated:
+    #       trans shortnewrev, reponame
+
+    Changeset ${shortnewrev} in ${reponame}
+
+    #       endtrans
+    #     else:
+    #       trans new_drev, reponame
+
+    Changeset ${new_drev} in ${reponame}
+
+    #       endtrans
+    #     endif
+    #   endif
+    # else:
+    #   if changeset and restricted:
+    #     trans newrev, newpath=newpath
+
+    Changeset ${newrev} for ${newpath}
+
+    #     endtrans
+    #   elif not changeset and restricted:
+    #     trans newpath, logoldnew
+
+    Changes in ${newpath} ${logoldnew}
+
+    #     endtrans
+    #   elif not changeset and not restricted:
+    #     trans oldpath, oldrrev, newpath, newrrev
+
+    Changes from ${oldpath} at ${oldrrev} to ${newpath} at ${newrrev}
+
+    #     endtrans
+    #   else:
+    #     if annotated:
+    #       trans shortnewrev
+
+    Changeset ${shortnewrev}
+
+    #       endtrans
+    #     else:
+    #       trans new_drev
+
+    Changeset ${new_drev}
+
+    #       endtrans
+    #     endif
+    #   endif
+    # endif
+    </h1>
+  </div>
+  # endwith
+
+  # set o = diff.options
+  # set optionset = o.ignoreblanklines or o.ignorecase or o.ignorewhitespace
+  # if not req.is_xhr and (has_diffs or optionset):
+  <form id="prefs" action="${req.request_path}">
+    <div>
+      # if not changeset:
+      <input type="hidden" name="old_path"
+             value="${'/' + pathjoin(reponame, old_path)}" />
+      <input type="hidden" name="new_path"
+             value="${'/' + pathjoin(reponame, new_path)}" />
+      <input type="hidden" name="old" value="${old_rev}" />
+      <input type="hidden" name="new" value="${new_rev}" />
+      # endif
+      # include 'diff_options.html'
+    </div>
+  </form>
+  # endif
+
+  # macro node_change(idx, item, cl, kind)
+  #   set ndiffs = len(item.diffs) if item.diffs is not none else 0
+  #   set nprops = len(item.props)
+  #   set is_removal = cl == 'rem'
+  #   set path = item.old.get('path') if is_removal else item.new.get('path')
+  #   set path = path and path[len(location):].strip('/')
+  ## FIXME check path...
+  <div class="${cl}"> </div>
+  #   if is_removal:
+  <a href="${item.old.href}"
+     title="${_('Show what was removed (content at revision %(old_rev)s)',
+            old_rev=display_rev(item.old.rev))}">
+    ${path}
+  </a>
+  #   else:
+  <a title="${_('Show entry in browser')}" href="${item.new.href}">
+    ${path or (location and '.') or _("(root)")}
+  </a>
+  #   endif
+  <span class="comment">(${kind})</span>
+  #   if item.old and item.old.get('path') and item.change in ('copy', 'move'):
+  <small><em>
+      # set oldpath
+      <a href="${item.old.href}"
+         title="${_('Show original file (revision %(old_rev)s)',
+                    old_rev=display_rev(item.old.rev))}">
+        ${item.old.path}</a>
+      # endset
+      # trans kind, oldpath
+
+      (${kind} from ${oldpath})
+
+      # endtrans
+  </em></small>
+  #   endif
+  #   if 'hide_diff' in item:
+  (<a title="${_('Show differences')}" href="${item.href}">${
+    _("view diffs")}</a>)
+  #   elif ndiffs + nprops is greaterthan(0):
+  (<a title="${_('Show differences')}" href="#file${idx}">${
+    ngettext('%(num)d diff', '%(num)d diffs', ndiffs) if ndiffs
+    }${
+    ', ' if ndiffs and nprops
+    }${
+    ngettext('%(num)d prop', '%(num)d props', nprops) if nprops
+    }</a>)
+  #   endif
+  #   if cl == 'mod' and item.diffs is none:
+  (<a title="${_('Show previous version in browser')}" href="${item.old.href}">
+    previous</a>)
+  #   endif
+  # endmacro
+
+  <dl id="overview">
+    # if changeset:
+    <dt class="property time">${_("Timestamp:")}</dt>
+    <dd class="time">
+      # with delta = datetime.now(utc) - changeset.date
+      ${format_datetime(changeset.date)}
+      #   if delta is lessthan(timedelta(0, 3600)):
+      ${_("(less than one hour ago)")}
+      #   else:
+      #     trans age = dateinfo(changeset.date)
+
+      (${age} ago)
+
+      #     endtrans
+      #   endif
+      # endwith
+    </dd>
+    <dt class="property author">${_("Author:")}</dt>
+    <dd class="author">${authorinfo(changeset.author)}</dd>
+    # for prop in properties:
+    #   if prop.rendered:
+    <dt ${prop.rendered.name_attributes|htmlattr}>
+      ${prop.rendered.name}</dt>
+    <dd ${prop.rendered.content_attributes|htmlattr}>
+      ${prop.rendered.content}</dd>
+    #   else:
+    <dt class="property">${prop.name}:</dt>
+    <dd>${prop.value}</dd>
+    #   endif
+    # endfor
+    <dt class="property message">${_("Message:")}</dt>
+    <dd class="message searchable">
+      # if not len(changeset.message.strip()):
+      &nbsp;
+      # elif wiki_format_messages:
+      ${wiki_to_html(context, changeset.message, escape_newlines=True)}
+      # else:
+      <pre>${changeset.message}</pre>
+      # endif
+    </dd>
+    # endif
+
+    # if location:
+    <dt class="property location">${_("Location:")}</dt>
+    <dd class="searchable"
+        ><a href="${href.browser(reponame, location, rev=new_rev)}">${
+        location}</a></dd>
+    # endif
+    <dt class="property files">
+      ${ngettext("File:", "Files:", num=len(files)) if files else
+      _("(No files)")}
+    </dt>
+    <dd class="files">
+      # if filestats:
+      <div class="legend" id="file-legend">
+        # with f = filestats
+        #   set added, deleted, edited, copied, moved = (
+              f.add, f.delete, f.edit, f['copy'], f.move)
+        <dl>
+          # if added:
+          <dt class="add"></dt><dd>
+            ${ngettext("%(num)d added", "%(num)d added", num=added)}</dd>
+          # endif
+          # if deleted:
+          <dt class="rem"></dt><dd>
+            ${ngettext("%(num)d deleted", "%(num)d deleted", num=deleted)}</dd>
+          # endif
+          # if edited:
+          <dt class="mod"></dt><dd>
+            ${ngettext("%(num)d edited", "%(num)d edited", num=edited)}</dd>
+          # endif
+          # if copied:
+          <dt class="cp"></dt><dd>
+            ${ngettext("%(num)d copied", "%(num)d copied", num=copied)}</dd>
+          # endif
+          # if moved:
+          <dt class="mv"></dt><dd>${ngettext("%(num)d moved", "%(num)d moved", num=moved)}</dd>
+          # endif
+        </dl>
+        # endwith
+      </div>
+      # endif
+      <br />
+      <ul>
+        # for item in changes:
+        <li>
+          # if item.change == 'add':
+          ${node_change(loop.index0, item, 'add', _("added"))}
+          # elif item.change == 'delete':
+          ${node_change(loop.index0, item, 'rem', _("deleted"))}
+          # elif item.change == 'copy':
+          ${node_change(loop.index0, item, 'cp', _("copied"))}
+          # elif item.change == 'move':
+          ${node_change(loop.index0, item, 'mv', _("moved"))}
+          # elif item.change == 'edit':
+          ${node_change(loop.index0, item, 'mod', _("modified"))}
+          # else:
+          ## ignored change (maybe because of diff options or ignored prop.)
+          # endif
+        </li>
+        # endfor
+      </ul>
+    </dd>
+  </dl>
+
+  <div class="diff">
+    # if has_diffs:
+    <div class="legend" id="diff-legend">
+      <h3>${_("Legend:")}</h3>
+      <dl>
+        <dt class="unmod"></dt><dd>${_("Unmodified")}</dd>
+        <dt class="add"></dt><dd>${_("Added")}</dd>
+        <dt class="rem"></dt><dd>${_("Removed")}</dd>
+        # if diff.style != 'inline':
+        <dt class="mod"></dt><dd>${_("Modified")}</dd>
+        # endif
+      </dl>
+    </div>
+    # endif
+
+    # if show_diffs is sameas false:
+    #   if max_diff_bytes and diff_bytes is greaterthan(max_diff_bytes):
+    #     if 'WIKI_VIEW' not in perm(Resource('wiki', 'TracIni')):
+    #       set pretty_max_bytes = pretty_size(max_diff_bytes)
+    #     else:
+    #       set pretty_max_bytes
+    <a href="${href.wiki('TracIni') + '#changeset-max_diff_bytes-option'}"
+       >${pretty_size(max_diff_bytes)}</a>
+    #       endset
+    #     endif
+    #     set pretty_diff_bytes = pretty_size(diff_bytes)
+    <p class="message">
+      #   trans pretty_diff_bytes, pretty_max_bytes
+
+      <strong>Changeset view not shown</strong>, since the total size
+      (${pretty_diff_bytes}) exceeds ${pretty_max_bytes}
+
+      #   endtrans
+    </p>
+    #   endif
+    #   if max_diff_files and diff_files is greaterthan(max_diff_files):
+    #     if 'WIKI_VIEW' not in perm(Resource('wiki', 'TracIni')):
+    #       set pretty_max_files = max_diff_files
+    #     else:
+    #       set pretty_max_files
+    <a href="${href.wiki('TracIni') + '#changeset-max_diff_files-option'}"
+       >${max_diff_files}</a>
+    #       endset
+    #     endif
+    <p class="message">
+      #   trans diff_files, pretty_max_files
+
+      <strong>Changeset view not shown</strong>, since the number of files
+      (${diff_files}) exceeds ${pretty_max_files}
+
+      #   endtrans
+    </p>
+    #   endif
+    # endif
+
+    # with no_id = false
+    #   include 'diff_div.html'
+    # endwith
+
+    # if jmacros is defined:
+    #   call(note, page) jmacros.wikihelp('TracChangeset'):
+    #     trans note, page
+
+    ${note} See ${page} for help on using the changeset viewer.
+
+    #     endtrans
+    #   endcall
+    # endif
+  </div>
+</div>

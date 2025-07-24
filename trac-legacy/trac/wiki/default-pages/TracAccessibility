@@ -1,0 +1,36 @@
+= Accessibility Support in Trac
+
+Not every user has a graphic environment with a mouse or other pointing device. Some users rely on a keyboard, alternative keyboard or voice input to navigate links and activate form controls. In a Trac session, users can use a device other than a pointing device by enabling keyboard shortcuts through the [/prefs/userinterface Keyboard Shortcuts] preferences panel.
+
+== Global Access Keys
+
+The global access keys differ by browser and the following work for several browsers:
+ - on Linux, press any of the keys listed below in combination with the `<Alt>` key
+ - on a Mac, use `<Ctrl>` + `<Opt>` + `<Key>`
+ - on Windows, use `<Shift> + <Alt> + <Key>`. This works for the most common browsers, such as Firefox, Chrome, Safari and Internet Explorer
+
+See [https://en.wikipedia.org/wiki/Access_key#Access_in_different_browsers access in different browsers] for more details.
+
+ * `1` - WikiStart
+ * `2` - [TracTimeline Timeline]
+ * `3` - [TracRoadmap Roadmap]
+ * `4` - [TracSearch Search]
+ * `6` - [TracGuide Trac Guide / Documentation]
+ * `7` - [TracTickets New Ticket]
+ * `9` - [/about About Trac]
+ * `e` - Edit (wiki or report)
+ * `r` - Preview (wiki or ticket)
+ * `f` - Search
+
+== TracBrowser Navigation
+
+The browser can be navigated using the keys listed below. The key modifiers listed above are not used for navigating the browser.
+
+* `j` and `k` - select the next or previous entry, starting with the first
+* `o` ('''o'''pen) - toggle between expanded and collapsed state of the selected directory or visit the selected file
+* `v` ('''v'''iew, '''v'''isit) and `<Enter>` - same as above
+* `r` - '''r'''eload an already expanded directory
+* `a` - directly visit a file in '''a'''nnotate (blame) mode
+* `L` - view the '''L'''og for the selected entry
+
+If no row has been selected using `j` or `k`, the keys will operate on the entry under the mouse.

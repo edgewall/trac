@@ -1,0 +1,240 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'prefs.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block preftitle
+      ${_("Localization")}
+      # endblock preftitle
+    </title>
+  </head>
+  <body>
+    # block prefpanel
+    #   set session_tzname = session.get('tz')
+    #   set selected_tz = timezone(session_tzname) or utc
+    <table>
+
+      <tr class="field">
+        <th><label for="language">${_("Language:")}</label></th>
+        <td>
+          # set session_language = session.get('language', '').replace('-', '_')
+          <select id="language" name="language"${
+                {'disabled': not languages,
+                 'title': _('Translations are currently unavailable')
+                          if not languages
+                }|htmlattr}>
+            <option value="">${_("Default: %(default)s",
+                                 default=default_language)}</option>
+            # for locale, language in languages:
+            <option${{'value': locale,
+                      'selected': session_language == locale
+                     }|htmlattr}>${language}</option>
+            # endfor
+          </select>
+          # if 'TRAC_ADMIN' in req.perm:
+          #   if not has_babel:
+          <span class="hint">
+            ${_("Install Babel for extended language support.")}
+          </span>
+          #   endif
+          #   if has_babel and not languages:
+          <span class="hint">
+            ${_("Message catalogs have not been compiled.")}
+          </span>
+          #   endif
+          # endif
+        </td>
+      </tr>
+      <tr>
+        <th></th>
+        <td>
+          # if languages:
+          <p class="hint">
+            # trans
+
+            Configuring your language will result in all text
+            displayed on this site to use your language instead of
+            that of the server.
+
+            # endtrans
+          </p>
+          <p class="hint">
+            # trans
+
+            The <strong>Default language</strong> option uses the browser's
+            language negotiation feature to select the appropriate language.
+
+            # endtrans
+          </p>
+          # else:
+          <p class="hint">
+            ## Don't use trans here because of no available languages
+            # if 'TRAC_ADMIN' in req.perm:
+            Trac has been localized to more than a dozen of languages
+            but in order to be able to use them, the
+            <a href="http://babel.edgewall.org">Babel</a> package
+            needs to be present when installing Trac. See
+            <a href="${href.wiki('TracInstall')}">TracInstall</a>
+            for details.
+            # else:
+            #   set project_admin
+            #     if project.admin:
+            <a href="mailto:${project.admin}">Trac administrator</a>
+            #     else:
+            Trac administrator
+            #     endif
+            #   endset
+            Please contact your ${project_admin} to enable existing
+            translations.
+            # endif
+          </p>
+          # endif
+        </td>
+      </tr>
+
+      <tr class="field">
+        <th><label for="tz">${_("Time zone:")}</label></th>
+        <td><select id="tz" name="tz">
+          <option value="">${_("Default: %(default)s",
+                               default=default_timezone)}</option>
+          # for tzname in timezones:
+          <option${{'value': tzname,
+                    'selected': session_tzname is not none and
+                                session_tzname.startswith('Etc/') and
+                                selected_tz == timezone(tzname) or
+                                session_tzname == tzname
+                   }|htmlattr}>${tzname}</option>
+          # endfor
+        </select></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td>
+          <p class="hint">
+            # trans
+
+            Configuring your time zone will result in all dates and
+            times displayed on this site to use your time zone instead
+            of that of the server.
+
+            # endtrans
+          </p>
+          <p class="hint">
+            # set now = datetime.now(utc)
+            # set nowtz = selected_tz.normalize(now.astimezone(selected_tz))
+            # set formatted
+            <strong>${format_time(now, 'iso8601', tzinfo=req.tz)}</strong>
+            # endset
+            # set time
+            <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong>
+            # endset
+            # trans time
+
+            Example: The current time is ${time} (UTC).
+
+            # endtrans
+            <br />
+            # if session_tzname:
+            #   trans tz = nowtz.tzname(), formatted
+
+            In your time zone ${tz}, this would be displayed as
+            ${formatted}.
+
+            #   endtrans
+            # else:
+            #   trans formatted
+
+            In the default time zone, this would be displayed as
+            ${formatted}.
+
+            #   endtrans
+            # endif
+          </p>
+          <p class="hint">
+            # trans
+
+            Note: Universal Co-ordinated Time (UTC) is also known as
+            Greenwich Mean Time (GMT).<br />A positive offset is used
+            to indicate a timezone at the east of Greenwich,
+            i.e. ahead of Universal Time.
+
+            # endtrans
+          </p>
+        </td>
+      </tr>
+
+      <tr class="field">
+        # set session_lc_time = session.get('lc_time')
+        <th><label for="lc_time">${_("Date format:")}</label></th>
+        <td><select id="lc_time" name="lc_time">
+          <option value="">${_("Default: %(default)s",
+                               default=_("ISO 8601 format")
+                                       if default_date_format == 'iso8601'
+                                       else _("Your language setting"))}</option>
+          # if locales and languages:
+          <option value="locale"${
+                {'selected': session_lc_time == 'locale'
+                }|htmlattr}>${_("Your language setting")}</option>
+          # endif
+          <option value="iso8601"${
+                {'selected': session_lc_time == 'iso8601'
+                }|htmlattr}>${_("ISO 8601 format")}</option>
+        </select></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td><p class="hint">
+            # trans
+
+            Configuring your date format will result in formatting and
+            parsing datetime displayed on this site to use your date
+            format instead of that of the server.
+
+            # endtrans
+          </p>
+        </td>
+      </tr>
+
+      <tr class="field">
+        # set session_dateinfo = session.get('dateinfo')
+        <th><label for="dateinfo">${_("Time format:")}</label></th>
+        <td><select id="dateinfo" name="dateinfo">
+            <option value="">${_("Default: %(default)s",
+                                 default=_("Absolute format")
+                                         if default_time_format == 'absolute'
+                                         else _("Relative format"))}</option>
+            <option value="relative"${
+                  {'selected': session_dateinfo == 'relative'
+                  }|htmlattr}>${_("Relative format")}</option>
+            <option value="absolute"${
+                  {'selected': session_dateinfo == 'absolute'
+                  }|htmlattr}>${_("Absolute format")}</option>
+        </select></td>
+      </tr>
+      <tr>
+        <th></th>
+        <td><p class="hint">
+            # trans
+
+            Configuring your relative/absolute
+            format will result in formatting datetime displayed on this
+            site to use your format instead of that of the server.
+
+            # endtrans
+          </p>
+        </td>
+      </tr>
+    </table>
+    # endblock prefpanel
+  </body>
+</html>

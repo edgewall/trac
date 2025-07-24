@@ -1,0 +1,45 @@
+= Importing ticket data
+
+[[PageOutline(2-5,Contents,pullout)]]
+
+To migrate issue tickets from other issue-tracking systems into Trac or perform housekeeping actions on tickets or simply synchronize different databases, there are some tools, plugins and scripts available.
+
+== !TicketImportPlugin
+
+[https://trac-hacks.org/wiki/TicketImportPlugin TicketImportPlugin]: a plugin that lets you import or update into Trac a series of tickets from a '''CSV file''' or (if the [https://pypi.python.org/pypi/xlrd xlrd library] is installed) from an '''Excel spreadsheet'''.
+
+== !ExportImportXlsPlugin
+
+[https://trac-hacks.org/wiki/ExportImportXlsPlugin ExportImportXlsPlugin]: a plugin that adds an admin panel for exporting and importing tickets via '''XLS file'''. Requires the python packages xlwt/rxld.
+
+== Jira
+
+[https://trac-hacks.org/wiki/JiraToTracIntegration JiraToTracIntegration]: a plugin that provides tools to import Atlassian Jira backup files into Trac. The plugin consists of a Python 3.1 commandline tool that:
+ - Parses the Jira backup XML file.
+ - Sends the imported Jira data and attachments to Trac using the [https://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin].
+ - Generates a htpasswd file containing the imported Jira users and their SHA-512 base64 encoded passwords.
+
+== Mantis
+
+[https://trac-hacks.org/wiki/MantisImportScript MantisImportScript]: a script to import the following type of data from Mantis into Trac:
+ * bugs
+ * bug comments
+ * bug activity (field changes)
+ * attachments (as long as the files live in the mantis database, not on the filesystem).
+
+== !PlanetForge
+
+[https://trac-hacks.org/wiki/PlanetForgeImportExportPlugin PlanetForgeImportExportPlugin]: this plugin exports Trac data (wiki, tickets, compoments, permissions, repositories, etc.) using the open format designed by the [https://gforge.inria.fr/projects/coclico/ COCLICO] project. It extends the webadmin panel and the 'trac admin ...' command. Has no 'import' feature.
+
+== Scarab
+
+[https://trac-hacks.org/wiki/ScarabToTracScript ScarabToTracScript]: a script that migrates Scarab issues to Trac tickets. Requires [https://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin].
+
+== Other
+
+Since Trac uses a SQL database to store the data, you can also custom-import from other systems by examining the database tables. Just go into [https://www.sqlite.org/sqlite.html sqlite] command line to look at the tables and import them from your application.
+
+----
+See also:
+ * to import/export wiki pages: TracAdmin,
+ * to export tickets: TracTickets, TracQuery

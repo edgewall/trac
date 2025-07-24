@@ -1,0 +1,356 @@
+@import url(code.css);
+
+#content.ticket {
+ width: 56em;
+ max-width: 100%;
+ margin-left: auto;
+ margin-right: auto;
+}
+
+#content.ticket .trac-topnav {
+ float: none;
+ text-align: right;
+ margin-top: 0;
+}
+
+
+/* "Yellow Ticket Box" */
+#ticketbox {
+ background: #ffd;
+ border: 1px solid #dd9;
+ border-radius: .4em;
+ margin-top: .2em;
+ padding: .5em 1em;
+ position: relative;
+}
+
+/* YTB in preview mode */
+#ticketbox.ticketdraft {
+ background: #f8f8f8 url(../draft.png);
+}
+#ticketchange.ticketdraft {
+ overflow: auto;
+ padding: 0 1em;
+ margin: 1em 0;
+}
+#ticketchange.ticketdraft h3.change {
+ margin-top: .5em;
+}
+.preview-notice { font-weight: bold; }
+
+.ticketdraft {
+ background: #f8f8f8 url(../draft.png);
+ border: 1px solid #d7d7d7;
+ border-radius: .4em;
+ padding: 0 .2em;
+}
+
+#trac-ticket-title {
+ margin-top: .4em;
+ margin-right: 0;
+ clear: right;
+}
+
+#ticketbox > h1, #ticketbox > h2 { color: #844 }
+#ticketbox > h2 { margin: .3em 0 .4em 0 }
+#ticketbox > h2 .trac-id {
+ font-size: 145%;
+ vertical-align: middle;
+ margin: 0 .4em 0 0;
+}
+#ticketbox > h2 .trac-status {
+ vertical-align: middle;
+}
+#ticketbox > h2 .trac-type {
+ color: #955;
+ vertical-align: middle;
+}
+#ticketbox > h2 .trac-resolution {
+ vertical-align: middle;
+}
+
+#ticketbox .date {
+ color: #996;
+ float: right;
+ font-size: 85%;
+ position: relative;
+ top: -.2em;
+}
+#ticketbox .date p { margin: .3em }
+
+#ticketbox table.properties {
+ clear: both;
+ border-top: 1px solid #dd9;
+ border-collapse: collapse;
+ table-layout: fixed;
+ width: 100%;
+}
+#ticketbox table.properties > tbody > tr { border-bottom: 1px dotted #eed }
+#ticketbox table.properties > tbody > tr > td,
+#ticketbox table.properties > tbody > tr > th {
+ font-size: .9em;
+ padding: .5em 1em;
+ vertical-align: top;
+}
+#ticketbox table.properties > tbody > tr > th {
+ color: #663;
+ font-weight: normal;
+ text-align: left;
+ width: 20%;
+}
+#ticketbox table.properties > tbody > tr > th.missing { color: #d3d398; }
+#ticketbox table.properties > tbody > tr > td { width: 30% }
+#ticketbox table.properties > tbody > tr > td p:first-child { margin-top: 0 }
+#ticketbox table.properties > tbody > tr > td p:last-child { margin-bottom: 0 }
+#ticketbox div.description h2 {
+ border-bottom: 1px solid #dd9;
+ color: #663;
+ font-size: 120%;
+ font-weight: 600;
+}
+#ticketbox div.description h3 .lastmod {
+ font-size: 85%;
+}
+#ticketbox .inlinebuttons {
+ float: right;
+ position: relative;
+ bottom: 0.3em;
+}
+#ticketbox .trac-noreplybutton {
+ display: none;
+}
+
+/* Change History */
+#changelog {
+ padding: 1.5em 0;
+}
+.trac-shade { background-color: #eee }
+#trac-threaded-form { float: right }
+
+/* Threaded comments */
+ul.children {
+ margin-top: 1.5em;
+ padding-left: 2em;
+}
+ul.children, ul.children ul.children { list-style: none }
+ul.children ul, ul.children ol { list-style-image: none }
+ul.children > li.child {
+ padding: 0 0 0 .5em;
+ margin-bottom: 1.5em;
+ border: 1px solid;
+ border-color: transparent transparent transparent #d8d7d7;
+ border-radius: .8em 0 0 .8em;
+ box-shadow: -1.6em 0 #e9e9e9;
+}
+#changelog ul.children h3.change {
+ margin-left: -.5rem;
+ padding: .1em .4em 1em .5em;
+ border-radius: .8em 0 0 0;
+}
+#changelog pre.wiki, #changelog div.code { clear: right }
+#ticketchange pre.wiki, #ticketchange div.code { clear: right }
+
+.in-reply-to:before { content: "↑" }
+.follow-up:before { content: "↓" }
+.trac-most-recent-first .in-reply-to:before { content: "↓" }
+.trac-most-recent-first .follow-up:before { content: "↑" }
+
+
+/* Comment contents */
+#changelog h3.change, #ticketchange h3.change {
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0),
+  rgba(234, 234, 234, 0.21) .3em,
+  rgba(198, 198, 198, 0.21) .7em,
+  #c7c5c5 .8em, /* ticket_h_underline_color ticket_h_underline_shadow */
+  rgba(255, 255, 255, 0) .8em,
+  rgba(243, 243, 243, 0.3) 100%
+ );
+ padding: 0 .2em 1em; /* ticket_h_underline_padding _ (ticket_h_underline_padding + ticket_h_underline_shadow) */
+ margin: 0 0 .2em;
+ color: #655b5b;
+ font-size: 100%;
+ font-weight: normal;
+}
+#changelog h3:target, #ticketchange h3:target {
+ background: linear-gradient(to top,
+  rgba(255, 255, 255, 0),
+  rgba(234, 234, 234, 0.21) .3em,
+  rgba(198, 198, 198, 0.21) .7em,
+  #c7c5c5 .8em, /* ticket_h_underline_color ticket_h_underline_shadow */
+  #fbffb6 .8em, /* trac_hl_color */
+  #fbffb6 100%
+ );
+ box-shadow: none;
+}
+@media print {
+ #changelog h3.change, #ticketchange h3.change { background: none }
+}
+#changelog h3 :link, #changelog h3 :visited { border-bottom: none }
+
+/* Comment editor */
+#trac-comment-editor { margin-left: .5em; margin-bottom: 1em }
+#trac-comment-editor textarea { background: #ffffe0; }
+#trac-comment-editor .wikitoolbar { clear: right }
+.trac-new { border-left: 0.31em solid #c0f0c0; padding-left: 0.31em; }
+
+.trac-loading {
+  background: url(../loading.gif) 0 50% no-repeat;
+  margin: 0 1em;
+  padding-left: 16px;
+  display: none;
+}
+.threading, #changelog .inlinebuttons {
+ float: right;
+}
+
+.threading { font-size: 85%; }
+.threading :link, .threading :visited { border-bottom: 0 }
+#changelog .trac-lastedit {
+ padding-left: 2.5em;
+ margin-top: .8em;
+ margin-bottom: 1.4em;
+ color: #999;
+ font-size: 80%;
+}
+#changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
+#changelog ul.children .trac-lastedit {
+ margin-bottom: .6em;
+}
+
+
+/*  - Change controls */
+.trac-change-panel {
+ margin-top: -.5em; /* related to #changelog h3.change, #ticketchange h3.change { padding-bottom: 1em } */
+}
+.trac-ticket-buttons {
+ clear: right;
+ visibility: hidden;
+ float: right;
+}
+.trac-ticket-buttons form {
+ display: inline-block;
+}
+
+/* - Property changes */
+#changelog .changes { background: #ffd }
+#ticketchange .changes { background: #f8f8f8 url(../draft.png) }
+#changelog .changes, #ticketchange .changes {
+ clear: right;
+ width: auto;
+ margin: 0 0 1.5em 2em;
+ padding: 0 .8em .2em;
+ color: #663;
+ border: 1px solid;
+ border-color: #eea #dd9 #dd9 #eea;
+ border-radius: .4em;
+ float: right;
+ box-shadow: .1em .2em 1em #eee;
+}
+div.change, ul.children { clear: both; }
+div.change:after {
+ content: "";
+ display: block;
+ clear: both;
+ height: 0;
+}
+
+.changes th {
+ text-align: right;
+ vertical-align: baseline;
+ padding: .4em .7em .4em 0;
+ font-size: 85%;
+ border-top: 1px dotted #eed;
+}
+.changes td {
+ font-size: 85%;
+ padding: .4em 0 .4em 0;
+ border-top: 1px dotted #eed;
+}
+.changes tr:first-child th, .changes tr:first-child td { border-top: none }
+.changes .trac-field-new { font-weight: bold }
+.changes .trac-field-deleted { text-decoration: line-through }
+
+.trac-conflict, .trac-conflict th {
+ border-left: .3em solid #e44;
+ padding-left: .3em;
+}
+#changelog .comment, #ticketchange .comment { margin-left: .8em }
+button.trac-revert, button.trac-revert:hover {
+ margin: 0;
+ padding: 0;
+ border: none;
+ border-bottom: 1px dotted #bbb;
+ overflow: visible;
+ cursor: pointer;
+ background: none;
+ color: #b00;
+ text-decoration: none;
+ -moz-user-select: text;
+}
+button.trac-revert:hover { background-color: #eee; color: #555; }
+button.trac-revert div { display: none; }
+
+form .field { margin-top: .75em; width: 100% }
+form .field fieldset { margin-left: 1px; margin-right: 1px }
+#trac-add-comment .author { margin-bottom: 1em; }
+#trac-add-comment .author span.hint {
+ display: block;
+ margin-top: 0;
+ text-align: right
+}
+#trac-add-comment table th { text-align: left; width: 30%; }
+#trac-add-comment table td { width: 70%; }
+
+#propertyform {
+ clear: both;
+ margin-bottom: 2em;
+}
+#propertyform table.trac-properties {
+ border-spacing: 0;
+ table-layout: fixed;
+ width: 100%;
+}
+#propertyform table.trac-properties td input[type="text"],
+#propertyform table.trac-properties td textarea {
+ -moz-box-sizing: border-box;
+ box-sizing: border-box;
+ width: 100%;
+}
+#properties { line-height: 160%; padding: 1em }
+#properties table.trac-properties > tbody > tr > th,
+#properties table.trac-properties > colgroup > col.th {
+ overflow: hidden;
+ padding: .4em;
+ text-align: right;
+ vertical-align: middle;
+ width: 17%;
+}
+#properties table.trac-properties > tbody > tr > th.col2 { border-left: 1px dotted #d7d7d7 }
+#properties table.trac-properties > tbody > tr > td,
+#properties table.trac-properties > colgroup > col.td {
+ padding-right: 0.6em;
+ vertical-align: middle;
+ width: 33%
+}
+#properties table.trac-properties > tbody > tr > th.trac-textarea { vertical-align: top }
+#properties table.trac-properties > tbody > tr > td.fullrow { width: 83% }
+#properties table.trac-properties > tbody > tr > td.col1 > label,
+#properties table.trac-properties > tbody > tr > td.col2 > label { float: left; margin-right: 0.5em; }
+#properties table.trac-properties > tbody > tr > td > select { max-width: 100% }
+#properties table.trac-properties > tbody > tr > td > span.hint { display: block; line-height: 100%; text-align: right }
+#properties table.trac-properties > tbody > tr > td > label.trac-textarea-hint { line-height: 100%; margin-bottom: 1em }
+
+#action { line-height: 2em }
+
+fieldset.radio { border: none; margin: 0; padding: 0 }
+fieldset.radio legend {
+ color: #000;
+ float: left;
+ font-size: 100%;
+ font-weight: normal;
+ padding: 0 1em 0 0;
+}
+fieldset.radio label { padding-right: 1em }
+
+#content.ticket .trac-nav a { margin-left: 1em; }

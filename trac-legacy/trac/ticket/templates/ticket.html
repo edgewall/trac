@@ -1,0 +1,641 @@
+{# Copyright (C) 2007-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      # block title
+      #   if ticket.exists:
+      ${'#'}${ticket.id} (${ticket.summary})
+      #   else:
+      ${_("New Ticket")}
+      #   endif
+      ${ super() }
+      # endblock title
+    </title>
+
+    # block head
+
+    ${ super() }
+
+    <script>
+      jQuery(function($) {
+        $("div.description").find("h1,h2,h3,h4,h5,h6")
+          .addAnchor(_("Link to this section"));
+        $(".foldable").enableFolding(false, true);
+      # if ticket.exists:
+        $("#attachments").toggleClass("collapsed");
+        $("#trac-up-attachments").click(function () {
+          $("#attachments").removeClass("collapsed");
+          return true;
+        });
+        $("#modify").parent().toggleClass("collapsed");
+        $(".trac-topnav a").click(function() {
+          $("#modify").parent().removeClass("collapsed");
+        });
+
+        function setRevertHandler() {
+          $("button.trac-revert").click(function() {
+            var div = $("div", this);
+            var field_name = div[0].id.substr(7);
+            var field_value = div.text();
+            var input = $("#propertyform *[name=field_" + field_name + "]");
+            if (input.length > 0) {
+              if (input.filter("input[type=radio]").length > 0) {
+                input.val([field_value]);
+              } else if (input.filter("input[type=checkbox]").length > 0) {
+                input.val(field_value == "1" ? [field_value] : []);
+              } else {
+                input.val(field_value);
+              }
+            } else { // Special case for CC checkbox
+              input = $("#propertyform input[name=cc_update]").val([]);
+            }
+            input.change();
+            // Remove the revert button
+            if ($(this).closest("tbody").children("tr").length === 1)
+              $(this).closest(".trac-change-panel").remove();
+            else
+              $(this).closest("tr").remove();
+            return false;
+          });
+        }
+        setRevertHandler();
+
+        var comment_focused = false;
+        $("#comment").focus(function() { comment_focused = true; })
+                     .blur(function() { comment_focused = false; });
+      #   if not disable_submit:
+        $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
+          var items = $(reply);
+          // Update ticket box
+          $("#ticket").replaceWith(items.filter('#ticket'));
+          // Replaces content of #changelog, without recreating it
+          $("#changelog").empty().append(items.filter("#changelog").contents());
+          // Apply comments order and "Show" preferences
+          applyCommentsOrder(
+            $('#prefs input[name="trac-comments-order"]:checked').val());
+          // Show warnings
+          var new_changes = $("#changelog .trac-new");
+          $("#trac-edit-warning").toggle(new_changes.length != 0);
+          if (new_changes.length != 0)
+            $("#changelog").parent().show().removeClass("collapsed");
+          $("#trac-preview-warning").remove();
+          $("#trac-edit-warning").before(items.filter('#trac-preview-warning'));
+          // Update view time
+          $("#propertyform input[name='view_time']")
+            .replaceWith(items.filter("input[name='view_time']"));
+          // Update preview
+          var preview = $("#ticketchange")
+            .html(items.filter('#preview').children());
+          var show_preview = preview.children().length != 0;
+          $("#ticketchange").toggle(show_preview);
+          setRevertHandler();
+          // Execute scripts to load stylesheets
+          items.filter("script").appendTo("head");
+        }, "#ticketchange .trac-loading");
+        $("#trac-comment-editor")
+            .autoSubmit({preview_comment: '1'}, function(data, reply) {
+          var comment = $("#trac-comment-editor")
+            .next("div.comment").html(reply);
+          comment.toggle(comment.children().length != 0);
+        }, "#changelog .trac-loading");
+      #   endif
+
+      # elif not disable_submit:
+        $("#propertyform").autoSubmit({preview: '1'}, function(data, reply) {
+          $('#ticket').replaceWith(reply);
+        }, "#ticket .trac-loading");
+      # endif
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+
+    <div id="content" class="ticket">
+      # set preview_mode = 'preview' in req.args
+      # set can_append = 'TICKET_APPEND' in perm(ticket.resource)
+      # set can_create = ('TICKET_CREATE' in perm(ticket.resource) and
+                          not ticket.exists)
+      # set can_modify = 'TICKET_CHGPROP' in perm(ticket.resource)
+      # set can_edit = 'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource)
+      # set only_for_admin = 'TICKET_ADMIN' in perm(ticket.resource)
+      # set has_property_editor = (
+              not version and version != 0 and not cnum_edit and
+              (can_append or can_modify or can_edit or can_create))
+
+      # if (ticket.exists or preview_mode) and has_property_editor:
+      <div class="trac-topnav">
+        <a href="#modify" title="${_('Go to the ticket editor')}">${
+          _("Modify")}</a> &darr;
+      </div>
+      # endif
+
+      # if not ticket.exists:
+      <h1>${_("Create New Ticket")}
+        # if preview_mode and ticket.type:
+        <span class="status">(${ticket.type})</span>
+        # endif
+      </h1>
+      # endif
+
+      # if ticket.exists:
+      #   with preview_mode = change_preview.fields
+      #     include 'ticket_box.html'
+      #   endwith
+
+
+      ##  # Do not show attachments for old versions of this ticket
+      ##  # or for new tickets.
+
+      #   if not version and version != 0 and ticket.exists:
+      #     with alist = attachments, foldable = True
+      #       include 'list_of_attachments.html'
+      #     endwith
+      #   endif
+
+      <div${{'style': 'display: none' if not changes}|htmlattr}>
+        <div class="trac-noscript" style="position: relative">
+          <form id="prefs" method="get" action="${href.prefs()}"
+                style="position: absolute; right: 0">
+            <div id="trac-comments-order">
+              <input type="radio" id="trac-comments-oldest"
+                     name="trac-comments-order" value="oldest"
+                     checked="checked" />
+              <label for="trac-comments-oldest">${_("Oldest first")}</label>
+              <input type="radio" id="trac-comments-newest"
+                     name="trac-comments-order" value="newest" />
+              <label for="trac-comments-newest">${_("Newest first")}</label>
+              <span id="trac-threaded-toggle" style="display: none">
+                <input type="radio" id="trac-comments-threaded"
+                       name="trac-comments-order" value="threaded" />
+                <label for="trac-comments-threaded">${_("Threaded")}</label>
+              </span>
+            </div>
+            <div>
+              <input id="trac-show-comments-toggle" type="checkbox"
+                     checked="checked" />
+              <label for="trac-show-comments-toggle">${
+                _("Show comments")}</label>
+              <input id="trac-show-property-changes-toggle" type="checkbox" />
+              <label for="trac-show-property-changes-toggle">
+                ${_("Show property changes")}</label>
+            </div>
+          </form>
+        </div>
+
+        <h3 class="foldable">
+          ${_("Change History")}
+          <span class="trac-count">(${len(changes)})</span></h3>
+
+        <div id="changelog">
+          # for change in changes:
+          #   set latest = change['comment_history'] | max
+          #   set change_date = change['comment_history'][latest]['date']
+          <div class="${classes('change',
+                      'trac-new' if change_date is greaterthan(start_time) and
+                      'attachment' not in change.fields)}"${
+             {'id': 'trac-change-%d-%d' % (change.cnum, to_utimestamp(change.date))
+                    if 'cnum' in change}|htmlattr}>
+            # include 'ticket_change.html'
+          </div>
+          # endfor
+
+          <script>
+            // inlinebuttons in ticket change are presented in
+            // left-to-right order, i.e. those added before
+            // #reply-to-comment-n will be on its left, those added
+            // after will be on its right
+            function insertNearReplyToComment(num, content, side) {
+              var $replyto = $("#reply-to-comment-" + num);
+              if (side === 'right') {
+                $replyto.after(content);
+              } else if (side === 'rightmost') {
+                $replyto.parent().append(content);
+              } else if (side === 'leftmost') {
+                $replyto.parent().prepend(content);
+              } else { // 'left'
+                $replyto.before(content);
+              }
+            }
+          </script>
+
+        </div>
+      </div>
+      # endif
+      ## end of the section we don't show for initial new tickets
+
+      # if has_property_editor:
+      <form method="post" id="propertyform"
+            action="${href.ticket(ticket.id) + '#trac-add-comment' if
+                    ticket.exists else href.newticket() + '#ticket'}">
+        ${jmacros.form_token_input()}
+
+        <div>
+          # if ticket.exists:
+          <h3 class="foldable">${_("Modify Ticket")}</h3>
+          # endif
+          <div id="modify">
+
+            ## Properties
+
+            # if can_modify or can_edit or can_create:
+            <fieldset id="properties">
+              # with fields = fields|rejectattr('skip')|selectattr('editable')
+
+              <legend>
+                # if ticket.exists:
+                ${_("Change Properties")}
+                # else:
+                ${_("Properties")}
+                # endif
+              </legend>
+              <table class="trac-properties">
+                <col class="th" /><col class="td" />
+                <col class="th" /><col class="td" />
+                # if can_modify or can_create:
+                <tr>
+                  <th><label for="field-summary">${_("Summary:")}</label></th>
+                  <td class="fullrow" colspan="3">
+                    <input type="text" id="field-summary" name="field_summary"${
+                         {'class': 'trac-autofocus' if not ticket.exists and
+                                   not preview_mode,
+                          'value': ticket.summary or ''
+                         }|htmlattr}/>
+                  </td>
+                </tr>
+                # endif
+
+                ## Reporter field
+
+                # if only_for_admin or (not ticket.exists and authname == 'anonymous'):
+                <tr>
+                  <th>
+                    <label for="field-reporter">
+                      # if only_for_admin:
+                      ${_("Reporter:")}
+                      # else:
+                      ${_("Your email or username:")}
+                      # endif
+                    </label>
+                  </th>
+                  <td class="fullrow" colspan="3">
+                    <input type="text" id="field-reporter" name="field_reporter"
+                           value="${ticket.reporter}" />
+                    # if not only_for_admin and ticket.reporter == 'anonymous':
+                    <span class="hint">
+                      # set preferences
+                      <a href="${href.prefs()}" class="trac-target-new">${
+                        _("Preferences")}</a>
+                      # endset
+                      # trans preferences
+
+                      E-mail address and name can be saved in the
+                      ${preferences}.
+
+                      # endtrans
+                    </span>
+                    # endif
+                  </td>
+                </tr>
+                # endif
+                # if can_edit or can_create:
+                <tr>
+                  <th class="trac-textarea"><label for="field-description">${
+                      _("Description:")}</label></th>
+                  <td class="fullrow" colspan="3">
+                    <textarea id="field-description"
+                              name="field_description"
+                              class="wikitext trac-fullwidth trac-resizable"
+                              rows="10" cols="68">${
+                      ticket.description}</textarea>
+                    <label for="field-description" class="trac-textarea-hint">
+                      # trans wikiformatting = jmacros.wikiformatting_link()
+
+                      You may use ${wikiformatting} here.
+
+                      # endtrans
+                    </label>
+                  </td>
+                </tr>
+                # endif
+                # if can_modify or can_create:
+                #   for row in fields|groupattr(2, 'type', 'not_equalto', 'textarea'):
+                <tr>
+                  #   set fullrow = len(row) == 1
+                  #   for field in row:
+                  #     set value = (ticket[field.name] if ticket.exists else
+                  ticket.get_value_or_default(field.name))
+                  #     if loop.first or not fullrow:
+                  <th class="${classes('col%d' % loop.index,
+                             'trac-textarea' if field.type == 'textarea')}">
+                    #     if field:
+                    #       set label = (field.edit_label or field.label or
+                    field.name)
+                    #       if field.type == 'radio':
+                    ${_("%(label)s:", label=label)}
+                    #       else:
+                    <label for="field-${field.name}">${
+                      _("%(label)s:", label=label)}</label>
+                    #       endif
+                    #     endif
+                  </th>
+                  #     endif
+                  #     if loop.first or not fullrow:
+                  <td class="${classes('col%d' % loop.index,
+                                       fullrow=fullrow)}"${
+                    {'colspan': 3 if fullrow}|htmlattr}>
+                    #     if field:
+                    #       if field.type == 'select':
+                    <select id="field-${field.name}"
+                             name="field_${field.name}">
+                      #       if field.optional:
+                      <option label="${_('(unset)')}"></option>
+                      #       endif
+                      #       for option in field.options:
+                      <option${{'selected': value == option,
+                                'value': option
+                               }|htmlattr}>${option}</option>
+                      #       endfor
+                      #       for optgroup in field.optgroups:
+                      #         if optgroup.options:
+                      <optgroup label="${optgroup.label}">
+                        #         for option in optgroup.options:
+                        <option${{'selected': value == option,
+                                  'value': option
+                                 }|htmlattr}>${option}</option>
+                        #         endfor
+                      </optgroup>
+                      #         endif
+                      #       endfor
+                    </select>
+                    #       elif field.type == 'textarea':
+                    <textarea id="field-${field.name}"
+                              name="field_${field.name}"
+                              class="${classes('trac-resizable',
+                                     wikitext=field.format == 'wiki')}"
+                              cols="60" rows="${field.height}"
+                       >{# jinjacheck: "ID field- already defined" OK #}${
+                      value}</textarea>
+                    #       elif field.type == 'checkbox':
+                    <span>
+                      <input type="checkbox" id="field-${field.name}"
+                             name="field_${field.name}" value="1"${
+                           {'checked': value == '1'}|htmlattr}/>
+                      ## jinjacheck: "ID field- already defined" OK
+                      <input type="hidden" name="field_checkbox_${field.name}"
+                             value="1" />
+                    </span>
+                    #       elif field.type == 'radio':
+                    #         for option in field.options:
+                    <label>
+                      <input type="radio" name="field_${field.name}"${
+                            {'checked': value == option,
+                             'value': option
+                            }|htmlattr}/>
+                      ${option}
+                    </label>
+                    #         endfor
+                    #       elif field.type == 'time':
+                    <input type="text" id="field-${field.name}"
+                           title="${field.format_hint}"
+                           name="field_${field.name}" value="${field.edit}"
+                           class="trac-${'date' if field.format == 'date' else
+                                         'datetime'}picker"/>
+                    ## jinjacheck: "ID field- already defined" OK
+                    #       else:
+                    ##        # Special case for Cc: field
+                    #         if field.name == 'cc':
+                    <span>
+                      ##        # Unauthenticated user without TICKET_EDIT_CC
+                      ##        # and with email set in prefs
+                      #         if 'cc_entry' in field:
+                      #           if field.cc_action is none:
+                      <em>
+                        # set preferences_link
+                        <a href="${href.prefs()}" class="trac-target-new">${
+                          _("Preferences")}</a>
+                        # endset
+                        ${tag_("Set your email in %(preferences_link)s",
+                               preferences_link=preferences_link)}
+                      </em>
+                      #           else:
+                      <label for="field-cc"><em>${field.cc_entry}</em></label>
+                      #           endif
+                      <input type="checkbox" id="field-cc" name="cc_update"${
+                           {'title': gettext(
+                                        "This checkbox allows you to add or
+                                        remove yourself from the CC list."),
+                            'style': 'display: none' if field.cc_action is none,
+                            'disabled': field.cc_action is none,
+                            'checked': field.cc_update
+                           }|htmlattr} />
+                      #         elif field.cc_action is none:
+                      ##          # Unauthenticated user without TICKET_EDIT_CC
+                      ##          # and no email set in prefs
+                      #         else:
+                      ##          # TICKET_EDIT_CC is allowed
+                      <input type="text" id="field-${field.name}"
+                             title="${_("Space or comma delimited email "
+                                        "addresses and usernames are "
+                                        "accepted.")}"
+                             name="field_${field.name}"
+                             value="${value}"/>
+                      ## jinjacheck: "ID field- already defined" OK
+                      #         endif
+                    </span>
+                    #         else:
+                    ##          # All the other text input fields
+                    <input type="text" id="field-${field.name}"${
+                         {'class': 'wikitext' if field.format == 'wiki' else None}|htmlattr}
+                           name="field_${field.name}"${
+                         {'value': value}|htmlattr}/>
+                    ## jinjacheck: "ID field- already defined" OK
+                    #         endif
+                    #       endif
+                    #     endif
+                  </td>
+                  #     endif
+                  #   endfor
+                </tr>
+                #   endfor
+                # endif
+              </table>
+              # endwith
+            </fieldset>
+            # endif
+
+            ## Workflow support
+
+            # with hidden = not can_append
+            #   include 'ticket_workflow.html'
+            # endwith
+          </div>
+        </div>
+
+        ## Add comment
+
+        # if ticket.exists and can_append:
+        <div id="trac-add-comment" class="field">
+          <h3 class="foldable" id="edit">${_("Add Comment")}</h3>
+          <div>
+
+            ## Comment field
+
+            <fieldset>
+              # if authname == 'anonymous':
+              <div class="author">
+                <table class="trac-properties">
+                  <tr>
+                    <th>
+                      <label for="author">${
+                        _("Your email or username:")}</label><br />
+                    </th>
+                    <td>
+                      <input type="text" id="author" name="author"
+                             value="${author_id}" />
+                    </td>
+                  </tr>
+                </table>
+                # if author_id == 'anonymous':
+                <span class="hint">
+                  # set preferences
+                  <a href="${href.prefs()}" class="trac-target-new">
+                    ${_("Preferences")}</a>
+                  # endset
+                  # trans preferences
+
+                  E-mail address and name can be saved in the
+                  ${preferences}.
+
+                  # endtrans
+                </span>
+                # endif
+              </div>
+              # endif
+              <textarea id="comment" name="comment"
+                        class="${classes('wikitext', 'trac-fullwidth',
+                                         'trac-resizable',
+                                         'trac-autofocus' if replyto)}"
+                        rows="10" cols="78">${
+                comment}</textarea>
+              <label for="comment" class="trac-textarea-hint">
+                # trans wikiformatting = jmacros.wikiformatting_link()
+
+                You may use ${wikiformatting} here.
+
+                # endtrans
+              </label>
+            </fieldset>
+          </div>
+        </div>
+        # endif
+
+        ## Attachment on creation checkbox
+
+        # if not ticket.exists and ('ATTACHMENT_CREATE' in perm(ticket.resource.child('attachment'))):
+        <p>
+          <label>
+            <input type="checkbox" name="attachment"${
+                 {'checked': 'attachment' in req.args}|htmlattr}/>
+            # trans
+
+            I have files to attach to this ticket
+
+            # endtrans
+          </label>
+        </p>
+        # endif
+
+        # if ticket.exists:
+        <div class="trac-nav">
+          # if attachments.attachments or attachments.can_create:
+          <a href="#attachments" id="trac-up-attachments"
+             title="${_('Go to the list of attachments')}">${
+            _("Attachments")}</a> &uarr;
+          # endif
+          <a href="#content" id="trac-up-view"
+             title="${_('View the ticket description')}">${
+            _("Description")}</a> &uarr;
+        </div>
+        # endif
+        <div class="buttons">
+          # if ticket.exists:
+          <input type="hidden" name="start_time"
+                 value="${to_utimestamp(start_time)}" />
+          <input type="hidden" name="view_time"
+                 value="${to_utimestamp(ticket['changetime'])}" />
+          <input type="hidden" name="replyto"${{'value': replyto}|htmlattr}/>
+          # endif
+          <input type="submit" name="preview" value="${_('Preview')}"${
+                 {'disabled': disable_submit
+                 }|htmlattr}
+                 ${accesskey("r")} />&nbsp;
+          <input type="submit" name="submit"
+                 value="${_('Submit changes') if ticket.exists else
+                          _('Create ticket')}"
+                 class="trac-disable-on-submit"${
+                 {'disabled': disable_submit
+                 }|htmlattr} />
+        </div>
+
+        ## Preview of ticket changes
+
+        # if ticket.exists and can_append:
+        ${jmacros.warnings(chrome.warnings, 'trac-preview-warning', close_message=False)}
+        <div id="trac-edit-warning" class="warning system-message" ${
+           {'style': 'display: none;' if start_time == ticket['changetime']
+             }|htmlattr}>
+          # trans
+
+          Review any <em class="trac-new">modifications</em> above,
+          and any <em class="trac-conflict">conflicts</em> in the preview below.
+
+          # endtrans
+        </div>
+        <div id="ticketchange" class="ticketdraft"${
+           {'style': 'display: none' if not
+               (change_preview.fields or change_preview.comment) or
+               cnum_edit is not none
+           }|htmlattr}>
+          # with change = change_preview, preview = True
+          #   include 'ticket_change.html'
+          # endwith
+        </div>
+        # endif
+
+      </form>
+      # endif
+
+      # if not ticket.exists:
+      #   with hide = not preview_mode, preview_mode = preview_mode
+      #     include 'ticket_box.html'
+      #   endwith
+      # endif
+
+      # call(note, page) jmacros.wikihelp('TracTickets'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using tickets.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

@@ -1,0 +1,67 @@
+{# Copyright (C) 2016-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+# extends 'layout.html'
+
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>
+      # block title
+      ${title}
+      ${ super() }
+      # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="wiki">
+      # with current_href = href.wiki(page.name)
+      <h1>
+        # set name
+        <a href="${current_href}">${page.name}</a>
+        # endset
+        # trans version = page.version, name
+
+        Edit comment for version ${version} of ${name}
+
+        # endtrans
+      </h1>
+      <form id="edit-comment-form" action="${current_href}" method="post">
+        ${jmacros.form_token_input()}
+        <p>
+          ${_("Old comment:")}
+          ${wiki_to_oneliner(context, page.comment or '--')}
+        </p>
+        <div class="field">
+          <label>${_("New comment:")}
+            <input type="hidden" name="action" value="edit_comment" />
+            <input type="text" class="trac-autofocus wikitext"
+                   name="new_comment" size="40"
+                   value="${page.comment}" />
+          </label>
+        </div>
+        <div class="buttons">
+          <input type="hidden" name="redirect_to" value="${redirect_to}" />
+          <input type="hidden" name="version" value="${page.version}" />
+          <input type="submit" name="submit" class="trac-disable-on-submit"
+                 value="${_('Submit changes')}" />
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
+        </div>
+      </form>
+      # endwith
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

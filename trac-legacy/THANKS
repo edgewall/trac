@@ -1,0 +1,151 @@
+The following people all made noteworthy contributions to Trac, which
+wouldn't be what it is now without their help:
+
+ * Ants Aasma                     ants.aasma@gmail.com
+ * MATOBA Akihiro                 matobaa@gmail.com
+ * Pedro Algarvio (s0undt3ch)     ufs@ufsoft.org
+ * Brad Anderson                  brad@dsource.org
+ * Roberto Aragón                 robarago@gmail.com
+ * Christopher Armstrong          radix
+ * Jani Averbach                  jaa@jaa.iki.fi
+ * Juanma Barranquero             lektu@terra.es
+ * Anton Batenev
+ * Remy Blank                     remy.blank@pobox.com
+ * Christian Boos                 cboos@bct-technology.com
+ * Erik Bray                      hyugaricdeau@gmail.com
+ * Toni Brkic                     toni.brkic@switchcore.com
+ * Rocky Burt                     rocky.burt@myrealbox.com
+ * Tomáš Čapek                    soulcharmer@gmail.com
+ * Shane Caraveo                  shanec@activestate.com
+ * Eli Carter                     eli.carter@commprove.com
+ * José manuel Castroagudín Silva
+ * Michele Cella
+ * Sergey S. Chernov              sergeych@tancher.com
+ * Felix Colins                   felix@keyghost.com
+ * Robert Corsaro
+ * Simon Cross                    hodgestar@gmail.com
+ * Wesley Crucius                 wcrucius@sandc.com
+ * Wolfram Diestel                diestel@steloj.de
+ * Mujdat Dinc
+ * dju'
+ * Ismael de Esteban              ismael@tuenti.com
+ * Juracy Filho                   juracy@gmail.com
+ * Daragh Fitzpatrick             Daragh@i2i-Tech.com
+ * Justin Francis
+ * Markus Fuchs
+ * Lele Gaifax
+ * Sergii Galashyn                trovich@gmail.com
+ * Raúl García
+ * Axel Gembe
+ * Eric Gillespie                 epg@netbsd.org
+ * Daniel Kahn Gillmor
+ * Matthew Good                   trac@matt-good.net
+ * Shun-ichi Goto                 gotoh@taiyo.co.jp
+ * Heiko Graeber
+ * Chris Green                    cmgreen@uab.edu
+ * Mikael Hallendal               micke@imendio.com
+ * Jeff Hammel                    jhammel@openplans.org
+ * Stephen Hansen                 shansen@advpubtech.com
+ * Laurie Harper                  zodiac@holoweb.net
+ * Francois Harvey                fharvey@securiweb.net
+ * Tim Hatch                      trac@timhatch.com
+ * Oren Held                      oren@held.org.il
+ * Mikko Hellsing
+ * Steffen Hoffmann
+ * Michael Hope                   michael.hope@hamjet.co.nz
+ * Laurens Holst                  laurens@grauw.nl
+ * David Huang                    khym@azeotrope.org
+ * Zheng Hui Hu                   huzhengh@gmail.com
+ * Richard Hult                   richard@imendio.com
+ * InterAct Trac-ja Team          trac-ja@i-act.co.jp
+ * Paul Irish                     paul.irishEWWSPAM@gmail.com
+ * Masaharu Iwai
+ * Ethan Jucovy                   ethan.jucovy@gmail.com
+ * Noah Kantrowitz (coderanger)   coderanger@yahoo.com
+ * Alexey Kinyov
+ * Tomas Kopecek
+ * Waldemar Kornewald             wkornew@gmx.net
+ * Nuutti Kotivuori               naked@iki.fi
+ * Leho Kraav                     leho@kraav.com
+ * Jasmin Lapalme
+ * Ian Leader                     ian.leader@line.co.uk
+ * Christopher Lenz               cmlenz@gmx.de
+ * Richard Liao
+ * David Lodge
+ * Ivo Looser                     ivo.looser@gmail.com
+ * Rui Lopes                      rgl ruilopes com
+ * Tilemahos Manolatos
+ * Angel Marin                    anmar@gmx.net
+ * Simon Martin
+ * Narine Martirosyan             narine_martirosyan@instigatedesign.com
+ * Franz Mayer                    franz.mayer@gefasoft.de
+ * Mark Mc Mahon                  mark.m.mcmahon@gmail.com
+ * Brian Meeker                   meeker.brian@gmail.com
+ * Aristotelis Mertis
+ * Wojciech Michalski
+ * Keir Mierle                    keir@cs.utoronto.ca
+ * James Moger                    jamesm@transonic.com
+ * Tim Moloney                    moloney@mrsl.com
+ * Ramiro Morales                 cramm0@gmail.com
+ * Manuel Muradas
+ * Jennifer Murtell               jen@jmurtell.com
+ * Jacob Norda                    jacobnorda@gmail.com
+ * Dirkjan Ochtman                dirkjan@ochtman.nl
+ * Ryan J Ollos                   ryan.j.ollos@gmail.com
+ * Jun Omae                       jun66j5@gmail.com
+ * Itamar Ostricher               itamarost@gmail.com
+ * Bas van Oostveen               v.oostveen@gmail.com
+ * Seungseo Park                  sseopark@gmail.com
+ * Cap Petschulat                 cap@cdres.com
+ * pkou                           pkou@ua.fm
+ * Alexandr Prudnikov             al.prudnikov@gmail.com
+ * Gruffudd Prys                  cbs201@bangor.ac.uk
+ * Mikko Rantalainen
+ * Mikael Relbe                   mikael@relbe.se
+ * Herbert Valerio Riedel         hvr@gnu.org
+ * Nicholas Riley                 sabi
+ * Armin Ronacher (mitsuhiko)     armin.ronacher@active-4.com
+ * Mark Rowe                      mark.rowe@bdash.net.nz
+ * Guy Rozendorn                  guy@rzn.co.il
+ * Jeroen Ruigrok van der Werven  asmodai@in-nomine.org
+ * Olliver Rutherfurd             ollie
+ * Andres Salomon                 dilinger@athenacr.com
+ * Michael Scherer                misc@mandrake.org
+ * Andreas Schrattenecker         vittorio
+ * Jan Schukat                    shookie@email.de
+ * Felix Schwarz                  felix.schwarz@oss.schwarz.eu
+ * Emmeran Seehuber               rototor@rototor.de
+ * Odd Simon Simonsen             simon-code@bvnetwork.no
+ * Noah Slater                    nslater@gmail.com
+ * Carlos Sobrinho
+ * Bill Soudan                    bill@soudan.net
+ * Ludvig Strigeus
+ * Peter Suter                    petsuter@gmail.com
+ * Alexandru Szasz
+ * Markus Tacker                  m@tacker.org
+ * Kim Taedong                    tdkim@unimo.co.kr
+ * Kyosuke Takayama               support@mc.neweb.ne.jp
+ * Rayentray Tappa
+ * Alec Thomas                    alec@swapoff.org
+ * Jani Tiainen                   redetin@luukku.com
+ * Ghassem Tofighi                tofighi@gmail.com
+ * Andrea Tomasini                andrea.tomasini@agile42.com
+ * Zilvinas Valinskas             zilvinas@gemtek.lt
+ * Jason Vasquez                  jason@mugfu.com
+ * Venčeslav Vezjak
+ * Leslie H. Watter
+ * Gregor Wegberg
+ * Jeff Weiss                     trac@jeffweiss.org
+ * Tính Trương Xuân
+ * Dmitry Yusupov                 dmitry_yus@yahoo.com
+
+The ever so elusive Anonymous.
+
+Diggs and Lula (official pawprint contributors)
+
+And everyone who keeps sending feedback, helping us improve Trac.
+
+----
+
+Our apologies to everyone we forgot to mention, but without whose invaluable
+help, Trac would not continue to rapidly evolve.

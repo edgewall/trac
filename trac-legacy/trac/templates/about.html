@@ -1,0 +1,86 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    # block title
+    ${_("About Trac")}
+    ${ super() }
+    # endblock title
+    </title>
+  </head>
+
+  <body>
+    # block content
+    <div id="content" class="about">
+
+      <a id="trac-logo" class="logo" href="https://trac.edgewall.org/">
+        <img src="${chrome.htdocs_location}trac_banner.png"
+             alt="Trac: Integrated SCM &amp; Project Management" />
+      </a>
+      <h1>${_("About Trac")}</h1>
+      <p>
+        # trans
+
+        Trac is a web-based software project management and bug/issue
+        tracking system emphasizing ease of use and low ceremony.
+        It provides an integrated Wiki, an interface to version control
+        systems, and a number of convenient ways to stay on top of events
+        and changes within a project.
+
+        # endtrans
+      </p>
+      <p>
+        # set online
+        <a href="https://trac.edgewall.org/wiki/TracLicense">${_("online")}</a>
+        # endset
+        # trans online
+
+        Trac is distributed under the modified BSD License.<br />  The
+        complete text of the license can be found ${online} as well as
+        in the <code>COPYING</code> file included in the distribution.
+
+        # endtrans
+      </p>
+      <a id="python-logo" class="logo" href="https://www.python.org">
+        <img src="${chrome.htdocs_location}python.png"
+             alt="${_('python powered')}" />
+      </a>
+      <p>
+        # set teo
+        <a href="https://trac.edgewall.org/">https://trac.edgewall.org/</a>
+        # endset
+        # trans teo
+
+        Please visit the Trac open source project: ${teo}
+
+        # endtrans
+      </p>
+      <p class="copyright">
+        # set edgewall
+        <a href="https://www.edgewall.org/">Edgewall Software</a>
+        # endset
+        # trans year = '2003-2023', edgewall
+
+        Copyright &copy; ${year} ${edgewall}
+
+        # endtrans
+      </p>
+
+      # include 'environment_info.html'
+
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

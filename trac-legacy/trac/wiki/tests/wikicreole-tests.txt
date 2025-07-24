@@ -1,0 +1,305 @@
+============================================================
+
+        Font styles for Creole 1.0
+
+============================== Bold
+**bold**
+------------------------------
+<p>
+<strong>bold</strong>
+</p>
+------------------------------
+============================== Italics
+//italics//
+------------------------------
+<p>
+<em>italics</em>
+</p>
+------------------------------
+============================== Bold and Italics
+Bold and italics should //be
+able// to cross lines.
+
+But, should //not be...
+
+...able// to cross paragraphs.
+------------------------------
+<p>
+Bold and italics should <em>be
+able</em> to cross lines.
+</p>
+<p>
+But, should <em>not be...
+</em></p>
+<p>
+...able<em> to cross paragraphs.
+</em></p>
+------------------------------
+============================== More Bold Italics (SKIP)
+**//bold italics//**
+//**bold italics**//
+//This is **also** good.//
+------------------------------
+<strong><em>bold italics</em></strong>
+<em><strong>bold italics</strong></em>
+<em>This is <strong>also</strong> good.</em>
+------------------------------
+============================== More Bold Italics
+**//bold italics//**
+//**bold italics**//
+//This is **also** good.//
+------------------------------
+<p>
+<strong><em>bold italics</em></strong>
+<em><strong>bold italics</strong></em>
+<em>This is <strong>also</strong> good.</em>
+</p>
+------------------------------
+============================== Bold Italics counter examples
+**//bold italics**//
+//**bold italics//**
+------------------------------
+<p>
+<strong><em>bold italics</em></strong><em></em>
+<em><strong>bold italics</strong></em><strong></strong>
+</p>
+------------------------------
+============================== Headings (WONTFIX)
+= Level 1 (largest) =
+== Level 2 ==
+=== Level 3 ===
+==== Level 4 ====
+===== Level 5 =====
+====== Level 6 ======
+=== Also level 3
+=== Also level 3 =
+=== Also level 3 ==
+=== **not** //parsed// ===
+------------------------------
+<h1>Level 1 (largest)</h1>
+<h2>Level 2</h2>
+<h3>Level 3</h3>
+<h4>Level 4</h4>
+<h5>Level 5</h5>
+<h6>Level 6</h6>
+<h3>Also level 3</h3>
+<h3>Also level 3</h3>
+<h3>Also level 3</h3>
+<h3>**not** //parsed//</h3>
+------------------------------
+============================== Headings (wikified headings + ids)
+= Level 1 (largest) =
+== Level 2 ==
+=== Level 3 ===
+==== Level 4 ====
+===== Level 5 =====
+====== Level 6 ======
+=== Also level 3
+=== Also level 3 =
+=== Also level 3 ==
+=== **not** //parsed// ===
+------------------------------
+<h1 class="section" id="Level1largest">Level 1 (largest)</h1>
+<h2 class="section" id="Level2">Level 2</h2>
+<h3 class="section" id="Level3">Level 3</h3>
+<h4 class="section" id="Level4">Level 4</h4>
+<h5 class="section" id="Level5">Level 5</h5>
+<h6 class="section" id="Level6">Level 6</h6>
+<h3 class="section" id="Alsolevel3">Also level 3</h3>
+<h3 class="section" id="Alsolevel31">Also level 3 =</h3>
+<h3 class="section" id="Alsolevel32">Also level 3 ==</h3>
+<h3 class="section" id="notparsed"><strong>not</strong> <em>parsed</em></h3>
+------------------------------
+============================== Links - Internal, External and Interwiki (SKIP)
+[[link]]
+[[MyBigPage|Go to my page]]
+[[http://www.wikicreole.org/]]
+http://www.rawlink.org/, http://www.another.rawlink.org
+[[http://www.wikicreole.org/|Visit the WikiCreole website]]
+[[Weird Stuff|**Weird** //Stuff//]]
+[[Ohana:WikiFamily]]
+------------------------------
+<a href="http://www.examplewiki.com/link">link</a>
+<a href="http://www.examplewiki.com/MyBigPage">Go to my page</a>
+<a href="http://www.wikicreole.org/">http://www.wikicreole.org/</a>
+<a href="http://www.rawlink.org/">http://www.rawlink.org/</a>, <a href="http://www.another.rawlink.org">http://www.another.rawlink.org</a>
+<a href="http://www.wikicreole.org/">Visit the WikiCreole website</a>
+<a href="http://www.examplewiki.com/Weird_Stuff">**Weird** //Stuff//</a>
+<a href="http://wikiohana.net/cgi-bin/wiki.pl/WikiFamily">Ohana:WikiFamily</a>
+------------------------------
+============================== Links - Internal, External and Interwiki
+[[link]]
+[[MyBigPage|Go to my page]]
+[[ticket:12536|""]]
+[[http://www.wikicreole.org/]]
+http://www.rawlink.org/, http://www.another.rawlink.org
+[[http://www.wikicreole.org/|Visit the WikiCreole website]]
+[[Weird Stuff|**Weird** //Stuff//]]
+[[trac:WikiFamily]]
+[[TRAC:WikiFamily]]
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/link" rel="nofollow">link</a>
+<a class="missing wiki" href="/wiki/MyBigPage" rel="nofollow">Go to my page</a>
+<a class="missing ticket"></a>
+<a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"></span>http://www.wikicreole.org/</a>
+<a class="ext-link" href="http://www.rawlink.org/"><span class="icon"></span>http://www.rawlink.org/</a>, <a class="ext-link" href="http://www.another.rawlink.org"><span class="icon"></span>http://www.another.rawlink.org</a>
+<a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"></span>Visit the WikiCreole website</a>
+<a class="missing wiki" href="/wiki/Weird%20Stuff" rel="nofollow">**Weird** //Stuff//</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in The Trac Project"><span class="icon"></span>WikiFamily</a>
+<a class="ext-link" href="https://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in The Trac Project"><span class="icon"></span>WikiFamily</a>
+</p>
+============================================================
+
+        Structural Markup for Creole 1.0
+
+============================== Paragraphs
+This is my text.
+
+This is more text.
+------------------------------
+<p>
+This is my text.
+</p>
+<p>
+This is more text.
+</p>
+------------------------------
+============================== Line breaks
+This is the first line,\\and this is the second.
+------------------------------
+<p>
+This is the first line,<br />and this is the second.
+</p>
+------------------------------
+============================== Unordered Lists (SKIP)
+* Item 1
+** Item 1.1
+* Item 2
+------------------------------
+<ul>
+<li>Item 1
+  <ul>
+  <li>Item 1.1</li>
+  </ul>
+</li>
+<li>Item 2</li>
+</ul>
+------------------------------
+============================== Ordered Lists (SKIP)
+# Item 1
+## Item 1.1
+# Item 2
+------------------------------
+<ol>
+<li>Item 1
+  <ol>
+  <li>Item 1.1</li>
+  </ol>
+</li>
+<li>Item 2</li>
+</ol>
+------------------------------
+============================== Horizontal Rule
+----
+------------------------------
+<hr />
+------------------------------
+============================== Image (inline) (SKIP)
+{{myimage.png|this is my image}}
+------------------------------
+<img src="myimage.png" alt="this is my image" />
+------------------------------
+============================== Tables (SKIP)
+|=Heading Col 1 |=Heading Col 2         |
+|Cell 1.1       |Two lines\\in Cell 1.2 |
+|Cell 2.1       |Cell 2.2               |
+------------------------------
+<table>
+<tr>
+<th>Heading Col 1</th>
+<th>Heading Col 2</th>
+</tr>
+<tr>
+<td>Cell 1.1</td>
+<td>Two lines<br />in Cell 1.2</td>
+</tr>
+<tr>
+<td>Cell 2.1</td>
+<td>Cell 2.2</td>
+</tr>
+</table>
+------------------------------
+============================== Nowiki (Preformatted)
+{{{
+//This// does **not** get [[formatted]]
+}}}
+Paragraph
+------------------------------
+<pre class="wiki">//This// does **not** get [[formatted]]
+</pre><p>
+Paragraph
+</p>
+============================== Nowiki (inline)
+Some examples of markup are: {{{** <em>this</em> ** }}}
+------------------------------
+<p>
+Some examples of markup are: <code>** &lt;em&gt;this&lt;/em&gt; ** </code>
+</p>
+------------------------------
+============================== Closing braces in nowiki (WONTFIX)
+{{{
+if (x != NULL) {
+  for (i = 0; i < size; i++) {
+    if (x[i] > 0) {
+      x[i]--;
+  }}}
+}}}
+------------------------------
+============================================================
+
+        Miscellaneous syntax for Creole 1.0
+
+============================== Escape Character (SKIP)
+~#1
+http://www.foo.com/~bar/
+~http://www.foo.com/
+CamelCaseLink
+~CamelCaseLink
+Example output:
+------------------------------
+#1
+http://www.foo.com/~bar/
+http://www.foo.com/
+CamelCaseLink
+CamelCaseLink
+------------------------------
+============================== Placeholder (SKIP)
+<<<x>>>
+------------------------------
+============================== Bold and/or italic links
+//[[Important page|this link is italicized]]//
+**[[Important page]]**
+//**[[Important page]]**//
+------------------------------
+<p>
+<em><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">this link is italicized</a></em>
+<strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page</a></strong>
+<em><strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page</a></strong></em>
+</p>
+------------------------------
+============================== Bold, Italics, Links, Pre in Lists (SKIP)
+* **bold** item
+* //italic// item
+# item about a [[certain page]]
+# {{{ //this// is **not** [[processed]] }}}
+------------------------------
+<ul>
+<li><strong>bold</strong> item</li>
+<li><em>italic</em> item</li>
+</ul>
+<ol>
+<li>item about a <a href="http://www.examplewiki.com/certain_page">certain page</a></li>
+<li><code>//this// is **not** [[processed]]</code></li>
+</ol>
+------------------------------

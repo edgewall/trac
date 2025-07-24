@@ -1,0 +1,73 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2010-2023 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at https://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at https://trac.edgewall.org/log/.
+
+import unittest
+
+from trac.db.util import sql_escape_percent
+from trac.test import makeSuite
+
+# TODO: test IterableCursor, ConnectionWrapper
+
+class SQLEscapeTestCase(unittest.TestCase):
+    def test_sql_escape_percent(self):
+        self.assertEqual("%", sql_escape_percent("%"))
+        self.assertEqual("'%%'", sql_escape_percent("'%'"))
+        self.assertEqual("''%''", sql_escape_percent("''%''"))
+        self.assertEqual("'''%%'''", sql_escape_percent("'''%'''"))
+        self.assertEqual("'''%%'", sql_escape_percent("'''%'"))
+        self.assertEqual("%s", sql_escape_percent("%s"))
+        self.assertEqual("% %", sql_escape_percent("% %"))
+        self.assertEqual("%s %i", sql_escape_percent("%s %i"))
+        self.assertEqual("'%%s'", sql_escape_percent("'%s'"))
+        self.assertEqual("'%% %%'", sql_escape_percent("'% %'"))
+        self.assertEqual("'%%s %%i'", sql_escape_percent("'%s %i'"))
+
+        self.assertEqual("%", sql_escape_percent("%"))
+        self.assertEqual("`%%`", sql_escape_percent("`%`"))
+        self.assertEqual("``%``", sql_escape_percent("``%``"))
+        self.assertEqual("```%%```", sql_escape_percent("```%```"))
+        self.assertEqual("```%%`", sql_escape_percent("```%`"))
+        self.assertEqual("%s", sql_escape_percent("%s"))
+        self.assertEqual("% %", sql_escape_percent("% %"))
+        self.assertEqual("%s %i", sql_escape_percent("%s %i"))
+        self.assertEqual("`%%s`", sql_escape_percent("`%s`"))
+        self.assertEqual("`%% %%`", sql_escape_percent("`% %`"))
+        self.assertEqual("`%%s %%i`", sql_escape_percent("`%s %i`"))
+
+        self.assertEqual('%', sql_escape_percent('%'))
+        self.assertEqual('"%%"', sql_escape_percent('"%"'))
+        self.assertEqual('""%""', sql_escape_percent('""%""'))
+        self.assertEqual('"""%%"""', sql_escape_percent('"""%"""'))
+        self.assertEqual('"""%%"', sql_escape_percent('"""%"'))
+        self.assertEqual('%s', sql_escape_percent('%s'))
+        self.assertEqual('% %', sql_escape_percent('% %'))
+        self.assertEqual('%s %i', sql_escape_percent('%s %i'))
+        self.assertEqual('"%%s"', sql_escape_percent('"%s"'))
+        self.assertEqual('"%% %%"', sql_escape_percent('"% %"'))
+        self.assertEqual('"%%s %%i"', sql_escape_percent('"%s %i"'))
+
+        self.assertEqual("""'%%?''"%%s`%%i`%%%%"%%S'""",
+                         sql_escape_percent("""'%?''"%s`%i`%%"%S'"""))
+        self.assertEqual("""`%%?``'%%s"%%i"%%%%'%%S`""",
+                         sql_escape_percent("""`%?``'%s"%i"%%'%S`"""))
+        self.assertEqual('''"%%?""`%%s'%%i'%%%%`%%S"''',
+                         sql_escape_percent('''"%?""`%s'%i'%%`%S"'''))
+
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(makeSuite(SQLEscapeTestCase))
+    return suite
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

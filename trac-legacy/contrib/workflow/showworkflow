@@ -1,0 +1,53 @@
+#!/bin/bash -x
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2007-2013 Edgewall Software
+# Copyright (C) 2007 Eli Carter <retracile@gmail.com>
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at https://trac.edgewall.com/license.html.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at https://trac.edgewall.org/.
+
+basedir=`dirname $0`
+options=""
+while [ $# -gt 1 ]; do
+    options="$options $1"
+    shift
+done
+config="$1"
+if [ ! -e "$config" ]; then
+    echo "Syntax error: requires a .ini file to work with." >&2
+    exit 1
+fi
+
+dot=`echo "$config" | sed 's/\.ini$/.dot/g'`
+ps=`echo "$config" | sed 's/\.ini$/.ps/g'`
+pdf=`echo "$config" | sed 's/\.ini$/.pdf/g'`
+png=`echo "$config" | sed 's/\.ini$/.png/g'`
+
+$basedir/workflow_parser.py $options "$config" "$dot"
+if [ $? -ne 0 ]; then
+    echo "Failed to parse \"$config\", exiting." >&2
+    exit 1
+fi
+
+cat "$dot"
+if [ "$OSTYPE" = cygwin ]; then
+    dot -T png -o "$png" "$dot"
+    cmd /c start $png
+else
+    dot -T ps -o "$ps" "$dot"
+    dot -T pdf -o "$pdf" "$dot"
+    # attempt to find a Linux pdf viewer
+    for viewer in kpdf okular evince; do
+        if which $viewer >/dev/null 2>&1; then
+            break
+        fi
+    done
+    $viewer "$pdf"
+fi

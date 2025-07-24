@@ -1,0 +1,19 @@
+This directory contains Trac's default Jinja2 templates.
+
+It is not advised to make local modifications to those files after
+installation, as they might be lost during the installation of a new
+Trac version.
+
+As an alternative, you can copy the templates you want to modify and
+place them in the templates/ directory of your Trac environment or in
+the location specified in the trac.ini file under the `[inherit]
+templates_dir` setting (the former having precedence over the latter).
+
+Nevertheless, if you use such a locally modified template, it will be
+easy to miss the functionality provided by a newer version of the
+template, after an upgrade. Because of that, the preferred way to
+alter the output would be to write plugins doing client-side
+JavaScript transformation (see for example tracopt/ticket/clone.py),
+as this is robust when upgrading to a newer version of Trac: you only
+have to check that your filtering still matches and that the
+transformation works as expected...

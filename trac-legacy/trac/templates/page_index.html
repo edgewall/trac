@@ -1,0 +1,49 @@
+{# Copyright (C) 2008-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+{# Displays a page index.
+
+  Arguments:
+  - `paginator` must be a trac.util.presentation.Paginator instance
+#}
+
+# if paginator.has_more_pages:
+<div class="paging">
+  # if paginator.has_previous_page:
+  #   with prevlink = chrome.links.prev[0]
+  <span class="previous">
+    <a href="${prevlink.href}" title="${prevlink.title}">&larr;</a>
+  </span>
+  #   endwith
+  # endif
+
+  # for page in paginator.shown_pages:
+  # if page.string == paginator.current_page.string:
+  <span>
+    <span class="${paginator.current_page.class}">${
+      paginator.current_page.string}</span>
+  </span>
+  # else:
+  <span>
+    <a href="${page.href}" title="${page.title}">${page.string}</a>
+  </span>
+  # endif
+  # endfor
+
+  # if paginator.has_next_page:
+  #   with nextlink = chrome.links.next[0]
+  <span class="next">
+    <a href="${nextlink.href}" title="${nextlink.title}">&rarr;</a>
+  </span>
+  #   endwith
+  # endif
+</div>
+#endif

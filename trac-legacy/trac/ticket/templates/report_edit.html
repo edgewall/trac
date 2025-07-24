@@ -1,0 +1,135 @@
+{# Copyright (C) 2006-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+# extends 'layout.html'
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    # block title
+    #   set is_query = report.sql.startswith('query:')
+    #   set new_report = action == 'new' and not is_query
+    #   if new_report:
+    ${_("Create New Report")}
+    #   else:
+    ${_("Edit Report {%(id)s} %(title)s", id=report.id, title=report.title)}
+    #   endif
+    ${ super() }
+    # endblock title
+    </title>
+    # block head
+    ${ super() }
+    <script>
+      jQuery(function($) {
+        $("#description").autoPreview("${href.wiki_render()}", {
+            realm: "report", id: "${report.id}"
+          }, $("#preview").showOnPreview());
+      });
+    </script>
+    # endblock head
+  </head>
+
+  <body>
+    # block content
+    #   set is_query = report.sql.startswith('query:')
+    #   set new_report = action == 'new' and not is_query
+    #   set new_query = action == 'new' and is_query
+    <div id="content" class="report edit">
+      <h1>
+        # if new_report:
+        ${_("New Report")}
+        # elif new_query:
+        ${_("New Query")}
+        # else:
+        ${report.title}
+        # endif
+      </h1>
+      <form id="edit_report" method="post" action="${href.report(report.id)}">
+        <fieldset>
+          <legend>
+            # if new_report:
+            ${_("Create Report:")}
+            # elif new_query:
+            ${_("Create Query:")}
+            # elif is_query:
+            ${_("Modify Query:")}
+            # else:
+            ${_("Modify Report:")}
+            # endif
+          </legend>
+          ${jmacros.form_token_input()}
+          <input type="hidden" name="action" value="${action}"/>
+          <div class="field">
+            <label for="title">${_("Title:")}</label>
+            <input type="text" id="title" name="title"
+                   class="trac-fullwidth trac-autofocus"
+                   value="${report.title}"/>
+          </div>
+          <div class="field">
+            <label for="description">${_("Description:")}</label>
+            <textarea id="description" name="description" rows="10" cols="78"
+                      class="wikitext trac-fullwidth trac-resizable">
+${report.description}</textarea>
+            <label for="description" class="trac-textarea-hint">
+              # trans wikiformatting = jmacros.wikiformatting_link()
+
+              You may use ${wikiformatting} here.
+
+              # endtrans
+            </label>
+          </div>
+          <div id="preview" class="trac-content trac-draft" style="display:none">
+          </div>
+          <div class="field">
+            # if error:
+            <div class="system-message">
+              <strong>${_("Error:")}</strong> ${error}
+            </div>
+            # endif
+            <label for="query">${_("Query:")}</label>
+            <textarea id="query" name="query" rows="20" cols="78"
+                      class="trac-fullwidth trac-resizable">
+${report.sql}</textarea>
+            <label for="query" class="trac-textarea-hint">
+              # set trac_query
+              <a tabindex="42" href="${href.wiki('TracQuery')
+                                       + '#QueryLanguage'}">TracQuery</a>
+              # endset
+              # set query_prefix
+              <code>query:</code>
+              # endset
+              # trans query_prefix, trac_query
+
+              Can be either SQL or, if starting with ${query_prefix},
+              a ${trac_query} expression.
+
+              # endtrans
+            </label>
+          </div>
+        </fieldset>
+        <div class="buttons">
+          <input type="submit" class="trac-disable-on-submit"
+                 value="${_('Save query') if is_query else _('Save report')}"/>
+          <input type="submit" name="cancel" value="${_('Cancel')}"/>
+        </div>
+      </form>
+
+      # call(note, page) jmacros.wikihelp('TracReports'):
+      #   trans note, page
+
+      ${note} See ${page} for help on using and creating reports.
+
+      #   endtrans
+      # endcall
+    </div>
+    ${ super() }
+    # endblock content
+  </body>
+</html>

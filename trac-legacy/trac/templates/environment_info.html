@@ -1,0 +1,143 @@
+{# Copyright (C) 2014-2023 Edgewall Software
+
+  This software is licensed as described in the file COPYING, which
+  you should have received as part of this distribution. The terms
+  are also available at https://trac.edgewall.org/wiki/TracLicense.
+
+  This software consists of voluntary contributions made by many
+  individuals. For the exact contribution history, see the revision
+  history and logs, available at https://trac.edgewall.org/.
+#}
+
+## Display system information.
+
+{# Arguments:
+ - system_info: the output of `Environment.system_info`.
+ - plugins: the output of `get_plugin_info`.
+ - config: the output of `get_configinfo`.
+#}
+# if system_info or plugins or config:
+<div id="environmentinfo">
+  <hr />
+
+  # if system_info:
+  <div id="systeminfo">
+    <script>
+      jQuery(function ($) {
+        $("#systeminfo table")
+          .before("<p>User Agent: <code>" + navigator.userAgent + "</code></p>")
+          .append("<tr><th>jQuery</th><td>" + $().jquery + "</td></tr>" +
+                  "<tr><th>jQuery UI</th><td>" + $.ui.version + "</td></tr>" +
+                  "<tr><th>jQuery Timepicker</th><td>" + $.timepicker.version +
+                  "</td></tr>");
+      });
+    </script>
+
+    <h2>${_("System Information")}</h2>
+    <table class="listing">
+      <thead><tr><th>${_("Package")}</th><th>${_("Version")}</th></tr></thead>
+      <tbody>
+        # for name, value in system_info:
+        <tr>
+          <th>${name}</th>
+          <td>${value}</td>
+        </tr>
+        # endfor
+      </tbody>
+    </table>
+  </div>
+  # endif
+
+  # if plugins:
+  <div id="plugins">
+    <h2>${_("Installed Plugins")}</h2>
+    <table class="listing">
+      <thead><tr>
+          <th>${_("Name")}</th>
+          <th>${_("Version")}</th>
+          <th>${_("Location")}</th>
+      </tr></thead>
+      <tbody>
+        # for plugin in plugins:
+        #   set components = plugin.modules|map(attribute='components')|flatten
+        <tr ${{'class': 'disabled' if not components|selectattr('enabled')}
+            |htmlattr}>
+          # set url = (plugin.info.home_page or
+                       plugin.info.author_email and
+                       'mailto:' + plugin.info.author_email)
+          <th>
+            # if url:
+            <a href="${url}">${plugin.name}</a>
+            # else:
+            ${plugin.name}
+            # endif
+          </th>
+          <td>${plugin.version or _('N/A')}</td>
+          <td class="file">
+            # if 'frame_idx' in plugin:
+            <a href="#frame${plugin.frame_idx}">${plugin.path}</a>
+            # else:
+            ${plugin.path}
+            # endif
+          </td>
+        </tr>
+        # endfor
+      </tbody>
+    </table>
+  </div>
+  # endif
+
+  # if interface:
+  <div id="interface">
+    <h2>${_("Interface Customization")}</h2>
+    <table class="listing">
+      <tr>
+        <th class="section">${_("Site templates")}</th>
+        <td class="file">${' '.join(interface['site-templates'])}</td>
+      </tr>
+      <tr>
+        <th class="section">${_("Shared templates")}</th>
+        <td class="file">${' '.join(interface['shared-templates'])}</td>
+      </tr>
+      <tr>
+        <th class="section">${_("Site static resources")}</th>
+        <td class="file">${' '.join(interface['site-htdocs'])}</td>
+      </tr>
+      <tr>
+        <th class="section">${_("Shared static resources")}</th>
+        <td class="file">${' '.join(interface['shared-htdocs'])}</td>
+      </tr>
+    </table>
+  </div>
+  # endif
+
+  # if config:
+  <div id="config">
+    <h2>${_("Configuration")}</h2>
+    <table class="listing">
+      <thead>
+        <tr>
+          <th class="section">${_("Section")}</th>
+          <th class="name">${_("Name")}</th>
+          <th class="value">${_("Value")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        # for section in config:
+        #   for option in section.options:
+        <tr ${{'class': 'modified' if option.modified}|htmlattr}>
+          # if loop.first:
+          <th class="section"
+              rowspan="${len(section.options)}">${section.name}</th>
+          # endif
+          <td class="name">${option.name}</td>
+          <td class="value">${option.value}</td>
+        </tr>
+        #  endfor
+        # endfor
+      </tbody>
+    </table>
+  </div>
+  # endif
+</div>
+# endif

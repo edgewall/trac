@@ -1,0 +1,136 @@
+= The Trac Ticket System
+[[TracGuideToc]]
+
+As the central project management element of Trac, tickets can be used for '''project tasks''', '''feature requests''', '''bug reports''' and '''software support issues''', among others.
+
+As with the TracWiki, this subsystem has been designed to make user contribution and participation as simple as possible. Tickets can be edited, annotated, assigned, prioritized and discussed.
+
+[=#edit-permissions]
+The default installation doesn't permit to non-authenticated users ("anonymous" users) to change anything, even to comment on an issue, for obvious spam prevention reasons. Check the local contributing policy, or contact your local Trac administrator.
+
+== Ticket Fields
+
+A ticket contains the following information:
+
+ * '''Summary''' — Simple text without WikiFormatting.
+ * '''Description''' — The body of the ticket. Accepts WikiFormatting.
+ * '''Reporter''' — The author of the ticket.
+ * '''Type''' — The default types are `defect`, `enhancement` and `task`.
+ * '''Component''' — The project module or subsystem that this ticket concerns.
+ * '''Version''' — Version of the project that this ticket pertains to.
+ * '''Keywords''' — Useful for searching and report generation.
+ * '''Priority''' — The default priorities are `trivial`, `minor`, `major`, `critical` and `blocker`. A dropdown list when multiple priorities are defined.
+ * '''Severity''' — Similar to Priority, but the distinction may be useful for some projects. No severities are defined by default, therefore the field will be hidden from the ticket form.
+ * '''Milestone''' — Milestone in which the ticket will be resolved. A dropdown list.
+ * '''Assigned to/Owner''' — Principal person responsible for handling the issue.
+ * '''Cc''' — A comma-separated list of other users or email addresses to notify when changes are made to a ticket.
+ * '''Resolution''' — Reason why a ticket was closed. Default values are `fixed`, `invalid`, `wontfix`, `duplicate`, `worksforme`.
+ * '''Status''' — The statuses are defined in the [TracWorkflow#BasicTicketWorkflowCustomization ticket workflow]. For the default workflow the statuses are `new`, `assigned`, `accepted`, `closed` and `reopened`.
+
+'''Notes:'''
+ - The type, [trac:TicketComponent component], [TracRoadmap milestone], version, priority, severity fields and resolution can be managed using [TracAdmin trac-admin] or !WebAdmin.
+
+== Changing and Commenting Tickets
+
+With appropriate permissions, tickets can be commented and ticket properties changed. When viewing a ticket, the history of changes will appear below the ticket properties box.
+
+By default an authenticated user can edit their own ticket comments. Users with `TICKET_EDIT_COMMENT` can edit any comment.
+
+Comment editing is meant for making small corrections to comments, like fixing formatting or spelling errors. For major edits, you should be adding a new comment instead. Editing a comment will not produce a new entry on [/timeline], while entering a new comment or other changes will do.
+
+All edits (field changes, new comments, comment edits) update the "last changed" time of the ticket.
+
+'''Note:'''
+ - TracLinks and WikiFormatting can be used in the ticket description and comments. Use TracLinks to refer to other issues, changesets and files.
+
+ - See TracNotification for how to configure email notifications on ticket changes.
+
+ - See TracWorkflow for information about the state transitions (ticket lifecycle), and customization of the workflow.
+
+== Hiding Fields
+
+Many of the default ticket fields can be hidden from the ticket web interface by removing all the possible values through the !WebAdmin or using [TracAdmin trac-admin]. This only applies to drop-down lists: ''type'', ''priority'', ''severity'', ''component'', ''version'' and ''milestone''.
+
+== Adding Custom Fields
+
+Trac lets you add custom ticket fields. See TracTicketsCustomFields for more information.
+
+== Default Values for Drop-Down Fields
+
+The option selected by default for the various drop-down fields can be set in [TracIni trac.ini]. Refer to the values prefixed with `default_` in the [[TracIni#ticket-section|"[ticket]"]] section. The default value of several fields can also be set through the !WebAdmin.
+
+If any of these options are omitted, the default value will either be the first in the list, or an empty value when allowed. The [[TracIni#ticket-allowed_empty_fields-option|allowed_empty_fields]] option determines which fields may have an empty value.
+
+== Assign-to as Drop-Down List
+
+If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [TracIni trac.ini] to `true`. In that case, Trac will populate the list with all users who **have an authenticated session** and possess the `TICKET_MODIFY` [TracPermissions permissions].
+
+An authenticated session will be created the first time a user authenticates with the project. You can manually add an authenticated session using the ["TracAdmin#?session add" trac-admin] `session add` command. The `:1` suffix on the session id (i.e. username) is the key to creating an authenticated session:
+{{{#!sh
+trac-admin /path/to/projenv session add <sid>:1 [name] [email]
+}}}
+
+You may find the dropdown list is //overpopulated// with users that are no longer active in the project. Revoking authentication privileges will not remove the session data that is used to populate the dropdown list. The [TracAdmin trac-admin] command can be used to list and remove sessions:
+
+ - List all sessions:
+{{{#!sh
+trac-admin /path/to/projenv session list
+}}}
+ - Remove a session:
+{{{#!sh
+trac-admin /path/to/projenv session delete SID
+}}}
+
+Alternatively, you can just revoke `TICKET_MODIFY` from users that you don't want to be included in the list. However, that will not be possible if you've granted `TICKET_MODIFY` to all //anonymous// or //authenticated// users.
+
+'''Notes:'''
+ - If you need more flexibility, then use subclass `ConfigurableTicketWorkflow` and override the `get_allowed_owners` method (see [trac:#12807 Trac ticket 12807]).
+
+ - Activating this option may cause some performance degradation. Read more about this in the [trac:TracPerformance#Configuration Trac performance] page.
+
+== Preset Values for New Tickets
+
+To create a link to the new-ticket form filled with preset values, you need to call the `/newticket?` URL with `variable=value` separated by `&`. Possible variables are:
+
+ * '''type''' — The type droplist.
+ * '''reporter''' — Name or email of the reporter.
+ * '''summary''' — Summary line for the ticket.
+ * '''description''' — Long description of the ticket.
+ * '''component''' — The component dropdown list.
+ * '''version''' — The version dropdown list.
+ * '''severity''' — The severity dropdown list.
+ * '''keywords''' — The keywords or tags.
+ * '''priority''' — The priority dropdown list.
+ * '''milestone''' — The milestone dropdown list.
+ * '''cc''' — The list of emails for notifying about the ticket change.
+
+Example: `[/newticket?summary=Compile%20Error&version=1.0&component=gui]`
+
+To set the ticket owner the workflow action may also need to be selected. For the [TracWorkflow#TicketCreateAction default workflow], the //create and assign// action can be selected with `action=create_and_assign` and the owner specified by assigning `action_create_and_assign_reassign_owner`. Alternatively, you could avoid needing to select the action by using the [TracWorkflow#BasicTicketWorkflowCustomization default attribute] to make //create and assign// the default action.
+
+For other custom workflow actions, determine the variable names by inspecting the `name` attribute of the //action// radio button and the //owner// input or select element.
+
+== Deleting Tickets #deleter
+
+Ticket delete and ticket change delete functions are enabled through an optional component. To enable the functionality edit the [TracIni#components-section "[components]"] section of TracIni:
+{{{#!ini
+[components]
+tracopt.ticket.deleter.* = enabled
+}}}
+
+The //Delete// buttons appears next to the //Reply// buttons in the ticket description and ticket change areas. `TICKET_ADMIN` permission is required for deleting tickets and ticket changes.
+
+Tickets and ticket changes can also be deleted using the TracAdmin `ticket remove` and `ticket remove_comment` commands.
+
+== Cloning Tickets #cloner
+
+The ticket clone function is enabled through an optional component. To enable the functionality edit the [TracIni#components-section "[components]"] section of TracIni:
+{{{#!ini
+[components]
+tracopt.ticket.clone.* = enabled
+}}}
+
+The //Clone// buttons appears next to the //Reply// buttons in the ticket description and ticket change areas. The ticket summary, description and properties are cloned, with minor modifications such as changing the ticket reporter to the currently authenticated user.
+
+----
+See also: TracTicketsCustomFields, TracNotification, TracReports, TracQuery, TracRepositoryAdmin#CommitTicketUpdater
