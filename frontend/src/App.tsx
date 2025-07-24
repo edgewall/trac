@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import TracTest from './components/TracTest';
 
 interface AppProps {}
 
@@ -30,6 +31,9 @@ const App: React.FC<AppProps> = () => {
           {apiStatus}
         </div>
       </header>
+      <main>
+        <TracTest />
+      </main>
     </div>
   );
 };

@@ -53,6 +53,11 @@ app.add_middleware(
 static_dir = "/app/static"
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    
+    # Mount assets directory separately for direct access
+    assets_dir = "/app/static/assets"
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
 
 @app.get("/")
@@ -79,7 +84,12 @@ async def test_trac_integration() -> Dict[str, Any]:
         from trac.env import Environment
         
         # Path to test Trac environment
-        trac_env_path = os.path.join(project_root, "test-projects", "my-drone-project")
+        # In Docker container, test-projects is at /app/test-projects
+        if os.path.exists("/app/test-projects"):
+            trac_env_path = "/app/test-projects/my-drone-project"
+        else:
+            # Development mode - relative to project root
+            trac_env_path = os.path.join(project_root, "test-projects", "my-drone-project")
         
         # Initialize Trac environment
         env = Environment(trac_env_path)
