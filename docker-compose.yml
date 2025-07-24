@@ -1,60 +1,25 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: hobbytrack-backend
+  hobbytrack:
+    build: .
+    container_name: hobbytrack-app
     ports:
       - "8000:8000"
-    environment:
-      - PYTHONPATH=/app
-      - ENVIRONMENT=development
     volumes:
-      - ./backend/app:/app/app
-      - ./trac-legacy:/app/trac-legacy:ro  # Mount legacy Trac code as read-only
-    networks:
-      - hobbytrack-network
+      # SQLite database persistence
+      - hobbytrack_data:/app/data
+    environment:
+      - ENV=production
+      - PYTHONPATH=/app
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 30s
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: hobbytrack-frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      backend:
-        condition: service_healthy
-    networks:
-      - hobbytrack-network
-    restart: unless-stopped
-
-  # Database service (SQLite will be file-based, but adding for future extensions)
-  # database:
-  #   image: postgres:15-alpine
-  #   container_name: hobbytrack-db
-  #   environment:
-  #     POSTGRES_DB: hobbytrack
-  #     POSTGRES_USER: hobbytrack
-  #     POSTGRES_PASSWORD: hobbytrack_password
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   networks:
-  #     - hobbytrack-network
-  #   restart: unless-stopped
-
-networks:
-  hobbytrack-network:
-    driver: bridge
-
-# volumes:
-#   postgres_data: 
+volumes:
+  hobbytrack_data:
+    driver: local 
