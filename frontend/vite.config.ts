@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
@@ -8,8 +9,6 @@ export default defineConfig({
   
   // Development server configuration
   server: {
-    port: 3000,
-    open: true,
     proxy: {
       // Proxy API requests to FastAPI backend
       '/api': {
@@ -18,6 +17,19 @@ export default defineConfig({
         secure: false,
       },
     },
+  },
+
+  // Add Vitest configuration
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/setupTests.ts'],
+    css: true,
+  },
+
+  // Environment variables for testing
+  define: {
+    global: 'globalThis',
   },
 
   // Build configuration
@@ -44,11 +56,6 @@ export default defineConfig({
       '@types': resolve(__dirname, './src/types'),
       '@utils': resolve(__dirname, './src/utils'),
     },
-  },
-
-  // Define global constants
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
 
   // Optimized dependency pre-bundling
