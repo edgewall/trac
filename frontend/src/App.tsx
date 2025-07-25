@@ -9,7 +9,7 @@ import {
   useUser,
 } from '@clerk/clerk-react';
 import './App.css';
-import TracTest from './components/TracTest';
+import TicketList from './components/TicketList';
 
 interface AppProps {}
 
@@ -88,7 +88,7 @@ const App: React.FC<AppProps> = () => {
       
       <main>
         <SignedIn>
-          <TracTest />
+          <TicketList />
         </SignedIn>
       </main>
     </div>
