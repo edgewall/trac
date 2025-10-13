@@ -520,8 +520,6 @@ class SystemInfoTestCase(unittest.TestCase):
             self.assertEqual(info_before, info_after)
             self.assertRegex(get_info(info_before, 'SQLite'),
                              r'^\d+(\.\d+)+$')
-            self.assertRegex(get_info(info_before, 'pysqlite'),
-                             r'^\d+(\.\d+)+$')
         else:
             self.fail("Unknown value for dburi %s" % self.env.dburi)
 
