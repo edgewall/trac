@@ -37,13 +37,13 @@ try:
     import pysqlite3.dbapi2 as sqlite
 except ImportError:
     import sqlite3 as sqlite
+    pysqlite3_version = None
+else:
+    pysqlite3_version = get_pkginfo(sqlite).get('version', '%d.%d.%s' %
+                                                           sqlite.version_info)
 
 sqlite_version = sqlite.sqlite_version_info
 sqlite_version_string = sqlite.sqlite_version
-pysqlite_version = sqlite.version_info
-pysqlite_version_string = get_pkginfo(sqlite).get('version',
-                                                  '%d.%d.%s'
-                                                  % pysqlite_version)
 min_sqlite_version = (3, 0, 0)
 
 
@@ -273,7 +273,8 @@ class SQLiteConnector(Component):
 
     def get_system_info(self):
         yield 'SQLite', sqlite_version_string
-        yield 'pysqlite', pysqlite_version_string
+        if pysqlite3_version:
+            yield 'pysqlite3', pysqlite3_version
 
     @lazy
     def _extensions(self):
