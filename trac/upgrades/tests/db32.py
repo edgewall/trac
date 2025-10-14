@@ -146,13 +146,15 @@ class UpgradeTestCase(unittest.TestCase):
         config.set('projects_list', projects_list)
         config.set('projects_base', projects_base)
         config.set('projects_url', projects_url)
+
+        abspath = os.path.abspath
         db_provider = DbRepositoryProvider(self.env)
-        db_provider.add_repository('repos3', '/var/git/repos3', 'git')
-        db_provider.add_repository('repos4', '/var/git/repos4', 'git')
+        db_provider.add_repository('repos3', abspath('/var/git/repos3'), 'git')
+        db_provider.add_repository('repos4', abspath('/var/git/repos4'), 'git')
         config = self.env.config['repositories']
-        config.set('repos5.dir', '/var/svn/repos4')
+        config.set('repos5.dir', abspath('/var/svn/repos4'))
         config.set('repos5.type', 'svn')
-        config.set('repos6.dir', '/var/svn/repos5')
+        config.set('repos6.dir', abspath('/var/svn/repos5'))
         config.set('repos6.type', 'svn')
         self.env.disable_component(GitwebProjectsRepositoryProvider)
         self.env.disable_component(DbRepositoryProvider)

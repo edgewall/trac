@@ -12,6 +12,7 @@
 # history and logs, available at https://trac.edgewall.org/.
 
 from datetime import datetime, timedelta
+import os.path
 import unittest
 
 from trac.core import Component, TracError, implements
@@ -173,8 +174,9 @@ class LogModuleTestCase(RequestHandlerPermissionsTestCaseBase):
     def setUp(self):
         self._super = super()
         self._super.setUp(LogModule)
+        repodir = os.path.abspath('/')
         provider = DbRepositoryProvider(self.env)
-        provider.add_repository('mock', '/', mock_repotype)
+        provider.add_repository('mock', repodir, mock_repotype)
 
     def test_default_repository_not_configured(self):
         """Test for regression of https://trac.edgewall.org/ticket/11599."""
