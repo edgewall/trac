@@ -13,6 +13,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import os
+import re
 import tempfile
 import unittest
 
@@ -37,12 +38,18 @@ class TestAdminInvalidRepository(FunctionalTestCaseSetup):
         """Repository with an invalid path is rendered with an error
         message on the repository admin page.
         """
+        if os.name == 'nt':
+            repodir = r'C:\the\invalid\path'
+            breakable = r'C:\{0}the\{0}invalid\{0}path'.format('\u200b')
+        else:
+            repodir = '/the/invalid/path'
+            breakable = '/the/\u200binvalid/\u200bpath'
         self._tester.go_to_admin("Repositories")
         tc.formvalue('trac-addrepos', 'name', 'InvalidRepos')
-        tc.formvalue('trac-addrepos', 'dir', '/the/invalid/path')
+        tc.formvalue('trac-addrepos', 'dir', repodir)
         tc.submit()
-        tc.find(('<span class="missing" title="[^"]*">'
-                 '/the/\u200binvalid/\u200bpath</span>'))
+        tc.find('<span class="missing" title="[^"]*">%s</span>' %
+                re.escape(breakable))
 
 
 class TestEmptySvnRepo(FunctionalTestCaseSetup):
@@ -161,7 +168,8 @@ class RegressionTestTicket11186(FunctionalTestCaseSetup):
         """
         def add_repository(name):
             tc.formvalue('trac-addrepos', 'name', name)
-            tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % name)
+            tc.formvalue('trac-addrepos', 'dir',
+                         os.path.abspath('/var/svn/%s' % name))
             tc.submit()
 
         def go_to_repository_admin():
@@ -182,7 +190,8 @@ class RegressionTestTicket11186(FunctionalTestCaseSetup):
         # TracError raised if repository already defined in trac.ini.
         name2 = random_word().lower()
         env = self._testenv.get_trac_environment()
-        env.config.set('repositories', '%s.dir' % name2, '/var/svn/%s' % name2)
+        env.config.set('repositories', '%s.dir' % name2,
+                       os.path.abspath('/var/svn/%s' % name2))
         env.config.save()
         go_to_repository_admin()
         add_repository(name2)
@@ -204,7 +213,8 @@ class RegressionTestTicket11186Alias(FunctionalTestCaseSetup):
         target = '%s_repos' % word
         name = '%s_alias' % word
         tc.formvalue('trac-addrepos', 'name', target)
-        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % target)
+        tc.formvalue('trac-addrepos', 'dir',
+                     os.path.abspath('/var/svn/%s' % target))
         tc.submit()
         # Jinja2 tc.find('The repository &#34;%s&#34; has been added.' % target)
         tc.find('The repository "%s" has been added.' % target)
@@ -249,12 +259,14 @@ class RegressionTestTicket11194(FunctionalTestCaseSetup):
         word = random_word()
         names = ['%s_%d' % (word, n) for n in range(3)]
         tc.formvalue('trac-addrepos', 'name', names[0])
-        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % names[0])
+        tc.formvalue('trac-addrepos', 'dir',
+                     os.path.abspath('/var/svn/%s' % names[0]))
         tc.submit()
         tc.notfind(internal_error)
 
         tc.formvalue('trac-addrepos', 'name', names[1])
-        tc.formvalue('trac-addrepos', 'dir', '/var/svn/%s' % names[1])
+        tc.formvalue('trac-addrepos', 'dir',
+                     os.path.abspath('/var/svn/%s' % names[1]))
         tc.submit()
         tc.notfind(internal_error)
 

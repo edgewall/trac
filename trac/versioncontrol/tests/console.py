@@ -12,6 +12,7 @@
 # history and logs, available at https://trac.edgewall.org/log/.
 
 import datetime
+import os.path
 import unittest
 
 import trac.versioncontrol.admin
@@ -58,8 +59,9 @@ class TracAdminTestCase(TracAdminTestCaseBase):
                                    disable=('trac.tests.*',))
         self.admin = TracAdmin()
         self.admin.env_set('', self.env)
+        repodir = os.path.abspath('/')
         provider = DbRepositoryProvider(self.env)
-        provider.add_repository('mock', '/', 'mock_type')
+        provider.add_repository('mock', repodir, 'mock_type')
 
     def tearDown(self):
         self.env = None

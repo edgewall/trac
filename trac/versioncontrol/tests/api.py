@@ -14,6 +14,7 @@
 #
 # Author: Eli Carter <eli.carter@commprove.com>
 
+import os.path
 import unittest
 from datetime import datetime
 
@@ -159,8 +160,9 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
                            reponame, target)
 
     def test_add_alias(self):
-        self.db_provider.add_repository('', '/path/to/repos')
-        self.db_provider.add_repository('target', '/path/to/repos')
+        repodir = os.path.abspath('/path/to/repos')
+        self.db_provider.add_repository('', repodir)
+        self.db_provider.add_repository('target', repodir)
         self.db_provider.add_alias('blah1', '')
         self.db_provider.add_alias('blah2', '(default)')
         self.db_provider.add_alias('blah3', 'target')
@@ -185,10 +187,11 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
         self.do_alias('(default)', 'blah', 'Repository "blah" doesn\'t exist')
 
     def test_add_alias_to_repository_in_tracini(self):
+        repodir = os.path.abspath('/path/to/repos')
         config = self.env.config
-        config.set('repositories', '.dir', '/path/to/repos')
+        config.set('repositories', '.dir', repodir)
         config.set('repositories', '.type', '')
-        config.set('repositories', 'target.dir', '/path/to/repos')
+        config.set('repositories', 'target.dir', repodir)
         config.set('repositories', 'target.type', '')
         config.set('repositories', 'alias-default.alias', '')
         config.set('repositories', 'alias-target.alias', 'target')
@@ -203,8 +206,9 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
         self.assertEqual('target', repositories['blah2']['alias'])
 
     def test_add_alias_to_alias(self):
+        repodir = os.path.abspath('/path/to/repos')
         config = self.env.config
-        config.set('repositories', 'target.dir', '/path/to/repos')
+        config.set('repositories', 'target.dir', repodir)
         config.set('repositories', 'target.type', '')
         config.set('repositories', '.alias', 'target')
         config.set('repositories', 'alias.alias', 'target')
@@ -216,8 +220,9 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
                       'Cannot create an alias to the alias "alias"')
 
     def test_remove_repository_used_in_aliases(self):
-        self.db_provider.add_repository('', '/path/to/repos')
-        self.db_provider.add_repository('blah', '/path/to/repos')
+        repodir = os.path.abspath('/path/to/repos')
+        self.db_provider.add_repository('', repodir)
+        self.db_provider.add_repository('blah', repodir)
         self.db_provider.add_alias('alias-blah', 'blah')
         self.db_provider.add_alias('alias-default', '')
         self.do_remove('', 'Cannot remove the repository "(default)" used in '
@@ -228,8 +233,9 @@ class DbRepositoryProviderTestCase(unittest.TestCase):
                                'aliases')
 
     def test_modify_repository_used_in_aliases(self):
-        self.db_provider.add_repository('', '/path/to/repos')
-        self.db_provider.add_repository('blah', '/path/to/repos')
+        repodir = os.path.abspath('/path/to/repos')
+        self.db_provider.add_repository('', repodir)
+        self.db_provider.add_repository('blah', repodir)
         self.db_provider.add_alias('alias-blah', 'blah')
         self.db_provider.add_alias('alias-default', '')
         self.do_modify('', {'name': 'new-name'},
@@ -250,7 +256,8 @@ class RepositoryManagerTestCase(unittest.TestCase):
 
     def test_pre_process_request_sync_skipped_for_invalid_connector(self):
         """Repository synchronization is skipped for an invalid connector."""
-        self.env.config.set('repositories', 'repos.dir', '/some/path')
+        repodir = os.path.abspath('/some/path')
+        self.env.config.set('repositories', 'repos.dir', repodir)
         self.env.config.set('repositories', 'repos.type', 'invalid')
         self.env.config.set('repositories', 'repos.sync_per_request', True)
         req = MockRequest(self.env)

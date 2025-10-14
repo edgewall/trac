@@ -12,6 +12,7 @@
 # history and logs, available at https://trac.edgewall.org/.
 
 import io
+import os.path
 import posixpath
 import unittest
 import zipfile
@@ -142,11 +143,12 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
 
     def setUp(self):
         super().setUp(BrowserModule)
+        repodir = os.path.abspath('/')
         provider = DbRepositoryProvider(self.env)
-        provider.add_repository('(default)', '/', 'mock')
-        provider.add_repository('allow', '/', 'mock')
-        provider.add_repository('deny', '/', 'mock')
-        provider.add_repository('raise', '/', 'mock')
+        provider.add_repository('(default)', repodir, 'mock')
+        provider.add_repository('allow', repodir, 'mock')
+        provider.add_repository('deny', repodir, 'mock')
+        provider.add_repository('raise', repodir, 'mock')
 
     def tearDown(self):
         RepositoryManager(self.env).reload_repositories()
@@ -283,8 +285,9 @@ anonymous = !BROWSER_VIEW, !FILE_VIEW
             self.assertEqual('', e.resource.parent.id)
 
     def test_node_with_blame_view(self):
+        repodir = os.path.abspath('/')
         provider = DbRepositoryProvider(self.env)
-        provider.add_repository('metachars-&<>"\'-', '/', 'mock')
+        provider.add_repository('metachars-&<>"\'-', repodir, 'mock')
         self.grant_perm('anonymous', 'BROWSER_VIEW', 'FILE_VIEW')
 
         req = MockRequest(self.env, authname='anonymous',
