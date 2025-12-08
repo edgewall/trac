@@ -140,6 +140,6 @@ venvdir="$HOME/venv"
 python -m venv "$venvdir"
 python="$venvdir/bin/python"
 . "$venvdir/bin/activate"
-"$python" -m pip install --upgrade pip setuptools
+"$python" -m pip install --upgrade pip
 
 run_tests

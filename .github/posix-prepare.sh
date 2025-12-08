@@ -100,7 +100,8 @@ venvdir="$HOME/venv"
 python -m venv "$venvdir"
 python="$venvdir/bin/python"
 . "$venvdir/bin/activate"
-"$python" -m pip install --upgrade pip setuptools
+"$python" -m pip install --upgrade pip
+"$python" -m pip install -r .github/requirements-prepare.txt
 sitedir="$("$python" -c 'import sysconfig as s; print(s.get_path("purelib"))')"
 svnver="$(svn --version --quiet)"
 svnurl="https://archive.apache.org/dist/subversion/subversion-$svnver.tar.bz2"
