@@ -2,7 +2,7 @@ $venvdir = "$($env:LocalAppData)\venv"
 & python -m venv $venvdir
 & "$venvdir\scripts\activate.ps1"
 $python = "$venvdir\scripts\python.exe"
-& $python -m pip install --upgrade pip setuptools
+& $python -m pip install --upgrade pip
 & $python -m pip install -r .github\requirements.txt
 & $python -m pip list --format=freeze
 

@@ -6,7 +6,7 @@ venvdir="$HOME/venv"
 python -m venv "$venvdir"
 . "$venvdir/bin/activate"
 python="$venvdir/bin/python"
-"$python" -m pip install --upgrade pip setuptools
+"$python" -m pip install --upgrade pip
 pip install -r .github/requirements-minimum.txt
 pip list --format=freeze
 {
