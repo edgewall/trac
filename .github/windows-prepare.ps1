@@ -75,7 +75,9 @@ if (-not (Verify-Binary)) {
     Expand-Archive -LiteralPath $svnarc -DestinationPath "$workspace"
     Expand-Archive -LiteralPath $sqlite_arc -DestinationPath "$workspace"
     Set-Location -LiteralPath "$workspace\subversion-$svnver"
-    & git apply -v -p0 --whitespace=fix "$workspace\.github\svn-expat272.patch"
+    foreach ($patch in 'svn-expat272.patch', 'svn-zlib132.patch') {
+        & git apply -v -p0 --whitespace=fix "$workspace\.github\$patch"
+    }
     & $python gen-make.py --release `
                           --vsnet-version=2019 `
                           "--with-apr=$vcpkg_dir" `
@@ -101,7 +103,7 @@ if (-not (Verify-Binary)) {
               "$vcpkg_dir\bin\libcrypto-*.dll",
               "$vcpkg_dir\bin\libexpat.dll",
               "$vcpkg_dir\bin\libssl-*.dll",
-              "$vcpkg_dir\bin\zlib1.dll")
+              "$vcpkg_dir\bin\z*.dll")
     Copy-Item -Path $deps -Destination Release
 
     New-Item -Force -ItemType Directory -Path "$svndir\bin"
