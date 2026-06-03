@@ -42,6 +42,16 @@ except ImportError:
 else:
     pymsql_version = get_pkginfo(pymysql).get('version', pymysql.__version__)
 
+    if pymysql.VERSION >= (0, 6, 6):
+        def _connect(database, user, password, host, port, **opts):
+            return pymysql.connect(database=database, user=user,
+                                   password=password, host=host, port=port,
+                                   **opts)
+    else:
+        def _connect(database, user, password, host, port, **opts):
+            return pymysql.connect(db=database, user=user, passwd=password,
+                                   host=host, port=port, **opts)
+
     class MySQLUnicodeCursor(pymysql.cursors.Cursor):
         def execute(self, query, args=None):
             if args:
@@ -399,8 +409,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
                                 name, value)
             elif log:
                 log.warning("Invalid connection string parameter '%s'", name)
-        cnx = pymysql.connect(db=path, user=user, passwd=password, host=host,
-                              port=port, **opts)
+        cnx = _connect(path, user, password, host, port, **opts)
         cursor = cnx.cursor()
         cursor.execute("SHOW VARIABLES WHERE "
                        " variable_name='character_set_database'")
@@ -412,8 +421,7 @@ class MySQLConnection(ConnectionBase, ConnectionWrapper):
         if self.charset != opts['charset']:
             cnx.close()
             opts['charset'] = self.charset
-            cnx = pymysql.connect(db=path, user=user, passwd=password,
-                                  host=host, port=port, **opts)
+            cnx = _connect(path, user, password, host, port, **opts)
         self.schema = path
         ConnectionWrapper.__init__(self, cnx, log)
         self._is_closed = False
