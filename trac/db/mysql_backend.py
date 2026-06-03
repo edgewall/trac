@@ -40,7 +40,8 @@ except ImportError:
     pymysql = None
     pymsql_version = None
 else:
-    pymsql_version = get_pkginfo(pymysql).get('version', pymysql.__version__)
+    pymsql_version = get_pkginfo(pymysql).get('version',
+                                              pymysql.VERSION_STRING)
 
     if pymysql.VERSION >= (0, 6, 6):
         def _connect(database, user, password, host, port, **opts):
