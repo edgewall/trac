@@ -8,8 +8,8 @@ init_postgresql() {
         sudo systemctl start postgresql.service
         ;;
       macos-*)
-        brew install -q postgresql@14
-        brew services start postgresql@14
+        brew install -q postgresql
+        brew services start postgresql
         for i in $(seq 1 15); do
             psql -U "$LOGNAME" postgres -t -c 'SELECT version()' && break
             sleep 1
