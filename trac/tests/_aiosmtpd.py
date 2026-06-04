@@ -102,6 +102,7 @@ class SMTPThreadedServer(threading.Thread):
     """
     host = '127.0.0.1'
     port = None
+    fqdn = 'example.org'
     authmethod = None
     user = None
     password = None
@@ -124,7 +125,8 @@ class SMTPThreadedServer(threading.Thread):
             auth_exclude_mechanism = None
         handler = Handler(self)
         controller = Controller(handler, loop=loop, hostname=self.host,
-                                port=port, authenticator=authenticator,
+                                port=port, server_hostname=self.fqdn,
+                                authenticator=authenticator,
                                 auth_exclude_mechanism=auth_exclude_mechanism,
                                 auth_require_tls=False)
         self.loop = loop
