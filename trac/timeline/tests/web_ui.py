@@ -180,6 +180,13 @@ class TimelineModuleTestCase(unittest.TestCase):
 
         self.assertEqual(90, data['daysback'])
 
+    def test_max_daysback_unlimited(self):
+        """Daysback is unlimited if [timeline] max_daysback set to -1."""
+        self.env.config.set('timeline', 'max_daysback', '-1')
+        req = MockRequest(self.env, args={'daysback': '365'})
+        data = TimelineModule(self.env).process_request(req)[1]
+        self.assertEqual(365, data['daysback'])
+
     def test_daysback_invalid_default_is_used(self):
         """Daysback request value is invalid: default value is used."""
         req = MockRequest(self.env, args={'daysback': '--'})
