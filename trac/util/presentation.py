@@ -278,7 +278,7 @@ def prepared_paginate(items, num_items, max_per_page):
     if max_per_page == 0:
         num_pages = 1
     else:
-        num_pages = int(ceil(float(num_items) / max_per_page))
+        num_pages = (num_items + max_per_page - 1) // max_per_page
     return items, num_items, num_pages
 
 def paginate(items, page=0, max_per_page=10):
@@ -353,7 +353,7 @@ def paginate(items, page=0, max_per_page=10):
         if count is None:
             count = idx + 1
 
-    return retval, count, int(ceil(float(count) / max_per_page))
+    return retval, count, (count + max_per_page - 1) // max_per_page
 
 
 class Paginator(object):
@@ -406,7 +406,8 @@ class Paginator(object):
             return list(range(1, 2))
 
         min_page = 1
-        max_page = int(ceil(float(self.num_items) / self.max_per_page))
+        max_page = (self.num_items + self.max_per_page - 1) \
+                   // self.max_per_page
         current_page = self.page + 1
         start_page = current_page - page_index_count // 2
         end_page = current_page + page_index_count // 2 + \

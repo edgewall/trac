@@ -14,6 +14,7 @@
 
 import datetime
 import doctest
+import sys
 import unittest
 
 from trac.core import TracError
@@ -88,6 +89,26 @@ class PaginatorTestCase(unittest.TestCase):
         items = list(range(20))
 
         self.assertRaises(TracError, presentation.Paginator, items, 2)
+
+    def test_large_max_per_page(self):
+        max_per_page = sys.float_info.radix ** (sys.float_info.max_exp * 2)
+        self.assertRaises(OverflowError, float, max_per_page)
+
+        items = list(range(42))
+        paginator = presentation.Paginator(items, max_per_page=max_per_page)
+        self.assertEqual(0, paginator.page)
+        self.assertEqual(max_per_page, paginator.max_per_page)
+        self.assertEqual(42, paginator.num_items)
+        self.assertEqual(1, paginator.num_pages)
+        self.assertEqual((0, 42), paginator.span)
+
+        paginator = presentation.Paginator(items, max_per_page=max_per_page,
+                                           num_items=len(items))
+        self.assertEqual(0, paginator.page)
+        self.assertEqual(max_per_page, paginator.max_per_page)
+        self.assertEqual(42, paginator.num_items)
+        self.assertEqual(1, paginator.num_pages)
+        self.assertEqual((0, 42), paginator.span)
 
 
 def test_suite():
