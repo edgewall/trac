@@ -48,7 +48,7 @@ if use_flup:
         dispatch_request = FlupMiddleware(dispatch_request)
 
 if not use_flup:
-    from ._fcgi import WSGIServer
+    from trac.web._fcgi import WSGIServer
 
 def run():
     WSGIServer(dispatch_request, **params).run()
