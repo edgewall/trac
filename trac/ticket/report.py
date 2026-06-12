@@ -513,7 +513,7 @@ class ReportModule(Component):
                                     (sort_col,)):
                                 sort_values[name] = value
 
-                    def sortkey(row):
+                    def sortkey_val(row):
                         val = row[idx]
                         # check if we have sort_values, then use them as keys.
                         if sort_values:
@@ -522,6 +522,17 @@ class ReportModule(Component):
                         if isinstance(val, str):
                             val = val.lower()
                         return val
+
+                    def sortkey(row):
+                        val = sortkey_val(row)
+                        cls = val.__class__
+                        clsname = '%s.%s' % (cls.__module__, cls.__qualname__)
+                        if val is None:
+                            return (0, clsname, val)
+                        if cls.__module__ == 'builtins':
+                            return (1, clsname, val)
+                        return (2, clsname, val)
+
                     results = sorted(results, key=sortkey, reverse=not asc)
 
             header_group = header_groups[-1]

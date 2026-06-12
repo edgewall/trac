@@ -515,6 +515,11 @@ class ExecuteReportTestCase(unittest.TestCase):
         report = Report(self.env, id)
         return mod.execute_paginated_report(req, id, report.query, args or {})
 
+    def _render_view(self, id, args=None):
+        req = MockRequest(self.env, path_info='/report/%d' % id,
+                          args=args or {})
+        return self.report_module._render_view(req, id)
+
     def _generate_tickets(self, columns, data, attrs):
         with self.env.db_transaction as db:
             tickets = []
@@ -606,6 +611,13 @@ class ExecuteReportTestCase(unittest.TestCase):
         idx_group = cols.index('__group__')
         self.assertEqual({'1.0', '2.0', None},
                          {r[idx_group] for r in results})
+
+        # Regression test for #13893
+        rv = self._render_view(2, {'sort': 'version', 'asc': '1', 'max': '0'})
+        data = rv[1]
+        row_groups = data['row_groups']
+        self.assertEqual(['', '1.0', '2.0'],
+                         [value for value, row_group in row_groups])
 
     REPORT_3_DATA = """\
         # status    milestone   priority
