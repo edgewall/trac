@@ -98,7 +98,7 @@ jQuery(function($){
         });
         if (children.length) {
           var ul = $('<ul class="children"></ul>').appendTo(this);
-          children.appendTo(ul).wrap('<li class="child">');
+          children.appendTo(ul).wrap('<li class="child"></li>');
         }
       });
     }

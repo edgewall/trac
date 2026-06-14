@@ -45,14 +45,14 @@
 
   // Create a <select>
   function createSelect(name, options, optional, optgroups) {
-    var e = $($.htmlFormat('<select name="$1">', name));
+    var e = $("<select>").attr("name", name);
     if (optional)
       $("<option>").appendTo(e);
     appendOptions(e, options);
     if (optgroups) {
       for (var i = 0; i < optgroups.length; i++) {
         var grp = optgroups[i];
-        var optgrp = $($.htmlFormat('<optgroup label="$1">', grp.label));
+        var optgrp = $("<optgroup>").attr("label", grp.label);
         appendOptions(optgrp, grp.options);
         optgrp.appendTo(e);
       }
@@ -173,12 +173,12 @@
 
       // Add the remove button
       tr.append($('<td>')
-        .append($('<div class="inlinebuttons">')
-          .append($('<input type="button" value="&ndash;">')
+        .append($('<div class="inlinebuttons"></div>')
+          .append($('<input type="button" value="&ndash;" />')
             .click(function() { removeRow(this, propertyName); }))));
 
       // Add the row header
-      var th = $('<th scope="row">');
+      var th = $('<th scope="row"></th>');
       if (!tbody.length) {
         th.append(createLabel(property.label)
                     .attr("id", "label_" + propertyName));
@@ -316,7 +316,7 @@
   window.initializeBatch = function() {
     // Create the appropriate input for the property.
     function createBatchInput(propertyName, property) {
-      var td = $('<td class="batchmod_property">');
+      var td = $('<td class="batchmod_property"></td>');
       var inputName = getBatchInputName(propertyName);
       var focusElement = null;
       switch (property.type) {
@@ -416,11 +416,12 @@
     // Selecting a ticket marks it for inclusion in the batch.
     var $results_cells = $(".trac-query-results tr td.id", $table);
     if ($results_cells.length > 0) {
-      $(".trac-query-heading tr th.id", $table).before($('<th class="sel">'));
+      $(".trac-query-heading tr th.id", $table)
+        .before($('<th class="sel"></th>'));
       $results_cells.each(function() {
         var tId = $(this).text().substring(1);
         $(this).before(
-          $('<td class="sel">').append(
+          $('<td class="sel"></td>').append(
             $('<input type="checkbox" name="selected_ticket" />').attr({
               title: babel.format(_("Select ticket #%(id)s for modification"), {id: tId}),
               value: tId
@@ -492,8 +493,8 @@
 
       // Add the remove button
       tr.append($('<td>')
-          .append($('<div class="inlinebuttons">')
-            .append($('<input type="button" value="&ndash;">')
+          .append($('<div class="inlinebuttons"></div>')
+            .append($('<input type="button" value="&ndash;" />')
               .click(function() {
                 $('#batchmod_' + propertyName).remove();
                 $($.htmlFormat("#add_batchmod_field option[value='$1']",
@@ -504,7 +505,7 @@
       );
 
       // Add the header row.
-      tr.append($('<th scope="row">')
+      tr.append($('<th scope="row"></th>')
         .append(createLabel(property.label + ":",  // FIXME: french l10n
                             getBatchInputName(propertyName)))
       );
