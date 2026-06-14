@@ -976,8 +976,8 @@ class Attachment(object):
         """Return True if the path to the attachment is inside the
         environment attachments directory.
         """
-        commonprefix = os.path.commonprefix([self.env.attachments_dir, path])
-        return commonprefix == self.env.attachments_dir
+        attachments_dir = self.env.attachments_dir
+        return os.path.commonpath([attachments_dir, path]) == attachments_dir
 
 
 class LegacyAttachmentPolicy(Component):

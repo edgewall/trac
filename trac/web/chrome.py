@@ -721,7 +721,7 @@ class Chrome(Component):
                         if dir[0] == prefix and dir[1]]:
                 dirs.append(dir)
                 path = os.path.normpath(os.path.join(dir, filename))
-                if os.path.commonprefix([dir, path]) != dir:
+                if os.path.commonpath([dir, path]) != dir:
                     raise TracError(_("Invalid chrome path %(path)s.",
                                       path=filename))
                 elif os.path.isfile(path):
