@@ -817,11 +817,7 @@ class ChangesetModule(Component):
     def _get_location(self, files):
         """Return the deepest common path for the given files.
            If all the files are actually the same, return that location."""
-        if len(files) == 1:
-            return files[0]
-        else:
-            return '/'.join(os.path.commonprefix([f.split('/')
-                                                  for f in files]))
+        return posixpath.commonpath(files)
 
     def _get_parent_location(self, files):
         """Only get a location when there are different files,

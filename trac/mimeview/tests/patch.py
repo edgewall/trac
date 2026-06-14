@@ -48,6 +48,11 @@ class PatchRendererTestCase(unittest.TestCase):
             self.assertEqual(exp, res)
         self.assertEqual(len(expected), len(result))
 
+    def _diff_to_hdf(self, content, tabwidth=8):
+        if not isinstance(content, (tuple, list)):
+            content = content.splitlines()
+        return self.patch._diff_to_hdf(content, tabwidth)
+
     def test_simple(self):
         """
         Simple patch rendering
@@ -134,6 +139,64 @@ Index: filename.txt
 """)
         self.assertTrue(result)
         self._test('range_information_with_no_lines', result)
+
+    def test_paths_common_prefix(self):
+        changes = self._diff_to_hdf([
+            '--- trac/mimeview/patch.py.orig  2026-06-14 20:31:01 +0900',
+            '+++ trac/mimeview/patch.py       2026-06-14 20:31:42 +0900',
+            '@@ -1 +1 @@',
+            '-Old',
+            '+New',
+        ])
+        expected = 'trac/mimeview/patch.py'
+        self.assertEqual(expected, changes[0]['old']['path'])
+        self.assertEqual(expected, changes[0]['new']['path'])
+
+    def test_paths_common_suffix(self):
+        changes = self._diff_to_hdf([
+            '--- trac-1.4/trac/mimeview/patch.py  2019-08-08 09:22:04 +0900',
+            '+++ trac-1.6/trac/mimeview/patch.py  2023-01-28 19:00:43 +0900',
+            '@@ -1 +1 @@',
+            '-Old',
+            '+New',
+        ])
+        expected = 'trac/mimeview/patch.py'
+        self.assertEqual(expected, changes[0]['old']['path'])
+        self.assertEqual(expected, changes[0]['new']['path'])
+
+    def test_paths_new_file(self):
+        changes = self._diff_to_hdf([
+            '--- /dev/null  (nonexistent)',
+            '+++ trac/mimeview/patch.py  (revision 42)',
+            '@@ -0 +1 @@',
+            '+New',
+        ])
+        expected = 'new file trac/mimeview/patch.py'
+        self.assertEqual(expected, changes[0]['old']['path'])
+        self.assertEqual(expected, changes[0]['new']['path'])
+
+    def test_paths_deleted_file(self):
+        changes = self._diff_to_hdf([
+            '--- trac/mimeview/patch.py  (revision 42)',
+            '+++ /dev/null  (nonexistent)',
+            '@@ -1 +0 @@',
+            '-Old',
+        ])
+        expected = 'deleted file trac/mimeview/patch.py'
+        self.assertEqual(expected, changes[0]['old']['path'])
+        self.assertEqual(expected, changes[0]['new']['path'])
+
+    def test_paths_vs(self):
+        changes = self._diff_to_hdf([
+            '--- foo  2026-06-14 20:47:01 +0900',
+            '+++ bar  2026-06-14 20:47:01 +0900',
+            '@@ -1 +1 @@',
+            '-Old',
+            '+New',
+        ])
+        expected = '(a) foo vs. (b) bar'
+        self.assertEqual(expected, changes[0]['old']['path'])
+        self.assertEqual(expected, changes[0]['new']['path'])
 
 
 def test_suite():

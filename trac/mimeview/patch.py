@@ -16,7 +16,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Ludvig Strigeus
 
-import os.path
 import re
 
 from trac.core import *
@@ -152,18 +151,13 @@ class PatchRenderer(Component):
 
                 shortrev = ('old', 'new')
                 if oldpath or newpath:
-                    sep = re.compile(r'([/.~\\])')
-                    commonprefix = ''.join(os.path.commonprefix(
-                        [sep.split(newpath), sep.split(oldpath)]))
-                    commonsuffix = ''.join(os.path.commonprefix(
-                        [sep.split(newpath)[::-1],
-                         sep.split(oldpath)[::-1]])[::-1])
-                    if len(commonprefix) > len(commonsuffix):
-                        common = commonprefix
-                    elif commonsuffix:
-                        common = commonsuffix.lstrip('/')
-                        a = oldpath[:-len(commonsuffix)]
-                        b = newpath[:-len(commonsuffix)]
+                    prefix, suffix = _common_segment(newpath, oldpath)
+                    if len(prefix) > len(suffix):
+                        common = prefix
+                    elif suffix:
+                        common = suffix.lstrip('/')
+                        a = oldpath[:-len(suffix)]
+                        b = newpath[:-len(suffix)]
                         if len(a) < 4 and len(b) < 4:
                             shortrev = (a, b)
                     elif oldpath == '/dev/null':
@@ -295,3 +289,30 @@ class PatchRenderer(Component):
                         if 'meta' in changed and i in changed['meta']:
                             t[i] = Markup('<em>%s</em>') % t[i]
         return changes
+
+
+_segment_re = re.compile(r'([/.~\\])')
+
+
+def _common_segment(newpath, oldpath):
+
+    def common_prefix(seqs):
+        result = []
+        for items in zip(*seqs):
+            first = items[0]
+            if all(x == first for x in items[1:]):
+                result.append(first)
+            else:
+                break
+        return result
+
+    def common_suffix(seqs):
+        seqs = [list(reversed(s)) for s in seqs]
+        result = common_prefix(seqs)
+        result.reverse()
+        return result
+
+    seqs = [_segment_re.split(newpath), _segment_re.split(oldpath)]
+    prefix = ''.join(common_prefix(seqs))
+    suffix = ''.join(common_suffix(seqs))
+    return prefix, suffix
