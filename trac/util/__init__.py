@@ -575,7 +575,12 @@ def is_path_below(path, parent):
         return os.path.normcase(os.path.abspath(path))
     path = normalize(path)
     parent = normalize(parent)
-    return path == parent or path.startswith(parent + os.sep)
+    try:
+        return os.path.commonpath([path, parent]) == parent
+    except ValueError:
+        # This exception is raised when the paths don't have the same drive
+        # on Windows even if absolute....
+        return False
 
 
 class file_or_std(object):
