@@ -482,6 +482,8 @@ class NotificationTestCase(unittest.TestCase):
             for rcpt in bccrcpt:
                 # Check the message has actually been sent to the recipients
                 self.assertIn(rcpt, rcptlist)
+                # Check the recipients have not listed in the Cc header
+                self.assertNotIn(rcpt, cc)
         for public in False, True:
             run_bcc_feature(public)
 

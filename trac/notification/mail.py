@@ -843,7 +843,9 @@ class AlwaysEmailSubscriber(Component):
     notification section of trac.ini.
     """
 
-    implements(INotificationSubscriber)
+    implements(INotificationSubscriber, IEmailDecorator)
+
+    # INotificationSubscriber methods
 
     def matches(self, event):
         matcher = RecipientMatcher(self.env)
@@ -866,12 +868,51 @@ class AlwaysEmailSubscriber(Component):
     def default_subscriptions(self):
         return ()
 
+    # IEmailDecorator methods
+
+    def decorate_message(self, event, message, charset):
+        # Move the recipients in smtp_always_bcc option from Cc header to Bcc
+        # header
+
+        def resolve_recipients(addresses):
+            resolved = set()
+            for addr in addresses:
+                recipient = matcher.match_recipient(addr)
+                if recipient:
+                    sid, authenticated, addr = recipient
+                resolved.add(addr)
+            return resolved
+
+        matcher = RecipientMatcher(self.env)
+        bcc_list = resolve_recipients(self._get_bcc_list())
+        if not bcc_list:
+            return
+        cc_list = resolve_recipients(self._get_cc_list())
+        bcc_list -= cc_list
+
+        cc_addrs = []
+        bcc_addrs = []
+        for item in get_message_addresses(message, 'Cc'):
+            if item[1] in bcc_list:
+                bcc_addrs.append(item)
+            else:
+                cc_addrs.append(item)
+
+        if bcc_addrs:
+            bcc_addrs.extend(get_message_addresses(message, 'Bcc'))
+            set_header(message, 'Cc', addresses=cc_addrs)
+            set_header(message, 'Bcc', addresses=bcc_addrs)
+
+    # Internal methods
+
+    def _get_cc_list(self):
+        return NotificationSystem(self.env).smtp_always_cc_list
+
+    def _get_bcc_list(self):
+        return NotificationSystem(self.env).smtp_always_bcc_list
+
     def _get_address_list(self):
-        section = self.config['notification']
-        def getlist(name):
-            return section.getlist(name, sep=(',', ' '), keep_empty=False)
-        return set(getlist('smtp_always_cc')) | \
-               set(getlist('smtp_always_bcc'))
+        return set(self._get_cc_list()) | set(self._get_bcc_list())
 
 
 class FromAuthorEmailDecorator(Component):

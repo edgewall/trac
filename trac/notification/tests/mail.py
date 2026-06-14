@@ -19,13 +19,16 @@ from trac.notification.api import (
     IEmailAddressResolver, IEmailSender, INotificationFormatter,
     INotificationSubscriber, NotificationEvent, NotificationSystem,
 )
-from trac.notification.mail import RecipientMatcher
+from trac.notification.mail import RecipientMatcher, get_message_addresses
 from trac.notification.model import Subscription
 from trac.test import EnvironmentStub, makeSuite
-from trac.ticket.model import _fixup_cc_list
 from trac.util.datefmt import datetime_now, utc
 from trac.util.html import escape
 from trac.web.session import DetachedSession
+
+
+def _msg_addrs(message, header):
+    return set(addr for label, addr in get_message_addresses(message, header))
 
 
 class TestEmailSender(Component):
@@ -129,6 +132,7 @@ class EmailDistributorTestCase(unittest.TestCase):
             self._add_session('baz', name='Baz')
             self._add_session('qux', tz='UTC')
             self._add_session('corge', email='corge-mail')
+            self._add_session('grault', email='grault@example.com')
 
     def tearDown(self):
         self.env.reset_db()
@@ -319,23 +323,33 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual([], history)
 
     def test_username_in_always_cc(self):
-        self.env.config.set('notification', 'smtp_always_cc',
-                            'foo, cc@example.org')
-        self.env.config.set('notification', 'smtp_always_bcc',
-                            'bar, foo, bcc@example.org')
-        self._notify_event('blah')
 
-        history = self.sender.history
-        self.assertNotEqual([], history)
-        self.assertEqual(1, len(history))
-        from_addr, recipients, message = history[0]
-        self.assertEqual('trac@example.org', from_addr)
-        self.assertEqual({'foo@example.org', 'bar@example.org',
-                          'cc@example.org', 'bcc@example.org'},
-                         set(recipients))
-        self.assertEqual('cc@example.org, foo@example.org', message['Cc'])
-        self.assertIsNone(message['Bcc'])
-        self._assert_mail(message, 'text/plain', 'blah')
+        def test(**options):
+            config = self.env.config
+            config.set('notification', 'smtp_always_cc',
+                       'foo, grault, cc@example.org')
+            config.set('notification', 'smtp_always_bcc',
+                       'bar, foo, bcc@example.org')
+            for name, value in options.items():
+                config.set('notification', name, value)
+            self._notify_event('blah')
+
+            history = self.sender.history
+            self.assertNotEqual([], history)
+            self.assertEqual(1, len(history))
+            from_addr, recipients, message = history[0]
+            self.assertEqual('trac@example.org', from_addr)
+            self.assertEqual({'foo@example.org', 'bar@example.org',
+                              'grault@example.com', 'cc@example.org',
+                              'bcc@example.org'}, set(recipients))
+            self.assertEqual({'cc@example.org', 'foo@example.org',
+                              'grault@example.com'},
+                             _msg_addrs(message, 'Cc'))
+            self.assertIsNone(message['Bcc'])
+            self._assert_mail(message, 'text/plain', 'blah')
+
+        test(use_public_cc='disabled')
+        test(use_public_cc='enabled')
 
     def test_from_author_disabled(self):
         self.env.config.set('notification', 'smtp_from_author', 'disabled')
@@ -458,9 +472,6 @@ class EmailDistributorTestCase(unittest.TestCase):
         if expected != actual:
             self.fail('%r != %r' % ((expected - actual, actual - expected)))
 
-    def _cclist(self, cc):
-        return _fixup_cc_list(cc).split(', ')
-
     def test_use_short_addr(self):
         history = self._test_without_domain(use_short_addr='enabled')
         from_addr, recipients, message = history[0]
@@ -469,8 +480,8 @@ class EmailDistributorTestCase(unittest.TestCase):
         self._assert_equal_sets(['qux', 'cc@example.org', 'bcc1@example.org',
                                  'bcc2', 'foo@example.org', 'baz',
                                  'corge-mail'], recipients)
-        self._assert_equal_sets(['qux', 'cc@example.org'],
-                                self._cclist(message['Cc']))
+        self._assert_equal_sets({'qux', 'cc@example.org'},
+                                _msg_addrs(message, 'Cc'))
 
     def test_smtp_default_domain(self):
         history = self._test_without_domain(smtp_default_domain='example.com')
@@ -482,8 +493,8 @@ class EmailDistributorTestCase(unittest.TestCase):
                                  'bcc1@example.org', 'bcc2@example.com',
                                  'foo@example.org', 'baz@example.com',
                                  'corge-mail@example.com'], recipients)
-        self._assert_equal_sets(['qux@example.com', 'cc@example.org'],
-                                self._cclist(message['Cc']))
+        self._assert_equal_sets({'qux@example.com', 'cc@example.org'},
+                                _msg_addrs(message, 'Cc'))
 
     def test_username_is_email(self):
         config = self.env.config
@@ -506,8 +517,7 @@ class EmailDistributorTestCase(unittest.TestCase):
         self.assertEqual({'foo@example.com', 'foo@bar.example.org',
                           'baz@example.com', 'cc@example.org',
                           'bcc@example.org'}, set(recipients))
-        self._assert_equal_sets(['cc@example.org'],
-                                self._cclist(message['Cc']))
+        self._assert_equal_sets({'cc@example.org'}, _msg_addrs(message, 'Cc'))
 
     def test_replyto(self):
         config = self.env.config
