@@ -326,7 +326,7 @@ def styles(*args, **kwargs):
     styles.extend('%s: %s' % (k, v)
                   for k, v in sorted(d.items(), key=lambda i: i[0])
                   if v)
-    return '; '.join(styles)
+    return '; '.join(map(str, styles))
 
 
 class Fragment(object):
