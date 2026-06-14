@@ -23,3 +23,5 @@ trac/htdocs/js/messages/*.js
 .project
 .pydevproject
 .settings
+.DS_Store
+Thumbs.db
