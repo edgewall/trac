@@ -3085,3 +3085,20 @@ end
 </dd><dt>block</dt><dd><div>Hello World, args = bar</div> <div>Hello World, args = baz</div>
 </dd></dl>
 ------------------------------
+============================== Processor with attributes have no value (#13905)
+Begin.
+{{{#!div class style -id -title
+Body
+}}}
+End.
+------------------------------
+<p>
+Begin.
+</p>
+<div class="True" id="False" title="False"><p>
+Body
+</p>
+</div><p>
+End.
+</p>
+------------------------------
