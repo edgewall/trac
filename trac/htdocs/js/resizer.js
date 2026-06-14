@@ -22,7 +22,7 @@ jQuery(function($) {
       $(document).off('mousemove', dragging).off('mouseup', endDrag);
     }
 
-    var grip = $('<div class="trac-grip"/>').mousedown(beginDrag)[0];
+    var grip = $('<div class="trac-grip"></div>').mousedown(beginDrag)[0];
     textarea.wrap('<div class="trac-resizable"><div></div></div>')
             .parent().append(grip);
     grip.style.marginLeft = (this.offsetLeft - grip.offsetLeft) + 'px';

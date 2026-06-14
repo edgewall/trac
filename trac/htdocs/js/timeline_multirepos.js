@@ -27,7 +27,7 @@ jQuery(function($){
   }
 
   // Show/hide all repositories.
-  var $repolist_expander = $("<span />", {
+  var $repolist_expander = $("<span>", {
     "class": "expander",
     "title": show_message
   }).click(toggleExpander);

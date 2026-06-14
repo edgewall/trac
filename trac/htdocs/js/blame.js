@@ -81,12 +81,18 @@
               message.remove();
             // create new message panel
             if (!data)
-              data = "<strong>" + _("(no changeset information)") + "</strong>";
-            message = $('<div class="message">').css("position", "absolute")
-                .append($('<div class="inlinebuttons">')
-                  .append($('<input value="' + _("Close") + '" type="button">').click(hide)))
-                .append($('<div class="embedded">').html(data))
-              .appendTo("body");
+              data = $.htmlFormat("<strong>$1</strong>",
+                                  _("(no changeset information)"));
+            var button = $("<input>")
+                         .attr({type: "button", value: _("Close")})
+                         .click(hide);
+            message = $("<div>")
+                      .addClass("message")
+                      .css("position", "absolute")
+                      .append(
+                        $('<div class="inlinebuttons"></div>').append(button),
+                        $('<div class="embedded"></div>').html(data))
+                      .appendTo("body");
 
             show();
           }, 'html');

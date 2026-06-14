@@ -98,12 +98,12 @@
     for (var i = 0; i < lines.length; i++)
         if (lines[i]) {
             var line = lines[i].replace(/\xa0$/, '') + "\n";
-            if (lines[i][0] == '+')
-              pre.append($('<span class="add">').text(line));
-            else if (lines[i][0] == '-')
-              pre.append($('<span class="rem">').text(line));
-            else
-              pre.append($('<span>').text(line));
+            var span = $('<span>');
+            switch (lines[i][0]) {
+              case '+': span.addClass('add'); break;
+              case '-': span.addClass('rem'); break;
+            }
+            pre.append(span.text(line));
         }
   }
 
@@ -113,14 +113,14 @@
       var name = $.trim($(this).text());
       var table = $(this).siblings("table").get(0);
       if (! table) return;
-      var pre = $('<pre class="diff">').hide().insertAfter(table);
-      $("<span>" + _("Tabular") + "</span>").click(function() {
+      var pre = $("<pre>").addClass("diff").hide().insertAfter(table);
+      $("<span>").text(_("Tabular")).click(function() {
         $(pre).hide();
         $(table).show();
         $(this).addClass("active").siblings("span").removeClass("active");
         return false;
       }).addClass("active").appendTo(switcher);
-      $("<span>" + _("Unified") + "</span>").click(function() {
+      $("<span>").text(_("Unified")).click(function() {
         $(table).hide();
         if (!pre.get(0).firstChild) convertDiff(name, table, pre);
         $(pre).fadeIn("fast")
