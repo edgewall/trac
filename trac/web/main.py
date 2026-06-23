@@ -634,7 +634,7 @@ def dispatch_request(environ, start_response):
             ##    del gc.garbage[:]
             ##    env.log.warning("%d uncollectable objects found.",
             ##                    uncollectable)
-        return resp
+    return resp
 
 
 def _send_error(req, exc_info, template='error.html', content_type='text/html',
