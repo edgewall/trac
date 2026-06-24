@@ -281,9 +281,11 @@ link:"Foo Bar" link:"Foo Bar#baz"
 ------------------------------
 ============================== Link resolver in markup
 '''link:1''', ''link:1'', ~~link:1~~, __link:1__
+'''!link:1''', ''!link:1'', ~~!link:1~~, __!link:1__
 ------------------------------
 <p>
 <strong><a class="odd resolver" href="/thing/1">link:1</a></strong>, <em><a class="odd resolver" href="/thing/1">link:1</a></em>, <del><a class="odd resolver" href="/thing/1">link:1</a></del>, <span class="underline"><a class="odd resolver" href="/thing/1">link:1</a></span>
+<strong>link:1</strong>, <em>link:1</em>, <del>link:1</del>, <span class="underline">link:1</span>
 </p>
 ------------------------------
 ============================== Link resolver, quoting of target
@@ -433,6 +435,14 @@ local@exa६ple.org (U+096c)
 local@example.or೬ (U+0cec)
 local@example.o６g (U+ff16)
 local@example.or𝟨 (U+1d7e8)
+'''strong@example.org'''
+'''!strong@example.org'''
+''italic@example.org''
+''!italic@example.org''
+~~strike@example.org~~
+~~!strike@example.org~~
+__underline@example.org__
+__!underline@example.org__
 ------------------------------
 <p>
 Author: <a class="mail-link" href="mailto:cboos@edgewall.org"><span class="icon"></span>mailto:cboos@edgewall.org</a>,
@@ -448,6 +458,14 @@ local@exa६ple.org (U+096c)
 <a class="mail-link" href="mailto:local@example.or"><span class="icon"></span>local@example.or</a>೬ (U+0cec)
 <a class="mail-link" href="mailto:local@example.o"><span class="icon"></span>local@example.o</a>６g (U+ff16)
 <a class="mail-link" href="mailto:local@example.or"><span class="icon"></span>local@example.or</a>𝟨 (U+1d7e8)
+<strong><a class="mail-link" href="mailto:strong@example.org"><span class="icon"></span>strong@example.org</a></strong>
+<strong>strong@example.org</strong>
+<em><a class="mail-link" href="mailto:italic@example.org"><span class="icon"></span>italic@example.org</a></em>
+<em>italic@example.org</em>
+<del><a class="mail-link" href="mailto:strike@example.org"><span class="icon"></span>strike@example.org</a></del>
+<del>strike@example.org</del>
+<span class="underline"><a class="mail-link" href="mailto:underline@example.org"><span class="icon"></span>underline@example.org</a></span>
+<span class="underline">underline@example.org</span>
 </p>
 ------------------------------
 ============================== Arbitrary protocol Link

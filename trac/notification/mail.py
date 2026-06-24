@@ -56,10 +56,10 @@ __all__ = ['AlwaysEmailSubscriber', 'EMAIL_LOOKALIKE_PATTERN',
 MAXHEADERLEN = 76
 EMAIL_LOOKALIKE_PATTERN = (
         # the local part
-        r"[a-zA-Z0-9.'+_-]+" '@'
+        r"[a-zA-Z0-9.'+_-]{1,200}" '@'
         # the domain name part (RFC:1035)
-        r'(?:[a-zA-Z0-9_-]+\.)+'  # labels (but also allow '_')
-        r'[a-zA-Z](?:[-a-zA-Z0-9]*[a-zA-Z0-9])?'  # TLD
+        r'(?:[a-zA-Z0-9_-]{1,200}\.)+'  # labels (but also allow '_')
+        r'[a-zA-Z](?:[-a-zA-Z0-9]{,200}[a-zA-Z0-9])?'  # TLD
         )
 
 _mime_encoding_re = re.compile(r'=\?[^?]+\?[bq]\?[^?]+\?=', re.IGNORECASE)
