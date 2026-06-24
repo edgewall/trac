@@ -15,6 +15,7 @@ import difflib
 import io
 import os
 import re
+import time
 import unittest
 
 # Python 2.7 `assertMultiLineEqual` calls `safe_repr(..., short=True)`
@@ -37,7 +38,9 @@ from trac.wiki.formatter import (HtmlFormatter, InlineHtmlFormatter,
 
 class WikiTestCase(unittest.TestCase):
 
+    maxDiff = None
     generate_opts = {}
+    threshold = 1.0
 
     def __init__(self, title, input, expected, file, line,
                  setup=None, teardown=None, context=None, default_data=False,
@@ -104,7 +107,12 @@ class WikiTestCase(unittest.TestCase):
     def test(self):
         """Testing WikiFormatter"""
         formatter = self.formatter()
+        elapse = time.time()
         v = str(formatter.generate(**self.generate_opts))
+        elapse = time.time() - elapse
+        if elapse >= self.threshold:
+            raise AssertionError('Too long elapse in the wiki formatting '
+                                 '(%.3f seconds)' % elapse)
         v = v.replace('\r', '').replace('\u200b', '')  # FIXME: keep ZWSP
         v = strip_line_ws(v, leading=False)
         try:

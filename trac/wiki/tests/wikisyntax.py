@@ -689,6 +689,69 @@ js:&#34;alert(1)&#34; javasc:&#34;ript:alert(1)&#34;
 """ # "
 
 
+LONG_ELAPSE_TESTS = """
+============================== Many spaces at the beginning of a line (#13786)
+%(spaces)s foobar
+------------------------------
+<blockquote>
+<p>
+foobar
+</p>
+</blockquote>
+------------------------------
+============================== Long alphabet characters (#13786)
+%(alphabets)s
+------------------------------
+<p>
+%(alphabets)s
+</p>
+------------------------------
+============================== Long digit characters (#13786)
+%(digits)s
+------------------------------
+<p>
+%(digits)s
+</p>
+------------------------------
+============================== Long repeated (alphabet, digit) (#13786)
+%(alpha_digit)s
+------------------------------
+<p>
+%(alpha_digit)s
+</p>
+------------------------------
+============================== Long repeated (digit, alphabet) (#13786)
+%(digit_alpha)s
+------------------------------
+<p>
+%(digit_alpha)s
+</p>
+------------------------------
+============================== Long repeated (alphabet, underline) (#13786)
+%(alpha_underline)s
+------------------------------
+<p>
+%(alpha_underline)s
+</p>
+------------------------------
+============================== Long repeated (underline, alphabets) (#13786)
+%(underline_alpha)s
+------------------------------
+<p>
+%(underline_alpha)s
+</p>
+------------------------------
+""" % dict(
+    spaces=' ' * 100000,
+    alphabets='A' * 100000,
+    digits='0123456789' * 10000,
+    alpha_digit='A0' * 50000,
+    digit_alpha='0A' * 50000,
+    alpha_underline='A_' * 50000,
+    underline_alpha='_A' * 50000,
+)
+
+
 def wiki_setup(tc):
     tc.env.config.set('wiki', 'render_unsafe_content', True) # for #9712
     now = datetime_now(utc)
@@ -794,6 +857,8 @@ def test_suite():
     suite.addTest(formatter.test_suite(SAFE_INTERWIKI_TESTS,
                                        wiki_setup_safe_interwiki, __file__,
                                        wiki_teardown))
+    suite.addTest(formatter.test_suite(LONG_ELAPSE_TESTS,
+                                       wiki_setup, __file__, wiki_teardown))
     return suite
 
 if __name__ == '__main__':

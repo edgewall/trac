@@ -45,8 +45,8 @@ class WikiParser(Component):
     ENDBLOCK = "}}}"
     BULLET_CHARS = "-*\u2022"
 
-    LINK_SCHEME = r"[a-zA-Z][-a-zA-Z0-9+._]*" # as per RFC 2396 + '_'
-    INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (for shorthand links)
+    LINK_SCHEME = r"[a-zA-Z][-a-zA-Z0-9+._]{,200}" # as per RFC 2396 + '_'
+    INTERTRAC_SCHEME = r"[a-zA-Z.+-]{,200}?" # no digits (for shorthand links)
 
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 
@@ -94,13 +94,14 @@ class WikiParser(Component):
         # WikiCreole line breaks
         r"(?P<linebreak_wc>!?\\\\)",
         # e-mails
-        r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
+        r"(?P<email>(?:!|(?<![a-zA-Z0-9.+-]))%s)" % EMAIL_LOOKALIKE_PATTERN,
         # <wiki:Trac bracket links>
         r"(?P<shrefbr>!?<(?P<snsbr>%s):(?P<stgtbr>[^>]+)>)" % LINK_SCHEME,
         # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
         # wiki:TracLinks or intertrac:wiki:TracLinks
-        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s:(?:%s)|%s|%s(?:%s*%s)?)))" \
+        r"(?P<shref>(?:!|(?<![-a-zA-Z0-9+.]))"
+        r"(?:(?P<sns>%s):(?P<stgt>%s:(?:%s)|%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, LINK_SCHEME, QUOTED_STRING, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # [wiki:TracLinks with optional label] or [/relative label]
@@ -123,7 +124,7 @@ class WikiParser(Component):
         r"(?:[%s]|(?P<lstart>[0-9]+|[a-zA-Z]|[ivxIVX]{1,5})\.)\s)"
         % BULLET_CHARS,
         # definition::
-        r"(?P<definition>^\s+"
+        r"(?P<definition>^\s+(?!\s)"
         r"((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,
            STARTBLOCK_TOKEN, ENDBLOCK[0], ENDBLOCK[0], ENDBLOCK_TOKEN,
