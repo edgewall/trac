@@ -475,16 +475,54 @@ new\r\n\
                          req.headers_sent['Content-Type'])
         self.assertEqual(b'line1,line2,line3\n', req.response_sent)
 
-    def test_invalid_cookies(self):
-        environ = _make_environ(HTTP_COOKIE='bad/key=value;')
+    def _test_cookies(self, expected, cookie):
+        environ = _make_environ(HTTP_COOKIE=cookie)
         req = Request(environ, None)
-        self.assertEqual('', str(req.incookie))
+        actual = {key: item.value for key, item in req.incookie.items()}
+        self.assertEqual(expected, actual)
+
+    def test_valid_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': '2'}, 'key1=1; key2=2')
+
+    def test_invalid_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': '2'},
+                           'key1=1; bad/key=value; key2=2')
+
+    def test_invalid_cookies_spaces(self):
+        self._test_cookies({'key1': '1', 'key2': '2'},
+                           'key1=1; foo=bar baz; key2=2')
 
     def test_multiple_cookies(self):
-        environ = _make_environ(HTTP_COOKIE='key=value1; key=value2;')
-        req = Request(environ, None)
-        self.assertEqual('Set-Cookie: key=value1',
-                         str(req.incookie).rstrip(';'))
+        self._test_cookies({'key': 'value1'}, 'key=value1; key=value2;')
+
+    def test_unnamed_value_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': '2'},
+                           'key1=1; unnamed; key2=2')
+
+    def test_equal_chars_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': 'foo=bar=baz', 'key3': '3'},
+                           'key1=1; key2=foo=bar=baz; key3=3')
+
+    def test_unclosed_cookies(self):
+        self._test_cookies({'key1': '1'}, 'key1=1; key2="value')
+
+    def test_empty_name_cookies(self):
+        self._test_cookies({'key1': '1'}, 'key1=1; =value')
+
+    def test_empty_value_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': '', 'key3': '3'},
+                           'key1=1; key2=; key3=3')
+
+    def test_extra_semicolon_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': '2'}, ';;key1=1;;key2=2;;')
+
+    def test_name_with_spaces_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': '2'},
+                           'key1=1; foo bar baz=value; key2=2')
+
+    def test_tab_separated_cookies(self):
+        self._test_cookies({'key1': '1', 'key2': '2'},
+                           'key1=1;\tkey2=2\t;')
 
     def test_read(self):
         environ = _make_environ(**{
