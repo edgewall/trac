@@ -612,15 +612,21 @@ class RequestDone(TracBaseError):
 
 
 class Cookie(SimpleCookie):
+
+    _separator_re = re.compile(r';+')
+
     def load(self, rawdata, ignore_parse_errors=False):
         if ignore_parse_errors:
             self.bad_cookies = []
             self._BaseCookie__set = self._loose_set
-        SimpleCookie.load(self, rawdata)
-        if ignore_parse_errors:
+            for item in self._separator_re.split(rawdata):
+                if item:
+                    super().load(item)
             self._BaseCookie__set = self._strict_set
             for key in self.bad_cookies:
                 del self[key]
+        else:
+            super().load(rawdata)
 
     _strict_set = BaseCookie._BaseCookie__set
 
