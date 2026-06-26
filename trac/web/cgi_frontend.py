@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2023 Edgewall Software
+# Copyright (C) 2005-2026 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 # All rights reserved.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2023 Edgewall Software
+# Copyright (C) 2004-2026 Edgewall Software
 # Copyright (C) 2004-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
