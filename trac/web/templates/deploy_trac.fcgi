@@ -1,7 +1,7 @@
 {##}#!${executable}
 {##}# -*- coding: utf-8 -*-
 {##}#
-{##}# Copyright (C) 2003-2023 Edgewall Software
+{##}# Copyright (C) 2003-2026 Edgewall Software
 {##}# Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
 {##}# All rights reserved.
 {##}#
