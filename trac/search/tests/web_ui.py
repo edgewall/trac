@@ -148,6 +148,21 @@ class SearchModuleTestCase(unittest.TestCase):
                       '<span class="icon">\u200b</span>blah@example.org'
                       '</em></a>', do_render('blah@example.org'))
 
+    def test_quickjump_location_not_escape(self):
+        req = MockRequest(self.env, path_info='/search',
+                          args={'q': 'wiki:WikiStart@1?action=diff'})
+
+        self.assertRaises(RequestDone,
+                          self._process_request, req)
+
+        self.assertEqual(
+            'http://example.org/trac.cgi/wiki/WikiStart?version=1&action=diff',
+            req.headers_sent['Location'])
+        self.assertIn('<a href="/trac.cgi/search?q='
+                      'wiki%3AWikiStart%401%3Faction%3Ddiff'
+                      '&amp;noquickjump=1">here</a>',
+                      req.chrome['notices'][0])
+
 
 def test_suite():
     suite = unittest.TestSuite()
