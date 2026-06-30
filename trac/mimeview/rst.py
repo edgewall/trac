@@ -62,7 +62,8 @@ if has_docutils:
                 text = linktext
             elt = find_element(link, 'href', 'missing')
             if elt is not None:
-                uri = elt.attrib.get('href', '')
+                uri = elt.attrib.get('href')
+                uri = uri.unescape() if uri else ''
                 missing = 'missing' in elt.attrib.get('class', '').split()
         else:
             uri = context.href.wiki(target)

@@ -180,7 +180,7 @@ class SearchModule(Component):
             context = web_context(req, 'search')
             link = find_element(extract_link(self.env, context, kwd), 'href')
             if link is not None:
-                quickjump_href = link.attrib.get('href')
+                quickjump_href = link.attrib.get('href').unescape()
                 name = link.children
                 description = link.attrib.get('title', '')
         if quickjump_href:
