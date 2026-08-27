@@ -90,8 +90,10 @@ class PygmentsRendererTestCase(unittest.TestCase):
             expected_id = 'python_hello'
         elif pygments_version < parse_version('2.19'):
             expected_id = 'python_hello_pygments_2.1plus'
-        else:
+        elif pygments_version < parse_version('2.21'):
             expected_id = 'python_hello_pygments_2.19plus'
+        else:
+            expected_id = 'python_hello_pygments_2.21plus'
         self._test(expected_id, result)
 
     def test_python_hello_mimeview(self):
@@ -108,8 +110,10 @@ class PygmentsRendererTestCase(unittest.TestCase):
             expected_id = 'python_hello_mimeview'
         elif pygments_version < parse_version('2.19'):
             expected_id = 'python_hello_mimeview_pygments_2.1plus'
-        else:
+        elif pygments_version < parse_version('2.21'):
             expected_id = 'python_hello_mimeview_pygments_2.19plus'
+        else:
+            expected_id = 'python_hello_mimeview_pygments_2.21plus'
         self._test(expected_id, result)
 
     def test_python_with_lineno(self):
@@ -123,9 +127,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
-            self._test('python_with_lineno_1', result)
+            expected_id = 'python_with_lineno_1'
+        elif pygments_version < parse_version('2.21'):
+            expected_id = 'python_with_lineno_1_pygments_2.1plus'
         else:
-            self._test('python_with_lineno_1_pygments_2.1plus', result)
+            expected_id = 'python_with_lineno_1_pygments_2.21plus'
+        self._test(expected_id, result)
 
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
             {{{#!%s lineno=3
@@ -137,9 +144,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
-            self._test('python_with_lineno_2', result)
+            expected_id = 'python_with_lineno_2'
+        elif pygments_version < parse_version('2.21'):
+            expected_id = 'python_with_lineno_2_pygments_2.1plus'
         else:
-            self._test('python_with_lineno_2_pygments_2.1plus', result)
+            expected_id = 'python_with_lineno_2_pygments_2.21plus'
+        self._test(expected_id, result)
 
     def test_python_with_lineno_and_markups(self):
         """Python highlighting with Pygments and lineno annotator
@@ -154,10 +164,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
-            self._test('python_with_lineno_and_markups', result)
+            expected_id = 'python_with_lineno_and_markups'
+        elif pygments_version < parse_version('2.21'):
+            expected_id = 'python_with_lineno_and_markups_pygments_2.1plus'
         else:
-            self._test('python_with_lineno_and_markups_pygments_2.1plus',
-                       result)
+            expected_id = 'python_with_lineno_and_markups_pygments_2.21plus'
+        self._test(expected_id, result)
 
     def test_python_with_invalid_arguments(self):
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
@@ -170,10 +182,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
-            self._test('python_with_invalid_arguments_1', result)
+            expected_id = 'python_with_invalid_arguments_1'
+        elif pygments_version < parse_version('2.21'):
+            expected_id = 'python_with_invalid_arguments_1_pygments_2.1plus'
         else:
-            self._test('python_with_invalid_arguments_1_pygments_2.1plus',
-                       result)
+            expected_id = 'python_with_invalid_arguments_1_pygments_2.21plus'
+        self._test(expected_id, result)
 
         result = format_to_html(self.env, self.context, textwrap.dedent("""\
             {{{#!%s lineno=a id=d marks=a-b
@@ -185,10 +199,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             """ % self.python_mimetype))
         self.assertTrue(result)
         if pygments_version < parse_version('2.1'):
-            self._test('python_with_invalid_arguments_2', result)
+            expected_id = 'python_with_invalid_arguments_2'
+        elif pygments_version < parse_version('2.21'):
+            expected_id = 'python_with_invalid_arguments_2_pygments_2.1plus'
         else:
-            self._test('python_with_invalid_arguments_2_pygments_2.1plus',
-                       result)
+            expected_id = 'python_with_invalid_arguments_2_pygments_2.21plus'
+        self._test(expected_id, result)
 
     def test_pygments_lexer_options(self):
         self.env.config.set('pygments-lexer',
@@ -203,7 +219,11 @@ class PygmentsRendererTestCase(unittest.TestCase):
             }}}
             """))
         self.assertTrue(result)
-        self._test('pygments_lexer_options', result)
+        if pygments_version < parse_version('2.21'):
+            expected_id = 'pygments_lexer_options'
+        else:
+            expected_id = 'pygments_lexer_options_pygments_2.21plus'
+        self._test(expected_id, result)
 
     def test_pygments_lexer_arguments(self):
         result = format_to_html(self.env, self.context, textwrap.dedent("""
@@ -214,7 +234,11 @@ class PygmentsRendererTestCase(unittest.TestCase):
             }}}
             """))
         self.assertTrue(result)
-        self._test('pygments_lexer_arguments', result)
+        if pygments_version < parse_version('2.21'):
+            expected_id = 'pygments_lexer_arguments'
+        else:
+            expected_id = 'pygments_lexer_arguments_pygments_2.21plus'
+        self._test(expected_id, result)
 
     def test_pygments_lexer_arguments_override_options(self):
         self.env.config.set('pygments-lexer',
@@ -229,7 +253,12 @@ class PygmentsRendererTestCase(unittest.TestCase):
             }}}
             """))
         self.assertTrue(result)
-        self._test('pygments_lexer_arguments_override_options', result)
+        if pygments_version < parse_version('2.21'):
+            expected_id = 'pygments_lexer_arguments_override_options'
+        else:
+            expected_id = 'pygments_lexer_arguments_override_options' + \
+                          '_pygments_2.21plus'
+        self._test(expected_id, result)
 
     def test_newline_content(self):
         """Regression test for newline-stripping behavior in Pygments.
