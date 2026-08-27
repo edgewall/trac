@@ -381,7 +381,7 @@ class ReStructuredTextCodeBlockTest(FunctionalTestCaseSetup):
         self._tester.go_to_wiki(pagename)
         tc.notfind("code-block")
         tc.find('print')
-        tc.find('&quot;123&quot;')
+        tc.find(r'(&quot;|")123\1')
 
 
 class RegressionTestTicket8976(FunctionalTestCaseSetup):
