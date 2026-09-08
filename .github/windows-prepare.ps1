@@ -11,9 +11,15 @@ $svnver = $env:MATRIX_SVNVER
 $svndir = "$LocalAppData\subversion-$svnver\$arch"
 $svnurl = "https://archive.apache.org/dist/subversion/subversion-$svnver.zip"
 $svnarc = "$workspace\subversion-$svnver.zip"
+$svnhash = '9D805D79521E994E5F38417705DA5CE4930827C8C4A7A2E9DC81E2F5D1E85A91'
 $sqlite_name = 'sqlite-amalgamation-3081101'
 $sqlite_url = "https://www.sqlite.org/2015/$sqlite_name.zip"
 $sqlite_arc = "$workspace\$sqlite_name.zip"
+$sqlite_hash = 'A3B0C07D1398D60AE9D21C2CC7F9BE6B1BC5B0168CD94C321EDE9A0FCE2B3CD7'
+$swig_ver = '3.0.12'
+$swig_url = "https://prdownloads.sourceforge.net/swig/swigwin-$swig_ver.zip"
+$swig_arc = "$workspace\swigwin-$swig_ver.zip"
+$swig_hash = "21CE6CBE297A56B697EF6E7E92A83E75CA41DEDC87E48282AB444591986C35F5"
 $pydir = "$svndir\python\$pyver"
 
 $venvdir = "$($env:LocalAppData)\venv"
@@ -55,8 +61,40 @@ Function Verify-Binary {
     return $svnver_cmd -eq $svnver -and $svnver_py -eq $svnver
 }
 
+Function Download-File {
+    Param([string]$Uri, [string]$OutFile, [string]$Hash)
+    Write-Host "Downloading $Uri"
+    try {
+        if ((Test-Path -Path $OutFile) -and
+            ((Get-FileHash $OutFile -Algorithm SHA256).Hash -ne $Hash)
+        ) {
+            Write-Warning "Remove the restored file due to hash mismatch"
+            Remove-Item -Path $OutFile -Force
+        }
+        if (-not (Test-Path -Path $OutFile)) {
+            Invoke-WebRequest -Uri $Uri -OutFile $OutFile -UserAgent curl `
+                              -MaximumRetryCount 10 -RetryIntervalSec 5
+            if ((Get-FileHash $OutFile -Algorithm SHA256).Hash -ne $Hash) {
+                throw "Downloaded file verification failed"
+            }
+        }
+    }
+    finally {
+        if (Test-Path -Path $OutFile) {
+            Get-FileHash $OutFile -Algorithm SHA256 | Format-List
+        }
+    }
+}
+
 if (-not (Verify-Binary)) {
     Write-Host "Building Subversion Python bindings using $svnurl"
+
+    Download-File $svnurl $svnarc $svnhash
+    Download-File $sqlite_url $sqlite_arc $sqlite_hash
+    Download-File $swig_url $swig_arc $swig_hash
+    Expand-Archive -LiteralPath $svnarc -DestinationPath "$workspace"
+    Expand-Archive -LiteralPath $sqlite_arc -DestinationPath "$workspace"
+    Expand-Archive -LiteralPath $swig_arc -DestinationPath "$workspace"
 
     Push-Location -LiteralPath $vcpkg_root
     & git pull
@@ -70,10 +108,7 @@ if (-not (Verify-Binary)) {
         Write-Error "vcpkg install exited with $LASTEXITCODE"
         exit 1
     }
-    Invoke-WebRequest -Uri $svnurl -OutFile $svnarc
-    Invoke-WebRequest -Uri $sqlite_url -OutFile $sqlite_arc
-    Expand-Archive -LiteralPath $svnarc -DestinationPath "$workspace"
-    Expand-Archive -LiteralPath $sqlite_arc -DestinationPath "$workspace"
+
     Set-Location -LiteralPath "$workspace\subversion-$svnver"
     foreach ($patch in 'svn-expat272.patch', 'svn-zlib132.patch') {
         & git apply -v -p0 --whitespace=fix "$workspace\.github\$patch"
@@ -84,6 +119,7 @@ if (-not (Verify-Binary)) {
                           "--with-apr-util=$vcpkg_dir" `
                           "--with-zlib=$vcpkg_dir" `
                           "--with-sqlite=$workspace\$sqlite_name" `
+                          "--with-swig=$workspace\swigwin-$swig_ver" `
                           "--with-py3c=$workspace\py3c"
     if ($LASTEXITCODE) {
         Write-Error "gen-make.py exited with $LASTEXITCODE"
