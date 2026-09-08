@@ -383,6 +383,24 @@ jobs:
           ~\AppData\Local\vcpkg\downloads\7z*
         key: ${{ matrix.os }}--${{ matrix.architecture }}-vcpkg--${{ hashFiles('.github/vcpkg.txt') }}
 
+    - name: Set up cache of subversion archive
+      uses: actions/cache@v5
+      with:
+        path: subversion-${{ matrix.subversion-version }}.zip
+        key: subversion-${{ matrix.subversion-version }}.zip
+
+    - name: Set up cache of sqlite archive
+      uses: actions/cache@v5
+      with:
+        path: sqlite-amalgamation-3081101.zip
+        key: sqlite-amalgamation-3081101.zip
+
+    - name: Set up cache of swigwin binary
+      uses: actions/cache@v5
+      with:
+        path: swigwin-3.0.12.zip
+        key: swigwin-3.0.12.zip
+
     - name: Set up msbuild
       uses: microsoft/setup-msbuild@v3
 
