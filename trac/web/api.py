@@ -532,8 +532,11 @@ if multipart:
             return
 
         if ctype == 'multipart/form-data':
-            forms, files = multipart.parse_form_data(environ, charset='utf-8',
-                                                     strict=True)
+            try:
+                forms, files = multipart.parse_form_data(
+                    environ, charset='utf-8', strict=False)
+            except multipart.MultipartError:
+                raise HTTPBadRequest(_("Invalid request arguments."))
             try:
                 for name in forms:
                     _raise_if_null_bytes(name)
