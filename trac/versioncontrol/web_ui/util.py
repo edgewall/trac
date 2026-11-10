@@ -242,7 +242,7 @@ def render_zip(req, filename, repos, root_node, iter_nodes):
                         data = content.read()
                     props = node.get_properties()
                     # Subversion specific
-                    if 'svn:special' in props and data.startswith('link '):
+                    if 'svn:special' in props and data.startswith(b'link '):
                         data = data[5:]
                         kwargs['symlink'] = True
                     if 'svn:executable' in props:
