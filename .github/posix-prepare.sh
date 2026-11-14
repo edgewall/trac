@@ -21,12 +21,24 @@ build_svnpy() {
         ;;
       macos-*)
         brew install -q apr apr-util lz4 utf8proc
+        for i in apr apr-util lz4 utf8proc subversion; do
+            p="$(brew --prefix $i)"
+            for d in "$p/lib/pkgconfig" "$p/share/pkgconfig" "$p/libexec/lib/pkgconfig"; do
+                if [ -d "$d" ]; then
+                    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$d"
+                    break
+                fi
+            done
+        done
+        export PKG_CONFIG_PATH="${PKG_CONFIG_PATH#:}"
         with_apr="$(brew --prefix apr)/bin/apr-1-config"
         with_apr_util="$(brew --prefix apr-util)/bin/apu-1-config"
         with_lz4="$(brew --prefix lz4)"
         with_utf8proc="$(brew --prefix utf8proc)"
-        cflags="$(pkg-config --cflags-only-I libsvn_subr)"
-        ldflags="$(pkg-config --libs-only-L libsvn_subr)"
+        for i in apr-1 apr-util-1 libsvn_subr; do
+            cflags="$cflags $(pkg-config --cflags-only-I $i)"
+            ldflags="$ldflags $(pkg-config --libs-only-L $i)"
+        done
         ;;
     esac
     installed_libs="$(pkg-config --list-all |
@@ -34,6 +46,11 @@ build_svnpy() {
                       sort |
                       tr '\n' ',' |
                       sed -e 's/,$//')"
+
+    test -d "$HOME/arc" || mkdir "$HOME/arc"
+    curl -s -o "$svntarball" "$svnurl"
+    tar xjf "$svntarball" -C "$GITHUB_WORKSPACE"
+    cd "$GITHUB_WORKSPACE/subversion-$svnver"
     if grep -q 'with-swig-python' configure; then
         opt_swig_python="--with-swig-python=$python"
         opt_swig_perl='--without-swig-perl'
@@ -43,11 +60,6 @@ build_svnpy() {
         opt_swig_perl='PERL=none'
         opt_swig_ruby='RUBY=none'
     fi
-
-    test -d "$HOME/arc" || mkdir "$HOME/arc"
-    curl -s -o "$svntarball" "$svnurl"
-    tar xjf "$svntarball" -C "$GITHUB_WORKSPACE"
-    cd "$GITHUB_WORKSPACE/subversion-$svnver"
     case "$svnver" in
     1.14.[012])
         git apply -v -p0 --whitespace=fix \
