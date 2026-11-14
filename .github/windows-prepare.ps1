@@ -6,16 +6,13 @@ $vcpkg_root = $Env:VCPKG_INSTALLATION_ROOT
 $vcpkg_downloads = "$LocalAppData\vcpkg\downloads"
 $vcpkg_triplet = "$arch-windows"
 $vcpkg_dir = "$vcpkg_root\installed\$vcpkg_triplet"
+$sqlite_dir = "$vcpkg_root\installed\$vcpkg_triplet-static"
 $pyver = $env:MATRIX_PYVER
 $svnver = $env:MATRIX_SVNVER
 $svndir = "$LocalAppData\subversion-$svnver\$arch"
 $svnurl = "https://archive.apache.org/dist/subversion/subversion-$svnver.zip"
 $svnarc = "$workspace\subversion-$svnver.zip"
-$svnhash = '9D805D79521E994E5F38417705DA5CE4930827C8C4A7A2E9DC81E2F5D1E85A91'
-$sqlite_name = 'sqlite-amalgamation-3081101'
-$sqlite_url = "https://www.sqlite.org/2015/$sqlite_name.zip"
-$sqlite_arc = "$workspace\$sqlite_name.zip"
-$sqlite_hash = 'A3B0C07D1398D60AE9D21C2CC7F9BE6B1BC5B0168CD94C321EDE9A0FCE2B3CD7'
+$svnhash = 'CAABEAE1C1D94EEDA1814DACE4DB105EA9F8565229267A61F0237C248BC46B54'
 $swig_ver = '3.0.12'
 $swig_url = "https://prdownloads.sourceforge.net/swig/swigwin-$swig_ver.zip"
 $swig_arc = "$workspace\swigwin-$swig_ver.zip"
@@ -90,10 +87,8 @@ if (-not (Verify-Binary)) {
     Write-Host "Building Subversion Python bindings using $svnurl"
 
     Download-File $svnurl $svnarc $svnhash
-    Download-File $sqlite_url $sqlite_arc $sqlite_hash
     Download-File $swig_url $swig_arc $swig_hash
     Expand-Archive -LiteralPath $svnarc -DestinationPath "$workspace"
-    Expand-Archive -LiteralPath $sqlite_arc -DestinationPath "$workspace"
     Expand-Archive -LiteralPath $swig_arc -DestinationPath "$workspace"
 
     Push-Location -LiteralPath $vcpkg_root
@@ -110,15 +105,15 @@ if (-not (Verify-Binary)) {
     }
 
     Set-Location -LiteralPath "$workspace\subversion-$svnver"
-    foreach ($patch in 'svn-expat272.patch', 'svn-zlib132.patch') {
+    foreach ($patch in 'svn-zlib14.patch') {
         & git apply -v -p0 --whitespace=fix "$workspace\.github\$patch"
     }
     & $python gen-make.py --release `
-                          --vsnet-version=2019 `
+                          --vsnet-version=2022 `
                           "--with-apr=$vcpkg_dir" `
                           "--with-apr-util=$vcpkg_dir" `
                           "--with-zlib=$vcpkg_dir" `
-                          "--with-sqlite=$workspace\$sqlite_name" `
+                          "--with-sqlite=$sqlite_dir" `
                           "--with-swig=$workspace\swigwin-$swig_ver" `
                           "--with-py3c=$workspace\py3c"
     if ($LASTEXITCODE) {
@@ -139,7 +134,7 @@ if (-not (Verify-Binary)) {
               "$vcpkg_dir\bin\libcrypto-*.dll",
               "$vcpkg_dir\bin\libexpat.dll",
               "$vcpkg_dir\bin\libssl-*.dll",
-              "$vcpkg_dir\bin\z*.dll")
+              "$vcpkg_dir\bin\libz.dll")
     Copy-Item -Path $deps -Destination Release
 
     New-Item -Force -ItemType Directory -Path "$svndir\bin"
