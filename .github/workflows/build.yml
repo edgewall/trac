@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:  [ubuntu-24.04, macos-26]
+        os:  [ubuntu-26.04, macos-26]
         python-version: ['3.15']
         tests: [functional]
 
@@ -74,15 +74,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - {os: ubuntu-24.04, python-version: '3.15', tracdb: sqlite,     tests: functional}
-        - {os: ubuntu-24.04, python-version: '3.15', tracdb: postgresql, tests: functional}
-        - {os: ubuntu-24.04, python-version: '3.15', tracdb: mysql,      tests: functional}
-        - {os: ubuntu-24.04, python-version: '3.15', tracdb: ''}
-        - {os: ubuntu-24.04, python-version: '3.14', tracdb: ''}
-        - {os: ubuntu-24.04, python-version: '3.13', tracdb: ''}
-        - {os: ubuntu-24.04, python-version: '3.12', tracdb: ''}
-        - {os: ubuntu-24.04, python-version: '3.11', tracdb: ''}
-        - {os: ubuntu-24.04, python-version: '3.10', tracdb: ''}
+        - {os: ubuntu-26.04, python-version: '3.15', tracdb: sqlite,     tests: functional}
+        - {os: ubuntu-26.04, python-version: '3.15', tracdb: postgresql, tests: functional}
+        - {os: ubuntu-26.04, python-version: '3.15', tracdb: mysql,      tests: functional}
+        - {os: ubuntu-26.04, python-version: '3.15', tracdb: ''}
+        - {os: ubuntu-26.04, python-version: '3.14', tracdb: ''}
+        - {os: ubuntu-26.04, python-version: '3.13', tracdb: ''}
+        - {os: ubuntu-26.04, python-version: '3.12', tracdb: ''}
+        - {os: ubuntu-26.04, python-version: '3.11', tracdb: ''}
+        - {os: ubuntu-26.04, python-version: '3.10', tracdb: ''}
         - {os: ubuntu-24.04, python-version: '3.9',  tracdb: ''}
         - {os: ubuntu-24.04, python-version: '3.8',  tracdb: ''}
         - {os: ubuntu-22.04, python-version: '3.7',  tracdb: ''}
@@ -149,12 +149,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - {os: ubuntu-24.04, python-version: '3.15'}
-        - {os: ubuntu-24.04, python-version: '3.14'}
-        - {os: ubuntu-24.04, python-version: '3.13'}
-        - {os: ubuntu-24.04, python-version: '3.12'}
-        - {os: ubuntu-24.04, python-version: '3.11'}
-        - {os: ubuntu-24.04, python-version: '3.10'}
+        - {os: ubuntu-26.04, python-version: '3.15'}
+        - {os: ubuntu-26.04, python-version: '3.14'}
+        - {os: ubuntu-26.04, python-version: '3.13'}
+        - {os: ubuntu-26.04, python-version: '3.12'}
+        - {os: ubuntu-26.04, python-version: '3.11'}
+        - {os: ubuntu-26.04, python-version: '3.10'}
         - {os: ubuntu-24.04, python-version: '3.9'}
         - {os: ubuntu-24.04, python-version: '3.8'}
         - {os: ubuntu-22.04, python-version: '3.7'}
@@ -433,7 +433,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-24.04]
+        os: [ubuntu-26.04]
         python-version: ['3.15']
 
     needs: [posix-test-minimum, posix-test, windows-test-minimum, windows-test]
