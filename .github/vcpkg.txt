@@ -1,3 +1,4 @@
 apr
 apr-util
 zlib
+sqlite3:x64-windows-static
