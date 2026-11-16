@@ -200,9 +200,10 @@
                                          propertyName + "_" + option);
             if (i == 0)
               focusElement = control;
-            td.append(control).append(" ")
-              .append(createLabel(option ? option : "none",
-                                  propertyName + "_" + option)).append(" ");
+            var label = createLabel(option ? option : "none",
+                                    propertyName + "_" + option);
+            label.prepend(control);
+            td.append(label).append(" ");
           }
         } else if (property.type == "checkbox") {
           focusElement = createRadio(propertyName, "1", propertyName + "_on");

@@ -150,16 +150,16 @@
 
                           # elif field.type == 'radio':
                           #   for option in field.options:
-                          <input type="checkbox"
-                                 id="_${n_field_name}_${option}"${
-                               {'name': n_field_name,
-                                'value': option,
-                                'checked':
-                                    (constraint['mode'] == '') is equalto
-                                    (option in constraint['values'])
-                               }|htmlattr}/>
                           <label for="_${n_field_name}_${option}"
-                                 class="control">${option or _('none')}</label>
+                                 class="control">
+                            <input type="checkbox"
+                                   id="_${n_field_name}_${option}"${
+                                 {'name': n_field_name,
+                                  'value': option,
+                                  'checked':
+                                      (constraint['mode'] == '') is equalto
+                                      (option in constraint['values'])
+                                 }|htmlattr}/>${option or _('none')}</label>
                           #   endfor
 
                           # elif field.type == 'checkbox':
